@@ -2,9 +2,12 @@
     "Author": "Seventh",
     "Name": "Collections",
     "Punchline": "Collect all of the things",
-    "Description": "Provides an interface to track and discover collectibles. \nGlamour, Mounts, Minions and more to come.",
+    "Description": "Provides an interface to track and discover collectibles. \nGlamour, Mounts, Minions and more.",
     "InternalName": "collections",
     "ApplicableVersion": "any",
+    "RepoUrl": "https://github.com/Seventhxiv/Collections",
+    "IconUrl": "https://xivapi.com/img-misc/061643.png",
+    "ImageUrls": [ "https://raw.githubusercontent.com/Seventhxiv/Collections/master/Collections/Data/Resources/mainwindow730.png", "https://raw.githubusercontent.com/Seventhxiv/Collections/master/Collections/Data/Resources/mountwindow730.png" ],
     "Tags": [
         "collections",
         "glamour",

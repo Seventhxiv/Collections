@@ -30,6 +30,11 @@ public class InstanceWindow : Window, IDisposable
     private bool enteringInstance = false;
     public unsafe void OnFrameworkTick(Dalamud.Game.Framework framework)
     {
+        if (!Services.ClientState.IsLoggedIn)
+        {
+            return;
+        }
+
         var instanceId = GetCurrentInstance();
         if (Services.DataGenerator.InstancesDataParser.contentFinderConditionToItems.ContainsKey(instanceId))
         {
