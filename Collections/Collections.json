@@ -1,0 +1,16 @@
+{
+    "Author": "Seventh",
+    "Name": "Collections",
+    "Punchline": "Collect all of the things",
+    "Description": "Provides an interface to track and discover collectibles. \nGlamour, Mounts, Minions and more to come.",
+    "InternalName": "collections",
+    "ApplicableVersion": "any",
+    "Tags": [
+        "collections",
+        "glamour",
+        "mounts",
+        "minions",
+        "Utility",
+        "Other"
+    ]
+}
