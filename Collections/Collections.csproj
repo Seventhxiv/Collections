@@ -64,7 +64,6 @@
         <PackageReference Include="CsvHelper" Version="30.0.1" />
         <PackageReference Include="DalamudPackager" Version="2.1.10" />
         <PackageReference Include="System.Net.Http" Version="4.3.4" />
-        <ProjectReference Include="..\..\..\GitHub\LuminaSupplemental\src\LuminaSupplemental.Excel\LuminaSupplemental.Excel.csproj" />
         <Reference Include="FFXIVClientStructs">
             <HintPath>$(DalamudLibPath)FFXIVClientStructs.dll</HintPath>
             <Private>false</Private>
