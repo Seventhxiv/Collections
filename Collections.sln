@@ -5,12 +5,12 @@ VisualStudioVersion = 17.6.33815.320
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Collections", "Collections\Collections.csproj", "{13C812E9-0D42-4B95-8646-40EEBF30636F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LuminaSupplemental.Excel", "..\..\GitHub\LuminaSupplemental\src\LuminaSupplemental.Excel\LuminaSupplemental.Excel.csproj", "{3B5C41D3-C44C-4805-AB9F-8A24817F0415}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{428CD91B-8FFC-42BE-989E-B14F968C429F}"
 	ProjectSection(SolutionItems) = preProject
 		README.md = README.md
 	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LuminaSupplemental.Excel", "LuminaSupplemental\src\LuminaSupplemental.Excel\LuminaSupplemental.Excel.csproj", "{1F5C94E3-279E-4D7B-8A49-4235253A9D0D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -28,14 +28,14 @@ Global
 		{13C812E9-0D42-4B95-8646-40EEBF30636F}.Release|Any CPU.Build.0 = Release|x64
 		{13C812E9-0D42-4B95-8646-40EEBF30636F}.Release|x64.ActiveCfg = Release|x64
 		{13C812E9-0D42-4B95-8646-40EEBF30636F}.Release|x64.Build.0 = Release|x64
-		{3B5C41D3-C44C-4805-AB9F-8A24817F0415}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3B5C41D3-C44C-4805-AB9F-8A24817F0415}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3B5C41D3-C44C-4805-AB9F-8A24817F0415}.Debug|x64.ActiveCfg = Release|Any CPU
-		{3B5C41D3-C44C-4805-AB9F-8A24817F0415}.Debug|x64.Build.0 = Release|Any CPU
-		{3B5C41D3-C44C-4805-AB9F-8A24817F0415}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3B5C41D3-C44C-4805-AB9F-8A24817F0415}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3B5C41D3-C44C-4805-AB9F-8A24817F0415}.Release|x64.ActiveCfg = Release|Any CPU
-		{3B5C41D3-C44C-4805-AB9F-8A24817F0415}.Release|x64.Build.0 = Release|Any CPU
+		{1F5C94E3-279E-4D7B-8A49-4235253A9D0D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1F5C94E3-279E-4D7B-8A49-4235253A9D0D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1F5C94E3-279E-4D7B-8A49-4235253A9D0D}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{1F5C94E3-279E-4D7B-8A49-4235253A9D0D}.Debug|x64.Build.0 = Debug|Any CPU
+		{1F5C94E3-279E-4D7B-8A49-4235253A9D0D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1F5C94E3-279E-4D7B-8A49-4235253A9D0D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1F5C94E3-279E-4D7B-8A49-4235253A9D0D}.Release|x64.ActiveCfg = Release|Any CPU
+		{1F5C94E3-279E-4D7B-8A49-4235253A9D0D}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
