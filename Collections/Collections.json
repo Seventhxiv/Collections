@@ -3,7 +3,7 @@
     "Name": "Collections",
     "Punchline": "Collect all of the things",
     "Description": "Provides an interface to track and discover collectibles. \nGlamour, Mounts, Minions and more.",
-    "InternalName": "collections",
+    "InternalName": "Collections",
     "ApplicableVersion": "any",
     "RepoUrl": "https://github.com/Seventhxiv/Collections",
     "IconUrl": "https://xivapi.com/img-misc/061643.png",

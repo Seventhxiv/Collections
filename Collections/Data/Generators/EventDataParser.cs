@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace Collections;
@@ -16,7 +17,7 @@ public class EventDataParser
 {
     public Dictionary<uint, List<string>> itemsToEvents = new();
 
-    private static readonly string CollectibleToEventPath = @"D:\FFXIV Plugin Dev\Collections-master\Collections\Data\Resources\collectibleToEvent.csv";
+    private static readonly string CollectibleToEventPath = Path.Combine(Services.PluginInterface.AssemblyLocation.Directory?.FullName!, @"Data\Resources\collectibleToEvent.csv");
     public EventDataParser()
     {
         Dev.StartStopwatch();
