@@ -1,5 +1,6 @@
 using Dalamud.Game;
 using FFXIVClientStructs.FFXIV.Client.Game;
+using FFXIVClientStructs.FFXIV.Client.Game.Event;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 using Lumina.Excel.GeneratedSheets;
@@ -120,10 +121,13 @@ public class GameActionsExecutor : BaseAddressResolver
     public unsafe void ResetPreview()
     {
         var equipSlotsToReset = changedEquipState.Select(i => i.equipSlot).ToHashSet();
+        if (equipSlotsToReset.Count == 0)
+        {
+            return;
+        }
         var itemSheet = Excel.GetExcelSheet<Item>()!;
         var container = InventoryManager.Instance()->GetInventoryContainer(InventoryType.EquippedItems);
 
-        Dev.Log(equipSlotsToReset.Count.ToString());
         foreach (var equipSlot in equipSlotsToReset)
         {
             ResetSlot(equipSlot);
@@ -178,6 +182,10 @@ public class GameActionsExecutor : BaseAddressResolver
         setGlamourPlateSlot(agent, PlateItemSource, glamId, itemId, stainId);
     }
 
+    public bool IsInGPose()
+    {
+        return Services.PluginInterface.UiBuilder.GposeActive;
+    }
 }
 
 public enum PlateItemSource

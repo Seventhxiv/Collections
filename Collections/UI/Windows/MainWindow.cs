@@ -1,3 +1,4 @@
+using Dalamud.Game;
 using Dalamud.Interface.Windowing;
 using ImGuiNET;
 using System;
@@ -12,7 +13,7 @@ public class MainWindow : Window, IDisposable
     private List<(string name, IDrawable window)> collectionWindows { get; init; }
 
     public MainWindow() : base(
-        "Collections", ImGuiWindowFlags.NoScrollWithMouse)
+        "Collections", ImGuiWindowFlags.NoScrollWithMouse | ImGuiWindowFlags.NoCollapse)
     {
         this.SizeConstraints = new WindowSizeConstraints
         {
@@ -84,6 +85,15 @@ public class MainWindow : Window, IDisposable
         //ImGui.PopStyleVar();
         ImGui.PopStyleColor();
         ImGui.PopStyleVar();
+    }
+
+    // Resets preview under certain conditions (GPose open)
+    public void OnFrameworkTick(Framework framework)
+    {
+        if (this.IsOpen && Services.GameFunctionsExecutor.IsInGPose())
+        {
+            Services.GameFunctionsExecutor.ResetPreview();
+        }
     }
 
 }

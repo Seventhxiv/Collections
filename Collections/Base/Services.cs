@@ -77,6 +77,7 @@ public class Services
         Framework.Update += GlamourDresserManager.GlamDresserObserver.OnFrameworkTick;
         Framework.Update += WindowsHandler.InspectWindow.OnFrameworkTick;
         Framework.Update += WindowsHandler.InstanceWindow.OnFrameworkTick;
+        Framework.Update += WindowsHandler.MainWindow.OnFrameworkTick;
     }
 
     public static void Dispose()
@@ -91,5 +92,6 @@ public class Services
         Framework.Update -= GlamourDresserManager.GlamDresserObserver.OnFrameworkTick;
         Framework.Update -= WindowsHandler.InspectWindow.OnFrameworkTick;
         Framework.Update -= WindowsHandler.InstanceWindow.OnFrameworkTick;
+        Framework.Update -= WindowsHandler.MainWindow.OnFrameworkTick;
     }
 }
