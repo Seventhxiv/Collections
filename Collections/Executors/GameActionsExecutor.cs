@@ -184,7 +184,8 @@ public class GameActionsExecutor : BaseAddressResolver
 
     public bool IsInGPose()
     {
-        return Services.PluginInterface.UiBuilder.GposeActive;
+        // return Services.PluginInterface.UiBuilder.GposeActive;
+        return GameMain.IsInGPose();
     }
 }
 
