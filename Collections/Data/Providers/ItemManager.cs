@@ -1,3 +1,4 @@
+using Dalamud.Interface.Internal;
 using ImGuiScene;
 using Lumina.Excel;
 using Lumina.Excel.GeneratedSheets;
@@ -10,7 +11,7 @@ namespace Collections;
 public class ItemManager
 {
     public Dictionary<EquipSlot, List<ICollectible>> items = new();
-    public Dictionary<EquipSlot, TextureWrap> defaultEquipSlotIcons = new();
+    public Dictionary<EquipSlot, IDalamudTextureWrap> defaultEquipSlotIcons = new();
     public List<ClassJobEntity> classJobs = new();
     public List<StainEntity> stains = new();
 

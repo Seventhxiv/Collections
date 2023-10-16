@@ -1,4 +1,5 @@
 using Dalamud.Logging;
+using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 using System;
@@ -15,7 +16,7 @@ public class GlamDresserObserver
     private DateTime? openedTime;
     private DateTime? latestUpdatedTime;
     private bool wasUpdated = false;
-    public unsafe void OnFrameworkTick(Dalamud.Game.Framework framework)
+    public unsafe void OnFrameworkTick(IFramework framework)
     {
 
         //var boxOpen = IsWindowOpen(gui, "MiragePrismPrismBox");

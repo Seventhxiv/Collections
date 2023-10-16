@@ -1,5 +1,6 @@
 using Dalamud.Interface;
 using Dalamud.Interface.Components;
+using Dalamud.Interface.Internal;
 using ImGuiNET;
 using ImGuiScene;
 using System;
@@ -118,7 +119,7 @@ public class UiHelper
         }
     }
 
-    public static bool ImageToggleButton(TextureWrap icon, Vector2 size, bool state)
+    public static bool ImageToggleButton(IDalamudTextureWrap icon, Vector2 size, bool state)
     {
         var tintColor = new Vector4(1f, 1f, 1f, 1f);
         if (!state)

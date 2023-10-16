@@ -1,5 +1,6 @@
 using Dalamud.Game;
 using Dalamud.Interface.Windowing;
+using Dalamud.Plugin.Services;
 using ImGuiNET;
 using System;
 using System.Collections.Generic;
@@ -88,7 +89,7 @@ public class MainWindow : Window, IDisposable
     }
 
     // Resets preview under certain conditions (GPose open)
-    public void OnFrameworkTick(Framework framework)
+    public void OnFrameworkTick(IFramework framework)
     {
         if (this.IsOpen && Services.GameFunctionsExecutor.IsInGPose())
         {

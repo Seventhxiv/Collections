@@ -10,25 +10,26 @@ using Dalamud.Game.Gui.Toast;
 using Dalamud.Game.Libc;
 using Dalamud.IoC;
 using Dalamud.Plugin;
+using Dalamud.Plugin.Services;
 
 namespace Collections;
 
 public class Services
 {
     [PluginService] public static DalamudPluginInterface PluginInterface { get; private set; }
-    [PluginService] public static ChatGui ChatGui { get; private set; }
-    [PluginService] public static ClientState ClientState { get; private set; }
-    [PluginService] public static CommandManager CommandManager { get; private set; }
-    [PluginService] public static Condition Condition { get; private set; }
-    [PluginService] public static DataManager DataManager { get; private set; }
-    [PluginService] public static Framework Framework { get; private set; }
-    [PluginService] public static GameGui GameGui { get; private set; }
-    [PluginService] public static KeyState KeyState { get; private set; }
-    [PluginService] public static LibcFunction LibcFunction { get; private set; }
-    [PluginService] public static ObjectTable ObjectTable { get; private set; }
-    [PluginService] public static SigScanner SigScanner { get; private set; }
-    [PluginService] public static TargetManager TargetManager { get; private set; }
-    [PluginService] public static ToastGui ToastGui { get; private set; }
+    [PluginService] public static IChatGui ChatGui { get; private set; }
+    [PluginService] public static IClientState ClientState { get; private set; }
+    [PluginService] public static ICommandManager CommandManager { get; private set; }
+    [PluginService] public static ICondition Condition { get; private set; }
+    [PluginService] public static IDataManager DataManager { get; private set; }
+    [PluginService] public static IFramework Framework { get; private set; }
+    [PluginService] public static IGameGui GameGui { get; private set; }
+    [PluginService] public static IKeyState KeyState { get; private set; }
+    [PluginService] public static ILibcFunction LibcFunction { get; private set; }
+    [PluginService] public static IObjectTable ObjectTable { get; private set; }
+    [PluginService] public static ISigScanner SigScanner { get; private set; }
+    [PluginService] public static ITargetManager TargetManager { get; private set; }
+    [PluginService] public static IToastGui ToastGui { get; private set; }
     //[PluginService] public static IDragDropManager DragDropManager { get; private set; }
 
     public static Plugin Plugin { get; private set; }

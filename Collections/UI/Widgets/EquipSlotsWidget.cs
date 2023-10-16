@@ -1,5 +1,6 @@
 using Dalamud.Interface;
 using Dalamud.Interface.Components;
+using Dalamud.Interface.Internal;
 using ImGuiNET;
 using ImGuiScene;
 using System;
@@ -35,7 +36,7 @@ public class EquipSlotsWidget
     //Enum.GetValues(typeof(EquipSlot)).Cast<EquipSlot>().ToList();
     public unsafe void Draw()
     {
-        TextureWrap icon;
+        IDalamudTextureWrap icon;
         var bgColor = *ImGui.GetStyleColorVec4(ImGuiCol.WindowBg);
         foreach (var equipSlot in equipSlotList)
         {
@@ -118,7 +119,7 @@ public class EquipSlotsWidget
         }
     }
 
-    private Dictionary<EquipSlot, TextureWrap> equipSlotIcons = new();
+    private Dictionary<EquipSlot, IDalamudTextureWrap> equipSlotIcons = new();
     private void BuildEquipSlotIcons()
     {
         foreach (var equipSlot in equipSlotList)

@@ -1,5 +1,7 @@
 using Dalamud.Interface;
+using Dalamud.Interface.Utility;
 using Dalamud.Interface.Windowing;
+using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 using ImGuiNET;
 using System;
@@ -30,7 +32,7 @@ public class InspectWindow : Window, IDisposable
         sourceMountCount = mountCollection.Where(e => e.GetIsObtained()).Count();
     }
 
-    public unsafe void OnFrameworkTick(Dalamud.Game.Framework framework)
+    public unsafe void OnFrameworkTick(IFramework framework)
     {
         var inspectAddon = (AtkUnitBase*)Services.GameGui.GetAddonByName("CharacterInspect", 1);
         IsOpen = !(inspectAddon == null || !inspectAddon->IsVisible);

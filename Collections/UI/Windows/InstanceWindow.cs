@@ -1,4 +1,5 @@
 using Dalamud.Interface.Windowing;
+using Dalamud.Plugin.Services;
 using ImGuiNET;
 using Lumina.Excel.GeneratedSheets;
 using System;
@@ -28,7 +29,7 @@ public class InstanceWindow : Window, IDisposable
 
     private List<uint> items = new();
     private bool enteringInstance = false;
-    public unsafe void OnFrameworkTick(Dalamud.Game.Framework framework)
+    public unsafe void OnFrameworkTick(IFramework framework)
     {
         if (!Services.ClientState.IsLoggedIn)
         {

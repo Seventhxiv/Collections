@@ -37,7 +37,7 @@ public class GameActionsExecutor : BaseAddressResolver
         changeWeapon = Marshal.GetDelegateForFunctionPointer<ChangeWeaponDelegate>(changeWeaponPointer);
     }
 
-    protected override void Setup64Bit(SigScanner SigScanner)
+    protected override void Setup64Bit(ISigScanner SigScanner)
     {
         tryOnPointer = SigScanner.ScanText("E8 ?? ?? ?? ?? EB 35 BA ?? ?? ?? ??");
         setGlamourPlateSlotPointer = SigScanner.ScanText("E8 ?? ?? ?? ?? E9 ?? ?? ?? ?? 48 8B 46 10 8B 1B");
