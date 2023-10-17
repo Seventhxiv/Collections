@@ -53,14 +53,14 @@ public class GlamDresserObserver
             wasUpdated = true;
             latestUpdatedTime = DateTime.Now;
             updateDresserContents();
-            Services.Configuration.updateDresserContentIds(this.itemIds);
+            Services.Configuration.updateDresserContentIds(itemIds);
             Services.GlamourDresserManager.loadItemsFromConfiguration();
         }
     }
 
     private void updateConfiguration()
     {
-        foreach (var itemId in this.itemIds)
+        foreach (var itemId in itemIds)
         {
             Services.Configuration.DresserContentIds.Add(itemId);
         }
@@ -110,7 +110,7 @@ public class GlamDresserObserver
 
         for (var i = 0; i < 800; i++)
         {
-            var glamItem = *(GlamourDresserItem*)(itemsStart + i * 136);
+            var glamItem = *(GlamourDresserItem*)(itemsStart + (i * 136));
             if (glamItem.ItemId == 0)
             {
                 continue;

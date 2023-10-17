@@ -24,7 +24,7 @@ public class AddonPositionHelper
 
         var scaledHeight = addon->GetScaledHeight(true);
         var scaledWidth = addon->GetScaledWidth(true);
-        return ImGuiHelpers.MainViewport.Pos + new Vector2(addon->X, addon->Y) + Vector2.UnitY * (scaledHeight) - Vector2.UnitY * ImGui.CalcTextSize("A") * 4;
+        return ImGuiHelpers.MainViewport.Pos + new Vector2(addon->X, addon->Y) + (Vector2.UnitY * (scaledHeight)) - (Vector2.UnitY * ImGui.CalcTextSize("A") * 4);
         //var xModifier = right
         //    ? root->Width * addon->Scale - DropdownWidth()
         //    : 0;
@@ -39,7 +39,7 @@ public class AddonPositionHelper
     internal static float DropdownWidth()
     {
         // arrow size is GetFrameHeight
-        return (ImGui.CalcTextSize("Collections").X + ImGui.GetStyle().ItemInnerSpacing.X * 2 + ImGui.GetFrameHeight()) * ImGuiHelpers.GlobalScale;
+        return (ImGui.CalcTextSize("Collections").X + (ImGui.GetStyle().ItemInnerSpacing.X * 2) + ImGui.GetFrameHeight()) * ImGuiHelpers.GlobalScale;
 
     }
     public static unsafe void DrawHelper(AtkUnitBase* addon, string id, bool right, Action dropdown)

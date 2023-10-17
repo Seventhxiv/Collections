@@ -20,7 +20,7 @@ public class GlamourPlatesWidget
 
     private unsafe void Draw(AtkUnitBase* inspectAddon)
     {
-        AddonPositionHelper.DrawHelper(inspectAddon, "glamaholic-helper-examine", false, this.DrawDropdown);
+        AddonPositionHelper.DrawHelper(inspectAddon, "glamaholic-helper-examine", false, DrawDropdown);
     }
 
     private unsafe void DrawDropdown()

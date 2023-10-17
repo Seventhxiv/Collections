@@ -17,7 +17,7 @@ public class InspectWindow : Window, IDisposable
     public InspectWindow() : base(
         "Collections - Inspect", ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoResize)
     {
-        this.SizeConstraints = new WindowSizeConstraints
+        SizeConstraints = new WindowSizeConstraints
         {
             MinimumSize = new System.Numerics.Vector2(300, 150),
             MaximumSize = new System.Numerics.Vector2(300, 150)
@@ -113,7 +113,7 @@ public class InspectWindow : Window, IDisposable
 
         var scaledHeight = addon->GetScaledHeight(true);
         var scaledWidth = addon->GetScaledWidth(true);
-        var pos = ImGuiHelpers.MainViewport.Pos + new Vector2(addon->X, addon->Y) + Vector2.UnitX * (scaledWidth);
+        var pos = ImGuiHelpers.MainViewport.Pos + new Vector2(addon->X, addon->Y) + (Vector2.UnitX * scaledWidth);
         ImGui.SetWindowPos(pos);
     }
 

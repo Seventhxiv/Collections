@@ -1,5 +1,6 @@
 using Dalamud.Game;
 using FFXIVClientStructs.FFXIV.Client.Game;
+using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using FFXIVClientStructs.FFXIV.Client.Game.Event;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using FFXIVClientStructs.FFXIV.Component.GUI;
@@ -8,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
+using static FFXIVClientStructs.FFXIV.Client.Game.Character.DrawDataContainer;
 
 namespace Collections;
 
@@ -15,34 +17,24 @@ public class GameActionsExecutor : BaseAddressResolver
 {
     private delegate byte tryOnDelegate(uint unknownCanEquip, uint itemBaseId, ulong stainColor, uint itemGlamourId, byte unknownByte);
     private delegate void setGlamourPlateSlotDelegate(IntPtr agent, PlateItemSource plateItemSource, int glamId, uint itemId, byte stainId);
-    private delegate IntPtr ChangeEquipDelegate(IntPtr writeTo, EquipSlot index, ChangeEquipItem changeEquipItem);
-    private delegate void ChangeWeaponDelegate(IntPtr writeTo, int slot, ChangeWeaponEquip changeWeaponEquip, byte a4, byte a5, byte a6, byte a7);
 
     private readonly tryOnDelegate tryOn;
     private readonly setGlamourPlateSlotDelegate setGlamourPlateSlot;
-    private readonly ChangeEquipDelegate? changeEquip;
-    private readonly ChangeWeaponDelegate? changeWeapon;
 
     protected nint tryOnPointer { get; private set; }
     protected nint setGlamourPlateSlotPointer { get; private set; }
-    protected nint changeEquipPointer { get; private set; }
-    protected nint changeWeaponPointer { get; private set; }
 
     public GameActionsExecutor()
     {
         Setup(Services.SigScanner);
         tryOn = Marshal.GetDelegateForFunctionPointer<tryOnDelegate>(tryOnPointer);
         setGlamourPlateSlot = Marshal.GetDelegateForFunctionPointer<setGlamourPlateSlotDelegate>(setGlamourPlateSlotPointer);
-        changeEquip = Marshal.GetDelegateForFunctionPointer<ChangeEquipDelegate>(changeEquipPointer);
-        changeWeapon = Marshal.GetDelegateForFunctionPointer<ChangeWeaponDelegate>(changeWeaponPointer);
     }
 
     protected override void Setup64Bit(ISigScanner SigScanner)
     {
         tryOnPointer = SigScanner.ScanText("E8 ?? ?? ?? ?? EB 35 BA ?? ?? ?? ??");
         setGlamourPlateSlotPointer = SigScanner.ScanText("E8 ?? ?? ?? ?? E9 ?? ?? ?? ?? 48 8B 46 10 8B 1B");
-        changeEquipPointer = SigScanner.ScanText("E8 ?? ?? ?? ?? 41 B5 01 FF C6");
-        changeWeaponPointer = SigScanner.ScanText("E8 ?? ?? ?? ?? 80 7F 25 00");
     }
 
     public void ChangeEquip(Item item, int stainId = 0, bool save = true)
@@ -50,32 +42,21 @@ public class GameActionsExecutor : BaseAddressResolver
         if (save)
             SaveChangedEquip(item, stainId);
 
-        var address = Services.ClientState.LocalPlayer.Address + 0x6E8;
         var equipSlot = Services.ItemManager.getItemEquipSlot(item);
 
         if (equipSlot == EquipSlot.MainHand || equipSlot == EquipSlot.OffHand)
         {
             var slot = equipSlot == EquipSlot.MainHand ? 0 : 1;
-            var ChangeWeaponEquip = new ChangeWeaponEquip() { Set = (ushort)item.ModelMain, Base = (byte)(item.ModelMain >> 16), Variant = (byte)(item.ModelMain >> 32), Dye = (byte)stainId };
-            changeWeapon(address, slot, ChangeWeaponEquip, 0, 0, 0, 0);
+            var changeWeaponEquip = new ChangeWeaponEquip() { Set = (ushort)item.ModelMain, Base = (byte)(item.ModelMain >> 16), Variant = (byte)(item.ModelMain >> 32), Dye = (byte)stainId };
+            ChangeWeapon(changeWeaponEquip, (WeaponSlot)slot);
         }
         else
         {
             var EquipItem = new ChangeEquipItem() { Id = (ushort)item.ModelMain, Variant = (byte)(item.ModelMain >> 16), Dye = (byte)stainId };
-            changeEquip(address, equipSlot, EquipItem);
+            ChangeEquip(EquipItem, (EquipmentSlot)equipSlot);
         }
+
         Dev.Log($"Preview item: " + item.Name);
-
-    }
-
-    // To deprecate
-    public void ResetChangeEquip()
-    {
-        foreach (var changedEquip in changedEquipState)
-        {
-            //ChangeEquip(changedEquip.preItem, changedEquip.preStain, false);
-        }
-        changedEquipState.Clear();
     }
 
     private List<ChangedEquipState> changedEquipState = new();
@@ -145,18 +126,48 @@ public class GameActionsExecutor : BaseAddressResolver
 
     private void ResetSlot(EquipSlot equipSlot)
     {
-        var address = Services.ClientState.LocalPlayer.Address + 0x6E8;
         if (equipSlot == EquipSlot.MainHand || equipSlot == EquipSlot.OffHand)
         {
             var slot = equipSlot == EquipSlot.MainHand ? 0 : 1;
-            var ChangeWeaponEquip = new ChangeWeaponEquip() { Set = 0, Base = 0, Variant = 0, Dye = 0 };
-            changeWeapon(address, slot, ChangeWeaponEquip, 0, 0, 0, 0);
+            var changeWeaponEquip = new ChangeWeaponEquip() { Set = 0, Base = 0, Variant = 0, Dye = 0 };
+            ChangeWeapon(changeWeaponEquip, (WeaponSlot)slot);
         }
         else
         {
             Dev.Log($"resetting {equipSlot}");
             var EquipItem = new ChangeEquipItem() { Id = 0, Variant = 0, Dye = 0 };
-            changeEquip(address, equipSlot, EquipItem);
+            ChangeEquip(EquipItem, (EquipmentSlot)equipSlot);
+        }
+    }
+
+    private void ChangeEquip(ChangeEquipItem item, EquipmentSlot slot)
+    {
+        unsafe
+        {
+            var p = (Character*)Services.ClientState.LocalPlayer.Address;
+            var e = new EquipmentModelId()
+            {
+                Id = item.Id,
+                Stain = item.Dye,
+                Variant = item.Variant,
+            };
+            p->DrawData.LoadEquipment(slot, &e, true);
+        }
+    }
+
+    private void ChangeWeapon(ChangeWeaponEquip item, WeaponSlot slot)
+    {
+        unsafe
+        {
+            var p = (Character*)Services.ClientState.LocalPlayer.Address;
+            var e = new WeaponModelId()
+            {
+                Id = item.Set,
+                Type = item.Base,
+                Stain = item.Dye,
+                Variant = item.Variant,
+            };
+            p->DrawData.LoadWeapon(slot, e, 0, 0, 0, 0);
         }
     }
 
@@ -182,7 +193,7 @@ public class GameActionsExecutor : BaseAddressResolver
         setGlamourPlateSlot(agent, PlateItemSource, glamId, itemId, stainId);
     }
 
-    public bool IsInGPose()
+    public static bool IsInGPose()
     {
         // return Services.PluginInterface.UiBuilder.GposeActive;
         return GameMain.IsInGPose();

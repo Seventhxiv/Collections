@@ -154,7 +154,7 @@ public class ShopsDataParser
     }
     private static bool MatchEventHandlerType(uint data, EventHandlerType type)
     {
-        return (data >> 16 & (uint)type) == (uint)type;
+        return ((data >> 16) & (uint)type) == (uint)type;
     }
 
     private void addPreHandler(PreHandler preHandler, uint ENpcBaseId)

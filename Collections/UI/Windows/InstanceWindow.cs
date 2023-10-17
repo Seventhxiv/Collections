@@ -17,7 +17,7 @@ public class InstanceWindow : Window, IDisposable
     public InstanceWindow() : base(
         "Collections - Instance")
     {
-        this.SizeConstraints = new WindowSizeConstraints
+        SizeConstraints = new WindowSizeConstraints
         {
             MinimumSize = new System.Numerics.Vector2(300, 300),
             MaximumSize = new System.Numerics.Vector2(1500, 1500)
