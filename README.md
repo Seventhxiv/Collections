@@ -1,5 +1,14 @@
 # Collections
 
+## Disclaimer
+This is a very initial version of the plugin (pretty much a POC), more functionality is planned.
+
+Feel free to add any suggestions/issues.
+
+For reaching out on discord: `seventh0`
+
+## Plugin
+
 Collections plugin for Dalamud.
 
 Provides an interface to track and discover collectibles.
