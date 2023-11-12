@@ -35,7 +35,7 @@ public class ColorHelper
         var deltaG = color1.G - color2.G;
         var deltaB = color1.B - color2.B;
 
-        return Math.Sqrt(deltaR * deltaR + deltaG * deltaG + deltaB * deltaB);
+        return Math.Sqrt((deltaR * deltaR) + (deltaG * deltaG) + (deltaB * deltaB));
     }
 
     public static string DecimalToHex(int decimalNumber)

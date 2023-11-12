@@ -1,3 +1,4 @@
+using Dalamud.Interface.Internal;
 using ImGuiScene;
 using Lumina.Data;
 using Lumina.Excel;
@@ -43,7 +44,7 @@ public class ClassJobEntity : ClassJob
         base.PopulateData(parser, lumina, language);
     }
 
-    public TextureWrap GetIconLazy()
+    public IDalamudTextureWrap GetIconLazy()
     {
         if (iconHandler == null)
         {

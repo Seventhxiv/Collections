@@ -9,7 +9,7 @@ public class AchievementCollectibleSource : CollectibleSource
     private Achievement Achievement { get; init; }
     public AchievementCollectibleSource(Achievement achievement)
     {
-        this.Achievement = achievement;
+        Achievement = achievement;
     }
 
     public override string GetName()

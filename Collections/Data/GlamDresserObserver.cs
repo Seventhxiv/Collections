@@ -1,4 +1,5 @@
 using Dalamud.Logging;
+using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 using System;
@@ -15,7 +16,7 @@ public class GlamDresserObserver
     private DateTime? openedTime;
     private DateTime? latestUpdatedTime;
     private bool wasUpdated = false;
-    public unsafe void OnFrameworkTick(Dalamud.Game.Framework framework)
+    public unsafe void OnFrameworkTick(IFramework framework)
     {
 
         //var boxOpen = IsWindowOpen(gui, "MiragePrismPrismBox");
@@ -52,14 +53,14 @@ public class GlamDresserObserver
             wasUpdated = true;
             latestUpdatedTime = DateTime.Now;
             updateDresserContents();
-            Services.Configuration.updateDresserContentIds(this.itemIds);
+            Services.Configuration.updateDresserContentIds(itemIds);
             Services.GlamourDresserManager.loadItemsFromConfiguration();
         }
     }
 
     private void updateConfiguration()
     {
-        foreach (var itemId in this.itemIds)
+        foreach (var itemId in itemIds)
         {
             Services.Configuration.DresserContentIds.Add(itemId);
         }
@@ -109,7 +110,7 @@ public class GlamDresserObserver
 
         for (var i = 0; i < 800; i++)
         {
-            var glamItem = *(GlamourDresserItem*)(itemsStart + i * 136);
+            var glamItem = *(GlamourDresserItem*)(itemsStart + (i * 136));
             if (glamItem.ItemId == 0)
             {
                 continue;

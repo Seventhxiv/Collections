@@ -1,3 +1,4 @@
+using Dalamud.Interface.Internal;
 using ImGuiScene;
 using Lumina.Excel.GeneratedSheets;
 using System.Collections.Generic;
@@ -114,7 +115,7 @@ public class CollectibleUnlockItem
         GamerEscapeLink.OpenItem(item.Name);
     }
 
-    public TextureWrap GetIconLazy()
+    public IDalamudTextureWrap GetIconLazy()
     {
         return IconHandler.GetIconLazy();
     }

@@ -1,4 +1,5 @@
 using Dalamud.Interface.Windowing;
+using Dalamud.Plugin.Services;
 using ImGuiNET;
 using Lumina.Excel.GeneratedSheets;
 using System;
@@ -16,7 +17,7 @@ public class InstanceWindow : Window, IDisposable
     public InstanceWindow() : base(
         "Collections - Instance")
     {
-        this.SizeConstraints = new WindowSizeConstraints
+        SizeConstraints = new WindowSizeConstraints
         {
             MinimumSize = new System.Numerics.Vector2(300, 300),
             MaximumSize = new System.Numerics.Vector2(1500, 1500)
@@ -28,7 +29,7 @@ public class InstanceWindow : Window, IDisposable
 
     private List<uint> items = new();
     private bool enteringInstance = false;
-    public unsafe void OnFrameworkTick(Dalamud.Game.Framework framework)
+    public unsafe void OnFrameworkTick(IFramework framework)
     {
         if (!Services.ClientState.IsLoggedIn)
         {

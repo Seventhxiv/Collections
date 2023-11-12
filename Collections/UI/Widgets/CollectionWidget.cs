@@ -90,7 +90,7 @@ public class CollectionWidget : IDisposable
         }
         drawItemCount = 0;
 
-        iconsPerRow = (int)Math.Floor(UiHelper.GetLengthToRightOfWindow() / (iconSize + ImGui.CalcTextSize(" ").X * 4));
+        iconsPerRow = (int)Math.Floor(UiHelper.GetLengthToRightOfWindow() / (iconSize + (ImGui.CalcTextSize(" ").X * 4)));
 
         foreach (var collectible in collectionList)
         {

@@ -81,7 +81,7 @@ public class GlamourWindow : IDrawable
             ImGui.TableNextColumn();
             ImGui.TableHeader("Equipped By");
 
-            ImGui.TableNextRow(ImGuiTableRowFlags.None, UiHelper.GetLengthToBottomOfWindow() / 2 - ImGui.CalcTextSize(" ").Y * 3);
+            ImGui.TableNextRow(ImGuiTableRowFlags.None, (UiHelper.GetLengthToBottomOfWindow() / 2) - (ImGui.CalcTextSize(" ").Y * 3));
             ImGui.TableNextColumn();
             JobSelectorWidget.Draw();
 

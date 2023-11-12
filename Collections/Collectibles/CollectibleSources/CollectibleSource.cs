@@ -1,3 +1,4 @@
+using Dalamud.Interface.Internal;
 using ImGuiScene;
 using System.Collections.Generic;
 
@@ -21,7 +22,7 @@ public abstract class CollectibleSource
     }
 
     // Internal implementation
-    public TextureWrap GetIconLazy()
+    public IDalamudTextureWrap GetIconLazy()
     {
         if (IconHandler == null)
         {

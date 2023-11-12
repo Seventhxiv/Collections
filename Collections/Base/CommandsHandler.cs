@@ -1,4 +1,5 @@
 using Dalamud.Game.Command;
+using Dalamud.Plugin.Services;
 
 namespace Collections;
 
@@ -42,7 +43,7 @@ public class CommandsHandler
         Services.WindowsHandler.InstanceWindow.IsOpen = true;
     }
 
-    public static void RemoveHandlers(CommandManager CommandManager)
+    public static void RemoveHandlers(ICommandManager CommandManager)
     {
         CommandManager.RemoveHandler(mainWindowCmd);
         CommandManager.RemoveHandler(mainWindowSecondaryCmd);

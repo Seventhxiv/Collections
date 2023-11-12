@@ -1,5 +1,6 @@
 using Dalamud.Game;
 using Dalamud.Interface.Windowing;
+using Dalamud.Plugin.Services;
 using ImGuiNET;
 using System;
 using System.Collections.Generic;
@@ -15,7 +16,7 @@ public class MainWindow : Window, IDisposable
     public MainWindow() : base(
         "Collections", ImGuiWindowFlags.NoScrollWithMouse | ImGuiWindowFlags.NoCollapse)
     {
-        this.SizeConstraints = new WindowSizeConstraints
+        SizeConstraints = new WindowSizeConstraints
         {
             MinimumSize = new System.Numerics.Vector2(900, 650),
             MaximumSize = new System.Numerics.Vector2(2000, 1000)
@@ -88,9 +89,9 @@ public class MainWindow : Window, IDisposable
     }
 
     // Resets preview under certain conditions (GPose open)
-    public void OnFrameworkTick(Framework framework)
+    public void OnFrameworkTick(IFramework framework)
     {
-        if (this.IsOpen && Services.GameFunctionsExecutor.IsInGPose())
+        if (IsOpen && GameActionsExecutor.IsInGPose())
         {
             Services.GameFunctionsExecutor.ResetPreview();
         }

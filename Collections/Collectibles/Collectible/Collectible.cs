@@ -1,3 +1,4 @@
+using Dalamud.Interface.Internal;
 using ImGuiScene;
 using Lumina.Excel;
 using System.Collections.Generic;
@@ -37,7 +38,7 @@ public abstract class Collectible<T> : ICollectible where T : ExcelRow
     }
 
     protected abstract int GetIconId();
-    public TextureWrap GetIconLazy()
+    public IDalamudTextureWrap GetIconLazy()
     {
         return IconHandler.GetIconLazy();
     }
@@ -66,7 +67,7 @@ public interface ICollectible
     public bool isFavorite { get; set; }
     public void OpenGamerEscape();
     public bool GetIsObtained();
-    public TextureWrap GetIconLazy();
+    public IDalamudTextureWrap GetIconLazy();
     public int SortKey();
 }
 

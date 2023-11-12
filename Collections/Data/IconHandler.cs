@@ -1,3 +1,4 @@
+using Dalamud.Interface.Internal;
 using Dalamud.Utility;
 using ImGuiScene;
 using Lumina.Data.Files;
@@ -13,9 +14,9 @@ public class IconHandler
         this.iconId = iconId;
     }
 
-    private TextureWrap iconInternal;
+    private IDalamudTextureWrap iconInternal;
     private bool iconScheduled = false;
-    public TextureWrap GetIconLazy()
+    public IDalamudTextureWrap GetIconLazy()
     {
         if (iconInternal != null)
         {
@@ -30,11 +31,11 @@ public class IconHandler
 
         return null;
     }
-    public TextureWrap GetIcon()
+    public IDalamudTextureWrap GetIcon()
     {
         return getIcon((int)iconId, false);
     }
-    public static TextureWrap getIcon(int iconId, bool hq = false)
+    public static IDalamudTextureWrap getIcon(int iconId, bool hq = false)
     {
         var iconPath = getIconPath(iconId, hq);
         var tex = Services.DataManager.GetFile<TexFile>(iconPath)!;

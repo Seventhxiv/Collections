@@ -1,3 +1,4 @@
+using Dalamud.Interface.Internal;
 using ImGuiNET;
 using ImGuiScene;
 using System;
@@ -75,7 +76,7 @@ public class FiltersWidget
     }
 
     public Dictionary<CollectibleSourceType, bool> filtersHovered = new();
-    private Dictionary<CollectibleSourceType, TextureWrap> filtersIcons = new();
+    private Dictionary<CollectibleSourceType, IDalamudTextureWrap> filtersIcons = new();
     private Dictionary<CollectibleSourceType, (Vector2, Vector2)> filtersLocation = new();
     private void DrawFilters(int startIndex = 0, int endIndex = 100)
     {

@@ -15,5 +15,6 @@
         "minions",
         "Utility",
         "Other"
-    ]
+    ],
+    "DalamudApiLevel": 9
 }

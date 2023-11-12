@@ -1,3 +1,4 @@
+using Dalamud.Interface.Internal;
 using ImGuiScene;
 using Lumina.Excel.GeneratedSheets;
 using System.Collections.Generic;
@@ -12,7 +13,7 @@ public class GlamourSet
     public class GlamourItem
     {
         public Item item;
-        public TextureWrap icon;
+        public IDalamudTextureWrap icon;
         public StainEntity stain;
     }
 }

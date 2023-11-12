@@ -8,7 +8,7 @@ public static class MapFlag
     private static uint FlagIconId = 60561U;
 
     private static int MapCordToInternal(double coord, double scale)
-        => (int)(coord - 100 - 2048 / scale) / 2;
+        => (int)(coord - 100 - (2048 / scale)) / 2;
 
     public static unsafe void Place(TerritoryType territory, float xCord, float yCord)
     {
