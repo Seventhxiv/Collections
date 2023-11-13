@@ -37,12 +37,30 @@ public class GameActionsExecutor : BaseAddressResolver
         setGlamourPlateSlotPointer = SigScanner.ScanText("E8 ?? ?? ?? ?? E9 ?? ?? ?? ?? 48 8B 46 10 8B 1B");
     }
 
-    public void ChangeEquip(Item item, int stainId = 0, bool save = true)
+    public void PreviewGlamourWithTryOnRestrictions(ICollectible collectible, uint stainId, bool tryOn)
+    {
+        var tryOnOverride = tryOn || collectible.CollectibleKey.GetSourceTypes().Contains(CollectibleSourceCategory.MogStation);
+        PreviewGlamour(collectible.CollectibleKey.item, stainId, tryOnOverride);
+    }
+
+    private void PreviewGlamour(ItemAdapter item, uint stainId, bool tryOn)
+    {
+        if (tryOn)
+        {
+            Services.GameFunctionsExecutor.TryOn(item.RowId, stainId);
+        }
+        else
+        {
+            Services.GameFunctionsExecutor.ChangeEquip(item, (int)stainId);
+        }
+    }
+
+    private void ChangeEquip(ItemAdapter item, int stainId = 0, bool save = true)
     {
         if (save)
             SaveChangedEquip(item, stainId);
 
-        var equipSlot = Services.ItemManager.getItemEquipSlot(item);
+        var equipSlot = item.EquipSlot;
 
         if (equipSlot == EquipSlot.MainHand || equipSlot == EquipSlot.OffHand)
         {
@@ -60,11 +78,11 @@ public class GameActionsExecutor : BaseAddressResolver
     }
 
     private List<ChangedEquipState> changedEquipState = new();
-    private void SaveChangedEquip(Item item, int stainId = 0)
+    private void SaveChangedEquip(ItemAdapter item, int stainId = 0)
     {
         //var itemToBeReplaced = GetItemToBeReplaced(item);
         //var equippedGear = GetEquippedGear();
-        var equipSlot = Services.ItemManager.getItemEquipSlot(item);
+        var equipSlot = item.EquipSlot;
         changedEquipState.Add(new ChangedEquipState() { equipSlot = equipSlot });
     }
 
@@ -106,7 +124,7 @@ public class GameActionsExecutor : BaseAddressResolver
         {
             return;
         }
-        var itemSheet = Excel.GetExcelSheet<Item>()!;
+        var itemSheet = Excel.GetExcelSheet<ItemAdapter>()!;
         var container = InventoryManager.Instance()->GetInventoryContainer(InventoryType.EquippedItems);
 
         foreach (var equipSlot in equipSlotsToReset)
@@ -117,7 +135,7 @@ public class GameActionsExecutor : BaseAddressResolver
         {
             var invSlot = container->GetInventorySlot(i);
             var invItem = itemSheet.GetRow(invSlot->GlamourID != 0 ? invSlot->GlamourID : invSlot->ItemID);
-            if (equipSlotsToReset.Contains(Services.ItemManager.getItemEquipSlot(invItem)))
+            if (equipSlotsToReset.Contains(invItem.EquipSlot))
                 ChangeEquip(invItem, invSlot->Stain, false);
             //items.Add((item, invSlot->Stain));
         }
@@ -171,12 +189,12 @@ public class GameActionsExecutor : BaseAddressResolver
         }
     }
 
-    public void TryOn(uint item)
+    private void TryOn(uint item)
     {
         TryOn(item, 0);
     }
 
-    public void TryOn(uint item, ulong stain)
+    private void TryOn(uint item, ulong stain)
     {
         Dev.Log(item.ToString());
         tryOn(0xFF, item, stain, item, 0);

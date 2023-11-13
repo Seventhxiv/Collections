@@ -1,24 +1,23 @@
 using FFXIVClientStructs.FFXIV.Client.Game.UI;
-using Lumina.Excel.GeneratedSheets;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Collections;
 
 public class MountCollectible : Collectible<Mount>
 {
     protected override Mount excelRow { get; set; }
+    public override string Name { get; init; }
     public MountCollectible(Mount excelRow) : base(excelRow)
     {
-        // CollectibleUnlockItem
-        if (Services.DataGenerator.CollectibleUnlockItemDataParser.mountUnlockItem.ContainsKey(excelRow.RowId))
+        Name = excelRow.Singular;
+        // Collectible key
+        if (Services.DataGenerator.CollectibleKeyDataGenerator.mountUnlockItem.ContainsKey(excelRow.RowId))
         {
-            var item = Services.DataGenerator.CollectibleUnlockItemDataParser.mountUnlockItem[excelRow.RowId];
-            CollectibleUnlockItem = new CollectibleUnlockItem(item);
+            var item = Services.DataGenerator.CollectibleKeyDataGenerator.mountUnlockItem[excelRow.RowId];
+            CollectibleKey = new CollectibleKey(item);
         }
         else
         {
-            CollectibleUnlockItem = null;
+            CollectibleKey = null;
         }
     }
 
@@ -35,15 +34,6 @@ public class MountCollectible : Collectible<Mount>
     protected override int GetIconId()
     {
         return excelRow.Icon;
-    }
-
-    public new static List<ICollectible> GetCollection()
-    {
-        var mountSheet = Excel.GetExcelSheet<Mount>()!;
-        return mountSheet.AsParallel()
-            .Where(entry => entry.Singular != null && entry.Singular != "")
-            .Select(entry => (ICollectible)new MountCollectible(entry))
-            .ToList();
     }
 
     public new static string GetCollectionName()

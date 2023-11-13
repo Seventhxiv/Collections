@@ -1,6 +1,4 @@
-using Dalamud.Interface.Internal;
 using Dalamud.Utility;
-using ImGuiScene;
 using Lumina.Data.Files;
 using System.Threading.Tasks;
 
@@ -23,17 +21,18 @@ public class IconHandler
             return iconInternal;
         }
 
+        // TODO attempt reload after some time
         if (!iconScheduled)
         {
             iconScheduled = true;
-            Task.Run(() => iconInternal = getIcon((int)iconId, false));
+            Task.Run(() => iconInternal = getIcon(iconId, false));
         }
 
         return null;
     }
     public IDalamudTextureWrap GetIcon()
     {
-        return getIcon((int)iconId, false);
+        return getIcon(iconId, false);
     }
     public static IDalamudTextureWrap getIcon(int iconId, bool hq = false)
     {
@@ -41,6 +40,9 @@ public class IconHandler
         var tex = Services.DataManager.GetFile<TexFile>(iconPath)!;
         return Services.PluginInterface.UiBuilder.LoadImageRaw(
            tex.GetRgbaImageData(), tex.Header.Width, tex.Header.Height, 4);
+
+        // Can technically be replaced with official API since v9:
+        //return Services.TextureProvider.GetIcon((uint)iconId, Dalamud.Plugin.Services.ITextureProvider.IconFlags.None);
     }
 
     private static string getIconPath(int iconId, bool hq)

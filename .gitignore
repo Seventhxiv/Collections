@@ -2,3 +2,6 @@
 obj/
 bin/
 *.user
+.DS_Store
+Collections.csproj.user
+GlobalSuppressions.cs

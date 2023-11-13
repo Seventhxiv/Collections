@@ -1,18 +1,16 @@
 using FFXIVClientStructs.FFXIV.Client.Game;
-using Lumina.Excel.GeneratedSheets;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Collections;
 
-public class GlamourCollectible : Collectible<Item>
+public class GlamourCollectible : Collectible<ItemAdapter>
 {
-    protected override Item excelRow { get; set; }
-    public GlamourCollectible(Item excelRow) : base(excelRow)
+    protected override ItemAdapter excelRow { get; set; }
+    public override string Name { get; init; }
+    public GlamourCollectible(ItemAdapter excelRow) : base(excelRow)
     {
-        CollectibleUnlockItem = new CollectibleUnlockItem(excelRow);
+        CollectibleKey = new CollectibleKey(excelRow);
         this.excelRow = excelRow;
+        Name = excelRow.Name;
     }
 
     public override string GetName()

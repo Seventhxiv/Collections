@@ -1,27 +1,27 @@
 namespace Collections;
 
-public enum CollectibleSourceType
+public enum CollectibleSourceCategory
 {
     Tomestones,
-    //WolfMarks,
     Scrips,
     HuntSeals,
     Gil,
     CompanySeals,
     MGP,
     MogStation,
-    //CenturioSeals,
-    //AlliedSeals,
-    //Nuts,
     PvP,
     Instance,
     Achievement,
     Event,
-    //SeafarersCowries,
     IslandSanctuary,
     DeepDungeon,
     Quest,
     BeastTribe,
     TreasureMaps,
     Other,
+    //CenturioSeals,
+    //AlliedSeals,
+    //Nuts,
+    //WolfMarks,
+    //SeafarersCowries,
 }

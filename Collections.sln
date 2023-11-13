@@ -3,14 +3,14 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.6.33815.320
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Collections", "Collections\Collections.csproj", "{13C812E9-0D42-4B95-8646-40EEBF30636F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Collections", "Collections\Collections.csproj", "{13C812E9-0D42-4B95-8646-40EEBF30636F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{428CD91B-8FFC-42BE-989E-B14F968C429F}"
 	ProjectSection(SolutionItems) = preProject
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LuminaSupplemental.Excel", "LuminaSupplemental\src\LuminaSupplemental.Excel\LuminaSupplemental.Excel.csproj", "{1F5C94E3-279E-4D7B-8A49-4235253A9D0D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LuminaSupplemental.Excel", "LuminaSupplemental\src\LuminaSupplemental.Excel\LuminaSupplemental.Excel.csproj", "{1F5C94E3-279E-4D7B-8A49-4235253A9D0D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

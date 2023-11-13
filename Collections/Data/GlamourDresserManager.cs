@@ -43,7 +43,7 @@ public class GlamourDresserManager
     private unsafe AgentInterface* EditorAgent =>
     FFXIVClientStructs.FFXIV.Client.System.Framework.Framework.Instance()->GetUiModule()->GetAgentModule()->GetAgentByInternalId(AgentId.MiragePrismMiragePlate);
 
-    public unsafe void SetPlateItem(Item item)
+    public unsafe void SetPlateItem(ItemAdapter item)
     {
         SetPlateSlotPointer(item);
 
@@ -67,9 +67,10 @@ public class GlamourDresserManager
         }
     }
 
-    private unsafe void SetPlateSlotPointer(Item item)
+    // TODO Test this after changing EquipSlot values/order
+    private unsafe void SetPlateSlotPointer(ItemAdapter item)
     {
-        var equipSlot = Services.ItemManager.getItemEquipSlot(item);
+        var equipSlot = item.EquipSlot;
         var editorInfo = *(IntPtr*)((IntPtr)EditorAgent + 0x28);
         var slotPtr = (EquipSlot*)(editorInfo + 0x18);
         *slotPtr = equipSlot;

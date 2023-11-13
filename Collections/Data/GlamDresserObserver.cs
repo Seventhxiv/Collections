@@ -105,7 +105,7 @@ public class GlamDresserObserver
         var itemsStart = *(IntPtr*)((IntPtr)DresserAgent + 0x28);
         if (itemsStart == IntPtr.Zero)
         {
-            PluginLog.Debug("dresser contents: itemsStart at 0");
+            Dev.Log("dresser contents: itemsStart at 0");
         }
 
         for (var i = 0; i < 800; i++)

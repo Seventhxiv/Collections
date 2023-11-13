@@ -1,40 +1,46 @@
-using Dalamud.Game;
 using Dalamud.Interface.Windowing;
 using Dalamud.Plugin.Services;
-using ImGuiNET;
-using System;
-using System.Collections.Generic;
-using System.Numerics;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace Collections;
 
 public class MainWindow : Window, IDisposable
 {
-    private List<(string name, IDrawable window)> collectionWindows { get; init; }
+    public string? forceInstanceTab = null;
+    public Vector4 originalButtonColor { get; set;}
+    private List<(string name, IDrawable window)> collectionTabs { get; init; }
 
     public MainWindow() : base(
-        "Collections", ImGuiWindowFlags.NoScrollWithMouse | ImGuiWindowFlags.NoCollapse)
+        "Collections", ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoCollapse)
     {
+        SetOriginalColors();
         SizeConstraints = new WindowSizeConstraints
         {
-            MinimumSize = new System.Numerics.Vector2(900, 650),
-            MaximumSize = new System.Numerics.Vector2(2000, 1000)
+            MinimumSize = new Vector2(500, 300), // 900, 650
+            MaximumSize = new Vector2(2000, 1000) // 2000, 1000
         };
 
-        collectionWindows = new List<(string name, IDrawable window)>()
+        collectionTabs = new List<(string name, IDrawable window)>()
         {
-            ("Glamour", new GlamourWindow()),
-            ("Mounts", new CollectionWindow(MountCollectible.GetCollection())),
-            ("Minions",  new CollectionWindow(MinionCollectible.GetCollection()))
+            ("Glamour", new GlamourTab()),
+            ("Mounts", new CollectionTab(Services.DataProvider.GetCollection<MountCollectible>())),
+            ("Minions",  new CollectionTab(Services.DataProvider.GetCollection<MinionCollectible>())),
+            ("Instance",  new InstanceTab()),
+            ("Settings", new SettingsTab()),
         };
+    }
+
+    public unsafe void SetOriginalColors()
+    {
+        originalButtonColor = *ImGui.GetStyleColorVec4(ImGuiCol.Button);
     }
 
     public override void OnOpen()
     {
         Task.Run(() =>
         {
-            foreach (var (_, window) in collectionWindows)
+            foreach (var (_, window) in collectionTabs)
             {
                 window.OnOpen();
             }
@@ -48,7 +54,7 @@ public class MainWindow : Window, IDisposable
 
     public void Dispose()
     {
-        foreach (var (_, window) in collectionWindows)
+        foreach (var (_, window) in collectionTabs)
         {
             window.Dispose();
         }
@@ -56,34 +62,34 @@ public class MainWindow : Window, IDisposable
 
     public override void Draw()
     {
-        if (ImGui.BeginTabBar("TabBar", ImGuiTabBarFlags.FittingPolicyScroll))
+        if (ImGui.BeginTabBar("TabBar", ImGuiTabBarFlags.FittingPolicyScroll | ImGuiTabBarFlags.AutoSelectNewTabs))
         {
-
-            foreach (var (name, window) in collectionWindows)
+            foreach (var (name, window) in collectionTabs)
             {
-                if (ImGui.BeginTabItem($"{name}##{name}"))
+                // Use AutoSelectNewTabs to focus the forceInstanceTab
+                if (forceInstanceTab == name)
+                {
+                    forceInstanceTab = null;
+                    continue;
+                }
+                if (ImGui.BeginTabItem($"{name}"))
                 {
                     window.Draw();
                     ImGui.EndTabItem();
                 }
             }
+            ImGui.EndTabBar();
         }
-        ImGui.EndTabBar();
     }
 
     public override void PreDraw()
     {
-        //ImGui.PushStyleColor(ImGuiCol.WindowBg, new Vector4(20f / 255f, 21f / 255f, 20f / 255f, _alpha));
-        //ImGui.PushStyleVar(ImGuiStyleVar.WindowRounding, 30f);
-        //ImGui.PushStyleVar(ImGuiStyleVar.PopupRounding, 30f);
-        //ImGui.PushStyleColor(ImGuiCol.WindowBg, new Vector4(0.085f, 0.080f, 0.085f, 0.866f));
         ImGui.PushStyleColor(ImGuiCol.Button, new Vector4(1, 1, 1, 0f));
         ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, new Vector2(4, 3));
     }
 
     public override void PostDraw()
     {
-        //ImGui.PopStyleVar();
         ImGui.PopStyleColor();
         ImGui.PopStyleVar();
     }

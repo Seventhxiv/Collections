@@ -1,61 +1,75 @@
-using ImGuiNET;
-using System.Collections.Generic;
-using System.Linq;
 using System.Numerics;
+using static Collections.UiHelper;
 
 namespace Collections;
 
 public class PaletteWidget
 {
-    public StainEntity pickedStain;
-    public bool updatedState;
-    //public Dictionary<EquipSlot, StainEntity> equipSlotToStain = new();
-    //public EquipSlot? currentSlot;
+    public StainAdapter ActiveStain = null;
 
-    public List<StainEntity> stains;
-    private Dictionary<int, List<StainEntity>> stainsDict;
-    public PaletteWidget()
+    private Vector2 stainButtonSize = new(30, 30);
+    private Vector2 stainButtonRectSize = new(35, 35);
+    private Vector2 stainButtonRectOffset = new(-3, -3);
+    private int stainMaxButtonsPerRow = 9;
+
+    private static readonly Dictionary<int, List<StainAdapter>> StainsDict = Services.DataProvider.stains.GroupBy(s => (int)s.Shade).ToDictionary(s => s.Key, s => s.ToList());
+
+    private EquipSlot EquipSlot { get; init; }
+    private EventService EventService { get; init; }
+    public PaletteWidget(EquipSlot equipSlot, EventService eventService)
     {
-        stains = Services.ItemManager.stains;
-        stainsDict = stains.GroupBy(s => (int)s.Shade).ToDictionary(s => s.Key, s => s.ToList());
-        pickedStain = stains.FirstOrDefault();
+        EquipSlot = equipSlot;
+        EventService = eventService;
     }
 
     public void Draw()
     {
+        var cursorPos = ImGui.GetCursorPos();
         ImGui.BeginGroup();
         DrawPalette();
         ImGui.EndGroup();
 
-        ImGui.SameLine();
+        //ImGui.SameLine();
 
-        DrawDyePicker();
+        ImGui.SetCursorPos(new Vector2(cursorPos.X + 380, cursorPos.Y));
+        DrawColorPicker();
     }
 
 
     public void DrawPalette()
     {
-        foreach (var (shade, stainList) in stainsDict)
+        var i = 0;
+        foreach (var (shade, stainList) in StainsDict)
         {
-            foreach (var stain in stainList)
+            i++;
+            for (var j = 0; j < stainList.Count; j++)
             {
+                var stain = stainList[j];
                 var color = stain.RGBcolor;
                 var colorVec = new Vector4(color.R / 255f, color.G / 255f, color.B / 255f, 1f);
 
-                if (pickedStain == stain)
+                if (ActiveStain == stain)
                 {
                     var origPos = ImGui.GetCursorPos();
-                    ImGui.SetCursorPos(new Vector2(origPos.X - 2, origPos.Y - 2));
-                    ImGui.ColorButton(stain.Name, UiHelper.colors[UiHelper.CommonColor.yellow], ImGuiColorEditFlags.NoTooltip, new Vector2(27, 27));
+                    ImGui.SetCursorPos(new Vector2(origPos.X + stainButtonRectOffset.X, origPos.Y + stainButtonRectOffset.Y));
+                    ImGui.ColorButton(stain.Name, ColorsPalette.YELLOW, ImGuiColorEditFlags.NoTooltip, stainButtonRectSize);
                     ImGui.SetCursorPos(origPos);
                 }
 
                 // Draw button
-                if (ImGui.ColorButton(stain.Name, colorVec, ImGuiColorEditFlags.NoSidePreview | ImGuiColorEditFlags.NoSmallPreview))
+                if (ImGui.ColorButton(stain.Name, colorVec, ImGuiColorEditFlags.NoSidePreview | ImGuiColorEditFlags.NoSmallPreview | ImGuiColorEditFlags.NoTooltip, stainButtonSize))
                 {
-                    pickedStain = stain;
-                    updatedState = true;
-                    pickedColor = new Vector3(pickedStain.RGBcolor.R / 255f, pickedStain.RGBcolor.G / 255f, pickedStain.RGBcolor.B / 255f);
+                    ActiveStain = stain;
+                    pickedColor = new Vector3(ActiveStain.RGBcolor.R / 255f, ActiveStain.RGBcolor.G / 255f, ActiveStain.RGBcolor.B / 255f);
+                    EventService.Publish<DyeChangeEvent, DyeChangeEventArgs>(new DyeChangeEventArgs(EquipSlot, ActiveStain));
+                }
+
+                // Dye name tooltip on hover
+                if (ImGui.IsItemHovered())
+                {
+                    ImGui.BeginTooltip();
+                    ImGui.Text(stain.Name);
+                    ImGui.EndTooltip();
                 }
 
                 //if (pickedStain == stain)
@@ -64,34 +78,42 @@ public class PaletteWidget
                 //}
 
                 // Maintain rows
-                if ((stainList.IndexOf(stain) != stainList.Count - 1) && (stain.SubOrder % 10 != 0))
+                var rowIndex = stainList.IndexOf(stain);
+                var buttonsPerRow = i < 6 ? stainMaxButtonsPerRow : stainMaxButtonsPerRow + i;
+                if ((rowIndex != stainList.Count - 1) && ((rowIndex + 1) % buttonsPerRow != 0))
                     ImGui.SameLine();
+
             }
+            ImGui.Separator();
         }
     }
 
     private Vector3 pickedColor = new(0, 0, 0);
-    private void DrawDyePicker()
+    private void DrawColorPicker()
     {
-        var origStain = pickedStain;
-        if (ImGui.ColorPicker3("##default-glamour-set", ref pickedColor))
+        ImGui.PushItemWidth(270);
+        if (ImGui.ColorPicker3("##color-picker", ref pickedColor, ImGuiColorEditFlags.NoSidePreview | ImGuiColorEditFlags.NoTooltip | ImGuiColorEditFlags.NoInputs | ImGuiColorEditFlags.NoOptions))
         {
-
             // Show original selection
-            var pickedColorVec4 = new Vector4(pickedColor.X, pickedColor.Y, pickedColor.Z, 1);
-            ImGui.ColorButton("color-button", pickedColorVec4);
+            //var pickedColorVec4 = new Vector4(pickedColor.X, pickedColor.Y, pickedColor.Z, 1);
+            //ImGui.ColorButton("color-button", pickedColorVec4);
 
-            pickedStain = ColorHelper.FindClosestStain(pickedColor);
+            var newStain = StainColorConverter.FindClosestStain(pickedColor);
 
-            if (origStain != pickedStain)
+            if (newStain is not null && ActiveStain != newStain)
             {
-                updatedState = true;
+                ActiveStain = newStain;
+                EventService.Publish<DyeChangeEvent, DyeChangeEventArgs>(new DyeChangeEventArgs(EquipSlot, ActiveStain));
             }
+
             //ImGui.Text(color);
-            ImGui.Text(pickedStain.Name);
+            //ImGui.Text(ActiveStain.Name);
         }
-        //ImGui.EndPopup();
-        //}
+    }
+
+    public void ResetStain()
+    {
+        ActiveStain = null;
     }
 }
 

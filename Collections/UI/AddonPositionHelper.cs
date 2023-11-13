@@ -42,7 +42,7 @@ public class AddonPositionHelper
         return (ImGui.CalcTextSize("Collections").X + (ImGui.GetStyle().ItemInnerSpacing.X * 2) + ImGui.GetFrameHeight()) * ImGuiHelpers.GlobalScale;
 
     }
-    public static unsafe void DrawHelper(AtkUnitBase* addon, string id, bool right, Action dropdown)
+    public static unsafe void DrawHelper(AtkUnitBase* addon, string id, bool right, System.Action dropdown)
     {
         var drawPos = DrawPosForAddon(addon, right);
         if (drawPos == null)

@@ -3,7 +3,7 @@
     <PropertyGroup>
         <Authors></Authors>
         <Company></Company>
-        <Version>1.0.0.4</Version>
+        <Version>1.0.1.0</Version>
         <Description>Collections</Description>
         <Copyright></Copyright>
         <PackageProjectUrl>https://github.com/goatcorp/SamplePlugin</PackageProjectUrl>
@@ -20,7 +20,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <Content Include="Data\Resources\Chest.png">
+        <Content Include="Data\Resources\Body.png">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
             <Visible>false</Visible>
         </Content>
@@ -28,7 +28,7 @@
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
             <Visible>false</Visible>
         </Content>
-        <Content Include="Data\Resources\Hands.png">
+        <Content Include="Data\Resources\Gloves.png">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
             <Visible>false</Visible>
         </Content>
@@ -64,7 +64,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="CSVFile" Version="3.1.2" />
+        <PackageReference Include="CSVFile" Version="3.1.1" />
         <PackageReference Include="CsvHelper" Version="30.0.1" />
         <PackageReference Include="DalamudPackager" Version="2.1.12" />
         <PackageReference Include="System.Net.Http" Version="4.3.4" />

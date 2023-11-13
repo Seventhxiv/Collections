@@ -1,5 +1,4 @@
 using Dalamud.Configuration;
-using System.Collections.Generic;
 
 namespace Collections;
 
@@ -9,6 +8,8 @@ public class Configuration : IPluginConfiguration
     public List<bool> newPropertyList { get; set; } = new();
 
     public List<uint> DresserContentIds = new();
+
+    public bool autoOpenInstanceTab = true;
 
     public void Save()
     {

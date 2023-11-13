@@ -1,24 +1,24 @@
 using FFXIVClientStructs.FFXIV.Client.Game.UI;
-using Lumina.Excel.GeneratedSheets;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Collections;
 
 public class MinionCollectible : Collectible<Companion>
 {
     protected override Companion excelRow { get; set; }
+    public override string Name { get; init; }
     public MinionCollectible(Companion excelRow) : base(excelRow)
     {
-        // CollectibleUnlockItem
-        if (Services.DataGenerator.CollectibleUnlockItemDataParser.minionUnlockItem.ContainsKey(excelRow.RowId))
+        Name = excelRow.Singular;
+
+        // Collectible key
+        if (Services.DataGenerator.CollectibleKeyDataGenerator.minionUnlockItem.ContainsKey(excelRow.RowId))
         {
-            var item = Services.DataGenerator.CollectibleUnlockItemDataParser.minionUnlockItem[excelRow.RowId];
-            CollectibleUnlockItem = new CollectibleUnlockItem(item);
+            var item = Services.DataGenerator.CollectibleKeyDataGenerator.minionUnlockItem[excelRow.RowId];
+            CollectibleKey = new CollectibleKey(item);
         }
         else
         {
-            CollectibleUnlockItem = null;
+            CollectibleKey = null;
         }
     }
 
@@ -35,15 +35,6 @@ public class MinionCollectible : Collectible<Companion>
     protected override int GetIconId()
     {
         return excelRow.Icon;
-    }
-
-    public new static List<ICollectible> GetCollection()
-    {
-        var MinionSheet = Excel.GetExcelSheet<Companion>()!;
-        return MinionSheet.AsParallel()
-            .Where(entry => entry.Singular != null && entry.Singular != "")
-            .Select(entry => (ICollectible)new MinionCollectible(entry))
-            .ToList();
     }
 
     public new static string GetCollectionName()

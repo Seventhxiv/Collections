@@ -1,12 +1,7 @@
-using Dalamud.Interface;
 using Dalamud.Interface.Utility;
 using Dalamud.Interface.Windowing;
 using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Component.GUI;
-using ImGuiNET;
-using System;
-using System.Linq;
-using System.Numerics;
 
 namespace Collections;
 
@@ -19,11 +14,11 @@ public class InspectWindow : Window, IDisposable
     {
         SizeConstraints = new WindowSizeConstraints
         {
-            MinimumSize = new System.Numerics.Vector2(300, 150),
-            MaximumSize = new System.Numerics.Vector2(300, 150)
+            MinimumSize = new Vector2(300, 150),
+            MaximumSize = new Vector2(300, 150)
         };
 
-        var mountCollection = MountCollectible.GetCollection();
+        var mountCollection = Services.DataProvider.GetCollection<MountCollectible>();
         foreach (var mount in mountCollection)
         {
             mount.UpdateObtainedState();

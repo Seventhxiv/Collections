@@ -1,31 +1,37 @@
-using Dalamud.Interface.Internal;
-using ImGuiScene;
-using Lumina.Excel;
-using System.Collections.Generic;
-
 namespace Collections;
 
-// Represents a collectible (Glamour, Mount, Minion, etc..)
+// Represents something that can be collected (Glamour, Mount, Minion, etc..)
+public interface ICollectible
+{
+    public string GetName();
+    public string Name { get; init; }
+    public void UpdateObtainedState();
+    public CollectibleKey CollectibleKey { get; init; }
+    public bool isFavorite { get; set; } // TODO move to dedicated storage
+    public void OpenGamerEscape(); // TODO move out
+    public bool GetIsObtained();
+    public IDalamudTextureWrap GetIconLazy();
+    public int SortKey();
+}
+
+
 public abstract class Collectible<T> : ICollectible where T : ExcelRow
 {
-    // Interface
     public abstract string GetName();
     public abstract void UpdateObtainedState();
     public bool isFavorite { get; set; } = false;
+    public abstract string Name { get; init; }
 
-    // Properties
-    public CollectibleUnlockItem CollectibleUnlockItem { get; set; }
+    public CollectibleKey CollectibleKey { get; init; }
     protected abstract T excelRow { get; set; }
     protected IconHandler IconHandler { get; init; }
 
-    // Constructor
     public Collectible(T excelRow)
     {
         this.excelRow = excelRow;
         IconHandler = new IconHandler(GetIconId());
     }
 
-    // Internal implementation
     public void OpenGamerEscape()
     {
         GamerEscapeLink.OpenItem(GetName());
@@ -43,11 +49,6 @@ public abstract class Collectible<T> : ICollectible where T : ExcelRow
         return IconHandler.GetIconLazy();
     }
 
-    public static List<ICollectible> GetCollection()
-    {
-        return new List<ICollectible>();
-    }
-
     public static string GetCollectionName()
     {
         return "";
@@ -58,21 +59,3 @@ public abstract class Collectible<T> : ICollectible where T : ExcelRow
         return 0;
     }
 }
-
-public interface ICollectible
-{
-    public string GetName();
-    public void UpdateObtainedState();
-    public CollectibleUnlockItem CollectibleUnlockItem { get; set; }
-    public bool isFavorite { get; set; }
-    public void OpenGamerEscape();
-    public bool GetIsObtained();
-    public IDalamudTextureWrap GetIconLazy();
-    public int SortKey();
-}
-
-//public interface ICollectibleCollector
-//{
-//    abstract static List<ICollectible> GetCollection();
-//    abstract static string GetCollectionName();
-//}

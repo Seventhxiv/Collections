@@ -1,29 +1,23 @@
-using ImGuiNET;
-using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
-
 namespace Collections;
 
 public class JobSelectorWidget
 {
-    public Dictionary<ClassJobEntity, bool> classJobFilters;
+    public Dictionary<ClassJobAdapter, bool> Filters;
 
-    private Dictionary<ClassRole, List<ClassJobEntity>> classRoleToClassJob;
-    private List<ClassRole> displayOrder = new List<ClassRole>() { ClassRole.Tank, ClassRole.Healer, ClassRole.Melee, ClassRole.Ranged, ClassRole.Caster };
+    const int JobIconScale = 7;
+    private Vector2 overrideItemSpacing = new(1, 1);
 
-    public JobSelectorWidget()
+    private EventService EventService { get; init; }
+    public JobSelectorWidget(EventService eventService)
     {
-        var classJobs = Services.ItemManager.classJobs;
-        classJobFilters = classJobs.ToDictionary(entry => entry, entry => false);
+        EventService = eventService;
+        var classJobs = Services.DataProvider.classJobs;
+        Filters = classJobs.ToDictionary(entry => entry, entry => true);
         classRoleToClassJob = classJobs.GroupBy(entry => entry.GetClassRole()).ToDictionary(entry => entry.Key, entry => entry.ToList());
     }
 
     public void Draw()
     {
-        //ImGui.CollapsingHeader("Equipped By", ImGuiTreeNodeFlags.DefaultOpen | ImGuiTreeNodeFlags.Leaf);
-        JobSelector();
-
         if (ImGui.Button("Enable All"))
         {
             SetAllState(true);
@@ -34,14 +28,19 @@ public class JobSelectorWidget
             SetAllState(false);
         }
         ImGui.SameLine();
-        if (ImGui.Button("Set Current Job"))
+        if (ImGui.Button("Current Job"))
         {
             SetCurrentJob();
         }
+        JobSelector();
     }
 
+    private Dictionary<ClassRole, List<ClassJobAdapter>> classRoleToClassJob;
+    private List<ClassRole> displayOrder = new List<ClassRole>() { ClassRole.Tank, ClassRole.Healer, ClassRole.Melee, ClassRole.Ranged, ClassRole.Caster };
     private void JobSelector()
     {
+        
+        ImGui.PushStyleVar(ImGuiStyleVar.ItemSpacing, overrideItemSpacing);
         foreach (var classRole in displayOrder)
         {
             var classJobs = classRoleToClassJob[classRole];
@@ -50,33 +49,43 @@ public class JobSelectorWidget
                 var icon = classJob.GetIconLazy();
                 if (icon != null)
                 {
-                    if (UiHelper.ImageToggleButton(icon, new Vector2(icon.Width / 7, icon.Height / 7), classJobFilters[classJob]))
+                    if (UiHelper.ImageToggleButton(icon, new Vector2(icon.Width / JobIconScale, icon.Height / JobIconScale), Filters[classJob]))
                     {
-                        classJobFilters[classJob] = !classJobFilters[classJob];
+                        Filters[classJob] = !Filters[classJob];
+                        PublishFilterChangeEvent();
                     }
                 }
                 ImGui.SameLine();
             }
             ImGui.Text("");
         }
+        ImGui.PopStyleVar();
     }
 
     private void SetAllState(bool state)
     {
-        classJobFilters = classJobFilters.ToDictionary(e => e.Key, e => state);
+        Filters = Filters.ToDictionary(e => e.Key, e => state);
+        PublishFilterChangeEvent();
     }
 
     public void OnOpen()
     {
-        SetCurrentJob();
     }
 
     private void SetCurrentJob()
     {
-        SetAllState(false);
+        var matchingClassJob = Filters.Where(e => e.Key.RowId == Services.ClientState.LocalPlayer.ClassJob.Id);
+        if (matchingClassJob.Any())
+        {
+            SetAllState(false);
+            Filters[matchingClassJob.First().Key] = true;
+            PublishFilterChangeEvent();
+        }
+    }
 
-        var classJob = classJobFilters.Where(e => e.Key.RowId == Services.ClientState.LocalPlayer.ClassJob.Id).First().Key;
-        classJobFilters[classJob] = true;
+    private void PublishFilterChangeEvent()
+    {
+        EventService.Publish<FilterChangeEvent, FilterChangeEventArgs>(new FilterChangeEventArgs());
     }
 }
 

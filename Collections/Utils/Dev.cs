@@ -1,4 +1,5 @@
 using Dalamud.Logging;
+using Dalamud.Plugin.Services;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
@@ -9,13 +10,21 @@ public class Dev
 {
     public static void Log(string suffix = null, int frames = 1, [CallerMemberName] string caller = "", [CallerFilePath] string file = "")
     {
-        var callingClass = file.Substring(file.LastIndexOf("\\") + 1);
-        var toLog = callingClass + "::" + caller;
+        var lastIndexPathSymbol = file.LastIndexOf("\\");
+        if (lastIndexPathSymbol == -1)
+        {
+            lastIndexPathSymbol = file.LastIndexOf("/");
+        }
+        var callingClass = file.Substring(lastIndexPathSymbol + 1);
+
+        var logMessage = callingClass + "::" + caller;
+
         if (suffix != null)
         {
-            toLog += $": {suffix}";
+            logMessage += $": {suffix}";
         }
-        PluginLog.Debug(toLog);
+
+        Services.PluginLog.Debug(logMessage);
     }
 
     // Old stopwatch
@@ -29,6 +38,7 @@ public class Dev
     {
         Stopwatch.Stop();
         var timeTaken = Stopwatch.ElapsedMilliseconds;
+        //var timeTaken = Stopwatch.Elapsed.TotalMilliseconds*1000;
         Log(prefix + "Time Taken: " + timeTaken + "ms", 2, caller, file);
     }
 
@@ -40,12 +50,15 @@ public class Dev
         sp.Restart();
     }
 
-    public static void Stop(string prefix = "", [CallerMemberName] string caller = "", [CallerFilePath] string file = "")
+    public static double Stop(bool log = true, string prefix = "", [CallerMemberName] string caller = "", [CallerFilePath] string file = "")
     {
         var sp = GetStopwatch(caller, file);
         sp.Stop();
-        var timeTaken = sp.ElapsedMilliseconds;
-        Log(prefix + "Time Taken: " + timeTaken + "ms", 2, caller, file);
+        var timeTaken = Stopwatch.ElapsedMilliseconds;
+        //var timeTaken = sp.Elapsed.TotalMilliseconds * 1000;
+        if (log)
+            Log(prefix + "Time Taken: " + timeTaken + "ms", 2, caller, file);
+        return timeTaken;
     }
 
     private static Stopwatch GetStopwatch(string caller, string file)

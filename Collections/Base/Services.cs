@@ -1,13 +1,5 @@
-using Dalamud.Data;
 using Dalamud.Game;
-using Dalamud.Game.ClientState;
-using Dalamud.Game.ClientState.Conditions;
-using Dalamud.Game.ClientState.Keys;
 using Dalamud.Game.ClientState.Objects;
-using Dalamud.Game.Command;
-using Dalamud.Game.Gui;
-using Dalamud.Game.Gui.Toast;
-using Dalamud.Game.Libc;
 using Dalamud.IoC;
 using Dalamud.Plugin;
 using Dalamud.Plugin.Services;
@@ -30,69 +22,62 @@ public class Services
     [PluginService] public static ISigScanner SigScanner { get; private set; }
     [PluginService] public static ITargetManager TargetManager { get; private set; }
     [PluginService] public static IToastGui ToastGui { get; private set; }
-    //[PluginService] public static IDragDropManager DragDropManager { get; private set; }
+    [PluginService] public static IPluginLog PluginLog { get; private set; }
+    [PluginService] public static ITextureProvider TextureProvider { get; private set; }
+    [PluginService] public static IDutyState DutyState { get; private set; }
+    
 
     public static Plugin Plugin { get; private set; }
     public static Configuration Configuration { get; private set; }
-    public static CommandsHandler CommandsHandler { get; private set; }
-    public static WindowsHandler WindowsHandler { get; private set; }
-
+    public static CommandsInitializer CommandsInitializer { get; private set; }
+    public static WindowsInitializer WindowsInitializer { get; private set; }
     public static DataGenerator DataGenerator { get; private set; }
-
     public static GameActionsExecutor GameFunctionsExecutor { get; private set; }
-    public static ContentTypeResolver ContentTypeResolver { get; private set; }
+    public static CurrencyDataGenerator ContentTypeResolver { get; private set; }
     public static GlamourDresserManager GlamourDresserManager { get; private set; }
     public static UniversalisClient UniversalisClient { get; private set; }
-
     public static DataProvider DataProvider { get; private set; }
-    public static ItemManager ItemManager { get; private set; }
     public static LodestoneClient LodestoneClient { get; private set; }
 
     public Services(Plugin plugin)
     {
         Plugin = plugin;
 
-        // Init plugin stuff
-        CommandsHandler = new CommandsHandler();
+        // Config
         Configuration = PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
 
-        // Generic stuff
+        // General
         GameFunctionsExecutor = new GameActionsExecutor();
-        ContentTypeResolver = new ContentTypeResolver();
+        ContentTypeResolver = new CurrencyDataGenerator();
         GlamourDresserManager = new GlamourDresserManager();
         UniversalisClient = new UniversalisClient();
 
-        // Data generators
+        // Data
         DataGenerator = new DataGenerator();
-
-        // Data providers
-        ItemManager = new ItemManager();
         DataProvider = new DataProvider();
 
         // Windows
-        WindowsHandler = new WindowsHandler();
-
+        CommandsInitializer = new CommandsInitializer();
+        WindowsInitializer = new WindowsInitializer();
         LodestoneClient = new LodestoneClient();
 
         // Framework ticks
         Framework.Update += GlamourDresserManager.GlamDresserObserver.OnFrameworkTick;
-        Framework.Update += WindowsHandler.InspectWindow.OnFrameworkTick;
-        Framework.Update += WindowsHandler.InstanceWindow.OnFrameworkTick;
-        Framework.Update += WindowsHandler.MainWindow.OnFrameworkTick;
+        //Framework.Update += WindowsInitializer.InspectWindow.OnFrameworkTick;
+        Framework.Update += WindowsInitializer.MainWindow.OnFrameworkTick;
     }
 
     public static void Dispose()
     {
         // Cmds
-        CommandsHandler.RemoveHandlers(CommandManager);
+        CommandsInitializer.Dispose(CommandManager);
 
         // Windows
-        WindowsHandler.Dispose();
+        WindowsInitializer.Dispose();
 
         // Framework ticks
         Framework.Update -= GlamourDresserManager.GlamDresserObserver.OnFrameworkTick;
-        Framework.Update -= WindowsHandler.InspectWindow.OnFrameworkTick;
-        Framework.Update -= WindowsHandler.InstanceWindow.OnFrameworkTick;
-        Framework.Update -= WindowsHandler.MainWindow.OnFrameworkTick;
+        //Framework.Update -= WindowsInitializer.InspectWindow.OnFrameworkTick;
+        Framework.Update -= WindowsInitializer.MainWindow.OnFrameworkTick;
     }
 }
