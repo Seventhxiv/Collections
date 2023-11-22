@@ -1,7 +1,7 @@
 {
   "version": 1,
   "dependencies": {
-    "net7.0": {
+    "net7.0-windows7.0": {
       "CSVFile": {
         "type": "Direct",
         "requested": "[3.1.1, )",
