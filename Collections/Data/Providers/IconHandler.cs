@@ -1,6 +1,5 @@
 using Dalamud.Utility;
 using Lumina.Data.Files;
-using System.Threading.Tasks;
 
 namespace Collections;
 
@@ -42,7 +41,7 @@ public class IconHandler
            tex.GetRgbaImageData(), tex.Header.Width, tex.Header.Height, 4);
 
         // Can technically be replaced with official API since v9:
-        //return Services.TextureProvider.GetIcon((uint)iconId, Dalamud.Plugin.Services.ITextureProvider.IconFlags.None);
+        //return Services.TextureProvider.GetIcon((uint)iconId, Dalamud.Plugin.Services.ITextureProvider.IconFlags.HiRes);
     }
 
     private static string getIconPath(int iconId, bool hq)

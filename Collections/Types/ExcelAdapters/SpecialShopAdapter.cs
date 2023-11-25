@@ -1,8 +1,3 @@
-using Lumina.Data;
-using Lumina.Excel;
-using Lumina.Excel.GeneratedSheets;
-using System.Collections.Generic;
-
 namespace Collections;
 
 [Sheet("SpecialShop")]
@@ -83,6 +78,9 @@ public class SpecialShopAdapter : SpecialShop
             // Gil
             case 8:
                 return 1;
+            case 4:
+                var tomestones = BuildTomestones();
+                return tomestones[itemId];
             default:
                 return itemId;
                 // Tomestones
@@ -94,6 +92,23 @@ public class SpecialShopAdapter : SpecialShop
 
                 //    return itemId;
         }
+    }
+
+    private static Dictionary<int, int> BuildTomestones()
+    {
+        var tomestoneItems = ExcelCache<TomestonesItem>.GetSheet()
+            .Where(t => t.Tomestones.Row > 0)
+            .OrderBy(t => t.Tomestones.Row)
+            .ToArray();
+
+        var tomeStones = new Dictionary<int, int>();
+
+        for (var i = 0; i < tomestoneItems.Length; i++)
+        {
+            tomeStones[i + 1] = (int)tomestoneItems[i].Item.Row;
+        }
+
+        return tomeStones;
     }
 
     public struct Entry

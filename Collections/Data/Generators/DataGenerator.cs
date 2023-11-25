@@ -1,5 +1,3 @@
-using Lumina.Excel.GeneratedSheets;
-
 namespace Collections;
 
 public class DataGenerator

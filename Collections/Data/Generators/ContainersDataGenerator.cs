@@ -1,5 +1,4 @@
 using LuminaSupplemental.Excel.Model;
-using System.Collections.Generic;
 
 namespace Collections;
 
@@ -9,9 +8,9 @@ public class ContainersDataGenerator
 
     public ContainersDataGenerator()
     {
-        Dev.StartStopwatch();
+        //Dev.Start();
         PopulateData();
-        Dev.EndStopwatch();
+        //Dev.Stop();
     }
 
     private void PopulateData()

@@ -1,8 +1,3 @@
-using Lumina.Data;
-using Lumina.Excel;
-using Lumina.Excel.GeneratedSheets;
-using System.Numerics;
-
 namespace Collections;
 
 [Sheet("Stain")]

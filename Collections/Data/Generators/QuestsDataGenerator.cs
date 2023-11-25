@@ -1,7 +1,3 @@
-using Lumina.Excel.GeneratedSheets;
-using System.Collections.Generic;
-using System.Linq;
-
 namespace Collections;
 
 public class QuestsDataGenerator
@@ -11,15 +7,14 @@ public class QuestsDataGenerator
 
     public QuestsDataGenerator()
     {
-        Dev.StartStopwatch();
+        //Dev.Start();
         PopulateData();
-        Dev.EndStopwatch();
+        //Dev.Stop();
     }
 
     private void PopulateData()
     {
-        var questSheet = Excel.GetExcelSheet<Quest>();
-        var itemSheet = Excel.GetExcelSheet<Item>();
+        var questSheet = ExcelCache<Quest>.GetSheet();
         foreach (var quest in questSheet)
         {
             var items = quest.ItemReward.ToList();

@@ -12,17 +12,11 @@ public class ItemAdapter : Item
         base.PopulateData(parser, lumina, language);
         InitializeEquipSlot();
         InitializeJobs();
-
-        // TODO - remove this
-        if (RowId == 19178)
-        {
-            Dev.Log(19178.ToString());
-        }
     }
 
     public void InitializeEquipSlot()
     {
-        var equipSlotCategory = Excel.GetExcelSheet<EquipSlotCategoryAdapter>().GetRow(EquipSlotCategory.Row);
+        var equipSlotCategory = ExcelCache<EquipSlotCategoryAdapter>.GetSheet().GetRow(EquipSlotCategory.Row);
         EquipSlot = equipSlotCategory.EquipSlot;
         IsEquipment = EquipSlot != EquipSlot.None;
     }
@@ -31,7 +25,7 @@ public class ItemAdapter : Item
     {
         if (IsEquipment)
         {
-            var classJobCategory = Excel.GetExcelSheet<ClassJobCategoryAdapter>().GetRow(ClassJobCategory.Row);
+            var classJobCategory = ExcelCache<ClassJobCategoryAdapter>.GetSheet().GetRow(ClassJobCategory.Row);
             //Services.classJobCategorySheet[(int)ClassJobCategory.Value.RowId];
             Jobs = classJobCategory.Jobs;
         } else

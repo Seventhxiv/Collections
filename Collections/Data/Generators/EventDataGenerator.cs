@@ -1,6 +1,4 @@
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 
 namespace Collections;
 
@@ -20,10 +18,9 @@ public class EventDataGenerator
     private static readonly string CollectibleToEventPath = Path.Combine(Services.PluginInterface.AssemblyLocation.Directory?.FullName!, @"Data\Resources\collectibleToEvent.csv");
     public EventDataGenerator()
     {
-        Dev.StartStopwatch();
-
+        //Dev.Start();
         PopulateData();
-        Dev.EndStopwatch();
+        //Dev.Stop();
     }
 
     private void PopulateData()

@@ -1,9 +1,8 @@
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
-using Lumina.Excel.GeneratedSheets;
 
 namespace Collections;
 
-public static class MapFlag
+public static class MapFlagPlacer
 {
     private static uint FlagIconId = 60561U;
 
@@ -20,7 +19,6 @@ public static class MapFlag
         Dev.Log($"{territoryId},{mapId},{xCord},{yCord},{sizeFactor}");
         var agentMap = AgentMap.Instance();
         agentMap->IsFlagMarkerSet = 0;
-        //MapUtil.WorldToMap();
         var x = MapCordToInternal(xCord, sizeFactor);
         var y = MapCordToInternal(yCord, sizeFactor);
         agentMap->SetFlagMapMarker(territoryId, mapId, xCord, yCord, FlagIconId);

@@ -6,8 +6,8 @@ public class ContainerCollectibleSource : CollectibleSource
     private CollectibleKey CollectibleKey { get; init; }
     public ContainerCollectibleSource(uint containerId)
     {
-        container = Excel.GetExcelSheet<ItemAdapter>().GetRow(containerId);
-        CollectibleKey = new CollectibleKey(container);
+        container = ExcelCache<ItemAdapter>.GetSheet().GetRow(containerId);
+        CollectibleKey = CollectibleKeyCache.Instance.GetObject((container, true));
     }
 
     public override string GetName()
@@ -33,9 +33,8 @@ public class ContainerCollectibleSource : CollectibleSource
         return false;
     }
 
-    public override LocationEntry GetLocationEntry()
+    public override void DisplayLocation()
     {
-        return null;
     }
 
     protected override int GetIconId()

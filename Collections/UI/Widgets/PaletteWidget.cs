@@ -1,18 +1,16 @@
-using System.Numerics;
-using static Collections.UiHelper;
-
 namespace Collections;
 
 public class PaletteWidget
 {
-    public StainAdapter ActiveStain = null;
+    public StainAdapter ActiveStain = EmptyStain;
 
     private Vector2 stainButtonSize = new(30, 30);
     private Vector2 stainButtonRectSize = new(35, 35);
     private Vector2 stainButtonRectOffset = new(-3, -3);
     private int stainMaxButtonsPerRow = 9;
 
-    private static readonly Dictionary<int, List<StainAdapter>> StainsDict = Services.DataProvider.stains.GroupBy(s => (int)s.Shade).ToDictionary(s => s.Key, s => s.ToList());
+    private static readonly Dictionary<int, List<StainAdapter>> StainsByShade = Services.DataProvider.SupportedStains.GroupBy(s => (int)s.Shade).ToDictionary(s => s.Key, s => s.ToList());
+    private static readonly StainAdapter EmptyStain = ExcelCache<StainAdapter>.GetSheet().GetRow(0);
 
     private EquipSlot EquipSlot { get; init; }
     private EventService EventService { get; init; }
@@ -39,7 +37,7 @@ public class PaletteWidget
     public void DrawPalette()
     {
         var i = 0;
-        foreach (var (shade, stainList) in StainsDict)
+        foreach (var (shade, stainList) in StainsByShade)
         {
             i++;
             for (var j = 0; j < stainList.Count; j++)
@@ -62,6 +60,11 @@ public class PaletteWidget
                     ActiveStain = stain;
                     pickedColor = new Vector3(ActiveStain.RGBcolor.R / 255f, ActiveStain.RGBcolor.G / 255f, ActiveStain.RGBcolor.B / 255f);
                     EventService.Publish<DyeChangeEvent, DyeChangeEventArgs>(new DyeChangeEventArgs(EquipSlot, ActiveStain));
+                }
+
+                if (ImGui.IsItemHovered())
+                {
+                    ImGui.SetTooltip(stain.RowId.ToString());
                 }
 
                 // Dye name tooltip on hover
@@ -113,7 +116,7 @@ public class PaletteWidget
 
     public void ResetStain()
     {
-        ActiveStain = null;
+        ActiveStain = EmptyStain;
     }
 }
 

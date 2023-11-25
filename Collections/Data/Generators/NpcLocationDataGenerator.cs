@@ -1,13 +1,13 @@
 using Lumina.Data.Files;
 using Lumina.Data.Parsing.Layer;
-using System.Threading.Tasks;
+using LuminaSupplemental.Excel.Model;
 
 namespace Collections;
 
 public class LocationEntry
 {
     public TerritoryType TerritoryType { get; set; }
-    public Map Map { get; set; }
+    //public Map Map { get; set; }
     public double Xmap { get; set; }
     public double Ymap { get; set; }
     public float Xorigin { get; set; }
@@ -20,15 +20,15 @@ public class NpcLocationDataGenerator
 
     public NpcLocationDataGenerator()
     {
-        Task.Run(() => PopulateData());
+        Task.Run(PopulateData);
     }
 
     private void PopulateData()
     {
-        Dev.StartStopwatch();
+        Dev.Start();
 
         // Build NPC locations from levels
-        var levels = Excel.GetExcelSheet<Level>()!;
+        var levels = ExcelCache<Level>.GetSheet()!;
         foreach (var level in levels)
         {
             var npcRowId = level.Object;
@@ -56,16 +56,12 @@ public class NpcLocationDataGenerator
             var x = ToMapCoordinate(level.X, map.SizeFactor, map.OffsetX);
             var y = ToMapCoordinate(level.Z, map.SizeFactor, map.OffsetY);
 
-            npcToLocation[npcRowId] = new LocationEntry() { TerritoryType = sTerritoryType, Map = map, Xmap = x, Ymap = y, Xorigin = level.X, Yorigin = level.Z };
+            npcToLocation[npcRowId] = new LocationEntry() { TerritoryType = sTerritoryType, Xmap = x, Ymap = y, Xorigin = level.X, Yorigin = level.Z };
 
         }
-        Dev.EndStopwatch("NPC Location from levels");
 
         // Build NPC locations from territory sheet
-
-        Dev.StartStopwatch();
-
-        var territorySheet = Excel.GetExcelSheet<TerritoryType>()!;
+        var territorySheet = ExcelCache<TerritoryType>.GetSheet()!;
         foreach (var sTerritoryType in territorySheet)
         {
             var bg = sTerritoryType.Bg.ToString();
@@ -101,11 +97,52 @@ public class NpcLocationDataGenerator
                     var map = sTerritoryType.Map.Value;
                     var x = ToMapCoordinate(instanceObject.Transform.Translation.X, map.SizeFactor, map.OffsetX);
                     var y = ToMapCoordinate(instanceObject.Transform.Translation.Z, map.SizeFactor, map.OffsetY);
-                    npcToLocation[npcRowId] = new LocationEntry() { TerritoryType = sTerritoryType, Map = map, Xmap = x, Ymap = y, Xorigin = instanceObject.Transform.Translation.X, Yorigin = instanceObject.Transform.Translation.Z };
+                    npcToLocation[npcRowId] = new LocationEntry() { TerritoryType = sTerritoryType, Xmap = x, Ymap = y, Xorigin = instanceObject.Transform.Translation.X, Yorigin = instanceObject.Transform.Translation.Z };
                 }
             }
         }
-        Dev.EndStopwatch("NPC Location from territory");
+
+        // Inject from CSV
+        var eNpcPlaces = CsvLoader.LoadResource<ENpcPlace>(CsvLoader.ENpcPlaceResourceName, out var failedLines);
+        foreach (var entry in eNpcPlaces)
+        {
+            if (npcToLocation.ContainsKey(entry.ENpcResidentId))
+            {
+                continue;
+            }
+
+            var territoryType = ExcelCache<TerritoryType>.GetSheet().GetRow(entry.TerritoryTypeId);
+            if (territoryType == null)
+            {
+                continue;
+            }
+
+            var map = territoryType.Map.Value;
+            var x = ToMapCoordinate(entry.Position.X, map.SizeFactor, map.OffsetX);
+            var y = ToMapCoordinate(entry.Position.Y, map.SizeFactor, map.OffsetY);
+            npcToLocation[entry.ENpcResidentId] = new LocationEntry() { TerritoryType = territoryType, Xmap = x, Ymap = y, Xorigin = entry.Position.X, Yorigin = entry.Position.Y };
+        }
+
+        // Inject from manual overrides
+        foreach (var (npcId, (territoryId, X, Y)) in DataOverrides.NpcBaseIdToLocation)
+        {
+            if (npcToLocation.ContainsKey(npcId))
+            {
+                continue;
+            }
+
+            var territoryType = ExcelCache<TerritoryType>.GetSheet().GetRow(territoryId);
+            if (territoryType == null)
+            {
+                continue;
+            }
+
+            var map = territoryType.Map.Value;
+            var x = ToMapCoordinate((float)X, map.SizeFactor, map.OffsetX);
+            var y = ToMapCoordinate((float)Y, map.SizeFactor, map.OffsetY);
+            npcToLocation[npcId] = new LocationEntry() { TerritoryType = territoryType, Xmap = x, Ymap = y, Xorigin = (float)X, Yorigin = (float)Y };
+        }
+        Dev.Stop();
     }
 
     private static float ToMapCoordinate(float val, float scale, short offset)

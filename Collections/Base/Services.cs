@@ -32,25 +32,30 @@ public class Services
     public static CommandsInitializer CommandsInitializer { get; private set; }
     public static WindowsInitializer WindowsInitializer { get; private set; }
     public static DataGenerator DataGenerator { get; private set; }
-    public static GameActionsExecutor GameFunctionsExecutor { get; private set; }
     public static CurrencyDataGenerator ContentTypeResolver { get; private set; }
-    public static GlamourDresserManager GlamourDresserManager { get; private set; }
     public static UniversalisClient UniversalisClient { get; private set; }
     public static DataProvider DataProvider { get; private set; }
     public static LodestoneClient LodestoneClient { get; private set; }
+    public static DresserObserver DresserObserver { get; private set; }
+    public static ItemFinder ItemFinder { get; private set; }
+    public static AddressResolver AddressResolver { get; private set; }
+    public static PreviewExecutor PreviewExecutor { get; private set; }
 
     public Services(Plugin plugin)
     {
         Plugin = plugin;
+        Dev.Start();
 
         // Config
-        Configuration = PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
+        Configuration = Configuration.GetConfig();
 
         // General
-        GameFunctionsExecutor = new GameActionsExecutor();
+        AddressResolver = new AddressResolver();
+        PreviewExecutor = new PreviewExecutor();
         ContentTypeResolver = new CurrencyDataGenerator();
-        GlamourDresserManager = new GlamourDresserManager();
         UniversalisClient = new UniversalisClient();
+        DresserObserver = new DresserObserver();
+        ItemFinder = new ItemFinder();
 
         // Data
         DataGenerator = new DataGenerator();
@@ -62,9 +67,12 @@ public class Services
         LodestoneClient = new LodestoneClient();
 
         // Framework ticks
-        Framework.Update += GlamourDresserManager.GlamDresserObserver.OnFrameworkTick;
-        //Framework.Update += WindowsInitializer.InspectWindow.OnFrameworkTick;
         Framework.Update += WindowsInitializer.MainWindow.OnFrameworkTick;
+        Framework.Update += DresserObserver.OnFrameworkTick;
+
+        Dev.Stop();
+
+        //DataDebugExporter.ShopsDataDebugger();
     }
 
     public static void Dispose()
@@ -76,8 +84,7 @@ public class Services
         WindowsInitializer.Dispose();
 
         // Framework ticks
-        Framework.Update -= GlamourDresserManager.GlamDresserObserver.OnFrameworkTick;
-        //Framework.Update -= WindowsInitializer.InspectWindow.OnFrameworkTick;
         Framework.Update -= WindowsInitializer.MainWindow.OnFrameworkTick;
+        Framework.Update -= DresserObserver.OnFrameworkTick;
     }
 }

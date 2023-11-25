@@ -13,16 +13,27 @@ public class ColorsPalette
     public static readonly Vector4 PURPLE = new(0.306f, 0.143f, 0.532f, 0.811f);
     public static readonly Vector4 BLUE = new(0.344f, 0.436f, 0.960f, 0.786f);
     public static readonly Vector4 GREEN = new(0.008f, 0.593f, 0.140f, 0.5f);
+    public static readonly Vector4 RED = new(0.719f, 0.109f, 0.109f, 0.9f);
 }
 
 public class UiHelper
 {
+
+    public static float UnitHeight()
+    {
+        return ImGui.CalcTextSize("A").Y;
+    }
+
+    public static float UnitWidth()
+    {
+        return ImGui.CalcTextSize("A").X;
+    }
+
     public static float GetLengthToBottomOfWindow()
     {
         var cursorY = ImGui.GetCursorPos().Y;
         var windowY = ImGui.GetWindowSize().Y;
-        var unitY = ImGui.CalcTextSize(" ").Y;
-        return windowY - cursorY - unitY;
+        return windowY - cursorY - UnitHeight() * 0.3f;
     }
 
     public static float GetLengthToRightOfWindow()
@@ -33,11 +44,27 @@ public class UiHelper
         return windowX - cursorX - unitX;
     }
 
-    public static void GroupWithMinWidth(System.Action draw, int minWidth)
+    public static float GetScrollPosition()
+    {
+        return (ImGui.GetScrollMaxY() - ImGui.GetScrollY()) / (ImGui.GetScrollMaxY() + 1);
+    }
+
+    public static void GroupWithMinWidth(System.Action draw, float minWidth)
     {
         ImGui.BeginGroup();
+
+        //var originalPosX = ImGui.GetCursorPosX();
+        var origPos = ImGui.GetCursorPos();
         ImGui.InvisibleButton("ignore", new Vector2(minWidth, 1));
+        ImGui.SetCursorPos(origPos);
+        
         draw();
+        //var drawnWidth = ImGui.GetCursorPosX() - originalPosX;
+        //if (minWidth > drawnWidth)
+        //{
+        //    ImGui.SameLine();
+        //    ImGui.InvisibleButton("ignore", new Vector2(minWidth - drawnWidth, 0.01f));
+        //}
         ImGui.EndGroup();
     }
 
@@ -68,17 +95,29 @@ public class UiHelper
         ImGui.SetCursorPos(vec);
     }
 
-    public static void IconButtonStateful(int id, FontAwesomeIcon fontAwesomeIcon, ref bool state, Vector4 disabledColor, Vector4 activeColor)
+    public static bool IconButtonStateful(string id, FontAwesomeIcon fontAwesomeIcon, ref bool state, Vector4 offColor, Vector4 onColor, string tooltip = "")
     {
-        ImGui.PushStyleColor(ImGuiCol.Text, state ? activeColor : disabledColor);
+        var originalState = state;
+
+        ImGui.PushStyleColor(ImGuiCol.Text, state ? onColor : offColor);
         if (ImGuiComponents.IconButton(id, fontAwesomeIcon))
         {
             state = !state;
         }
         ImGui.PopStyleColor();
+
+        if (tooltip != "")
+        {
+            if (ImGui.IsItemHovered())
+            {
+                ImGui.SetTooltip(tooltip);
+            }
+        }
+
+        return originalState != state;
     }
 
-    public static void IconButtonWithOffset(int id, FontAwesomeIcon fontAwesomeIcon, int Xoffset, int Yoffset, ref bool state)
+    public static void IconButtonWithOffset(int id, FontAwesomeIcon fontAwesomeIcon, int Xoffset, int Yoffset, ref bool state, float scale)
     {
         // ID
         ImGui.PushID(id);
@@ -93,39 +132,15 @@ public class UiHelper
         ImGui.PushStyleColor(ImGuiCol.Text, state ? ColorsPalette.YELLOW : ColorsPalette.GREY);
 
         // Button
+        ImGui.SetWindowFontScale(scale);
         if (ImGuiComponents.IconButton(fontAwesomeIcon.ToIconString(), new Vector4(0, 0, 0, 0), new Vector4(0, 0, 0, 0), new Vector4(0, 0, 0, 0)))
         {
             state = !state;
         }
+        ImGui.SetWindowFontScale(1f);
 
         // Reset state
         ImGui.SetCursorPos(previousPos);
-        ImGui.PopStyleColor();
-        ImGui.PopID();
-    }
-
-    public static void IconButtonWithOffset2(int id, FontAwesomeIcon fontAwesomeIcon, int Xoffset, int Yoffset, ref bool state)
-    {
-        // ID
-        ImGui.PushID(id);
-
-        // Handle pos offset
-        var previousPos = ImGui.GetCursorPos();
-        ImGui.SameLine();
-        ImGui.SetItemAllowOverlap(); // Makes this button take precedence
-        var initialPos = OffsetStart(new Vector2(Xoffset, Yoffset));
-
-        // Font
-        ImGui.PushStyleColor(ImGuiCol.Text, state ? ColorsPalette.YELLOW : ColorsPalette.GREY);
-
-        // Button
-        if (ImGuiComponents.IconButton(fontAwesomeIcon.ToIconString(), new Vector4(0, 0, 0, 0), new Vector4(0, 0, 0, 0), new Vector4(0, 0, 0, 0)))
-        {
-            state = !state;
-        }
-
-        // Reset state
-        OffsetEnd(initialPos);
         ImGui.PopStyleColor();
         ImGui.PopID();
     }
@@ -139,25 +154,28 @@ public class UiHelper
     public static void InputText(string key, Action<string> onInput)
     {
         var input = String.Empty;
-        if (ImGui.BeginPopupContextItem($"##{key}", ImGuiPopupFlags.MouseButtonLeft))
+        if (onInput is not null)
         {
-            if (ImGui.IsKeyPressed(ImGuiKey.Escape))
-                ImGui.CloseCurrentPopup();
-
-            if (ImGui.IsWindowAppearing())
-                ImGui.SetKeyboardFocusHere();
-
-            var enterPressed = ImGui.InputTextWithHint("##newName", "Enter New Name...", ref input, 50, ImGuiInputTextFlags.EnterReturnsTrue);
-
-            if (enterPressed)
+            if (ImGui.BeginPopupContextItem($"##{key}", ImGuiPopupFlags.MouseButtonLeft))
             {
-                if (input != "")
-                {
-                    onInput(input);
+                if (ImGui.IsKeyPressed(ImGuiKey.Escape))
                     ImGui.CloseCurrentPopup();
+
+                if (ImGui.IsWindowAppearing())
+                    ImGui.SetKeyboardFocusHere();
+
+                var enterPressed = ImGui.InputTextWithHint("##newName", "Enter New Name...", ref input, 50, ImGuiInputTextFlags.EnterReturnsTrue);
+
+                if (enterPressed)
+                {
+                    if (input != "")
+                    {
+                        onInput(input);
+                        ImGui.CloseCurrentPopup();
+                    }
                 }
+                ImGui.EndPopup();
             }
-            ImGui.EndPopup();
         }
     }
 

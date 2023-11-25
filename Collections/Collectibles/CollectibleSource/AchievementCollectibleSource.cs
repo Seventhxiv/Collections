@@ -38,12 +38,11 @@ public class AchievementCollectibleSource : CollectibleSource
         return false;
     }
 
-    public override LocationEntry GetLocationEntry()
+    public override void DisplayLocation()
     {
-        return null;
     }
 
-    public static int iconId = 61501;
+    public static int iconId = 000006; //61501;
     protected override int GetIconId()
     {
         return iconId;

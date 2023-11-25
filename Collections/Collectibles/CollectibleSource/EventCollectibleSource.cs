@@ -24,9 +24,8 @@ public class EventCollectibleSource : CollectibleSource
         return false;
     }
 
-    public override LocationEntry GetLocationEntry()
+    public override void DisplayLocation()
     {
-        return null;
     }
 
     public static int iconId = 61757;

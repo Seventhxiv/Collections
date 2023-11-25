@@ -5,26 +5,28 @@ namespace Collections;
 public class Configuration : IPluginConfiguration
 {
     public int Version { get; set; } = 0;
-    public List<bool> newPropertyList { get; set; } = new();
-
-    public List<uint> DresserContentIds = new();
-
-    public bool autoOpenInstanceTab = true;
+    public HashSet<uint> Favorites = new();
+    public HashSet<uint> WishListed = new();
+    public List<uint> DresserItemIds = new();
+    public GlamourTree GlamourTree = new();
+    public bool AutoOpenInstanceTab = true;
+    public bool ForceTryOn = false;
 
     public void Save()
     {
         Services.PluginInterface.SavePluginConfig(this);
     }
 
-    public void updateDresserContentIds(List<uint> itemIds)
+    public static Configuration GetConfig()
     {
-        var initialSize = DresserContentIds.Count;
-        DresserContentIds.Clear();
-        foreach (var itemId in itemIds)
+        var config = Services.PluginInterface.GetPluginConfig() as Configuration;
+        if (config is not null)
         {
-            DresserContentIds.Add(itemId);
+            Dev.Log($"Loaded Configuration: V{config.Version}");
+            return config;
         }
-        Save();
-        Dev.Log($"Config Dresser list updated: {initialSize} -> {DresserContentIds.Count}");
+
+        Dev.Log("Initializing a new Configuration");
+        return new();
     }
 }

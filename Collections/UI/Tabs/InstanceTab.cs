@@ -2,63 +2,73 @@ namespace Collections;
 
 public class InstanceTab : IDrawable
 {
+    private Dictionary<string, List<ICollectible>> collections = new();
+    private uint collectiblesLoadedInstanceId = 0;
+
     private EventService EventService { get; init; }
     private CollectionWidget CollectionWidget { get; init; }
-    //private CollectionWidget GlamCollectionWidget { get; init; }
     public InstanceTab()
     {
         EventService = new EventService();
         CollectionWidget = new CollectionWidget(EventService, false);
-        //GlamCollectionWidget = new CollectionWidget(EventService, true);
-
-        // Register to DutyStart event
         Services.DutyState.DutyStarted += OnDutyStarted;
     }
 
     public void OnDutyStarted(object sender, ushort arg)
     {
-        Dev.Log("Got DutyStarted event");
-        if (Services.Configuration.autoOpenInstanceTab)
+        Dev.Log("Received DutyStarted event");
+        if (Services.Configuration.AutoOpenInstanceTab)
         {
-            Services.WindowsInitializer.MainWindow.forceInstanceTab = "Instance";
-            Services.WindowsInitializer.MainWindow.IsOpen = true;
+            Services.WindowsInitializer.MainWindow.OpenTab("Instance");
         }
     }
 
-    private uint loadedInstance = 0;
     public void Draw()
     {
         // Not in valid instance
         if (!InValidInstance())
         {
-            ImGui.Text("Please enter an instance to view this tab");
-            loadedInstance = 0;
+            ImGui.Text("Can only be viewed in an Instance");
+            collectiblesLoadedInstanceId = 0;
             return;
         }
 
-        // Load instance collection if not done already
-        if (GetCurrentInstance() != loadedInstance)
+        // Load collectibles if not done already
+        if (GetCurrentInstance() != collectiblesLoadedInstanceId)
         {
-            LoadCurrentInstanceCollection();
+            LoadCollectibles();
         }
 
-        // Draw collection
-        if (ImGui.BeginTable("instance-table", 1, ImGuiTableFlags.Borders | ImGuiTableFlags.NoHostExtendX | ImGuiTableFlags.SizingFixedFit))
+        // Draw collections
+        DrawCollections();
+    }
+
+    public void DrawCollections()
+    {
+        foreach (var (name, collection) in collections)
         {
-            ImGui.TableNextColumn();
-            ImGui.TableHeader("Collectibles Obtained From This Instance");
+            ImGui.Text(name);
+            CollectionWidget.Draw(collection, false, false);
+        }
+    }
 
-            ImGui.TableNextRow();
-            ImGui.TableNextColumn();
-            CollectionWidget.Draw(collection, true);
+    private void LoadCollectibles()
+    {
+        collectiblesLoadedInstanceId = GetCurrentInstance();
+        var currentDutyItemIds = CurrentDutyItemIds(collectiblesLoadedInstanceId);
 
-            ImGui.EndTable();
+        collections = Services.DataProvider.GetCollections();
+        foreach (var (name, collection) in collections)
+        {
+            collections[name] = collection
+                .Where(c => c.CollectibleKey is not null && currentDutyItemIds.Contains(c.CollectibleKey.item.RowId))
+                .ToList();
         }
     }
 
     private static uint GetCurrentInstance()
     {
-        var territoryType = Excel.GetExcelSheet<TerritoryType>().GetRow(Services.ClientState.TerritoryType);
+        var territoryType = ExcelCache<TerritoryType>.GetSheet().GetRow(Services.ClientState.TerritoryType);
         return territoryType.ContentFinderCondition.Row;
     }
 
@@ -70,7 +80,7 @@ public class InstanceTab : IDrawable
         return inInstance && collectionExists;
     }
 
-    private static List<uint>? CurrentDutyItemIds(uint instanceId)
+    private List<uint>? CurrentDutyItemIds(uint instanceId)
     {
 
         if (Services.DataGenerator.InstancesDataGenerator.contentFinderConditionToItems.ContainsKey(instanceId))
@@ -81,57 +91,12 @@ public class InstanceTab : IDrawable
         return new List<uint>();
     }
 
-    private List<ICollectible> collection = new();
-    public void LoadCurrentInstanceCollection()
+    public void OnOpen()
     {
-        loadedInstance = GetCurrentInstance();
-        collection.Clear();
-
-        var itemIds = CurrentDutyItemIds(loadedInstance);
-
-        foreach (var item in itemIds)
-        {
-            var glamItem = Services.DataProvider.GlamourCollection.SelectMany(e => e.Value).Where(e => e.CollectibleKey.item.RowId == item).FirstOrDefault();
-            if (glamItem != null)
-            {
-                glamItem.UpdateObtainedState();
-                collection.Add(glamItem);
-                continue;
-            }
-
-            var mountItem = Services.DataProvider.GetCollection<MountCollectible>().Where(e =>
-            {
-                if (e.CollectibleKey != null)
-                    return e.CollectibleKey.item.RowId == item;
-                else
-                    return false;
-            }
-            ).FirstOrDefault();
-            if (mountItem != null)
-            {
-                mountItem.UpdateObtainedState();
-                collection.Add(mountItem);
-                continue;
-            }
-
-            var minionItem = Services.DataProvider.GetCollection<MinionCollectible>().Where(e =>
-            {
-                if (e.CollectibleKey != null)
-                    return e.CollectibleKey.item.RowId == item;
-                else
-                    return false;
-            }
-            ).FirstOrDefault();
-            if (minionItem != null)
-            {
-                minionItem.UpdateObtainedState();
-                collection.Add(minionItem);
-                continue;
-            }
-        }
+        Dev.Log();
     }
 
-    public void OnOpen()
+    public void OnClose()
     {
     }
 

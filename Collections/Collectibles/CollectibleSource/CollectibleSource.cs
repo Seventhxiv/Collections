@@ -2,10 +2,10 @@ namespace Collections;
 
 public interface ICollectibleSource
 {
-    public abstract string GetName();
-    public abstract List<CollectibleSourceCategory> GetSourceCategories();
-    public abstract bool GetIslocatable();
-    public abstract LocationEntry GetLocationEntry();
+    public string GetName();
+    public List<CollectibleSourceCategory> GetSourceCategories();
+    public bool GetIslocatable();
+    public void DisplayLocation();
 }
 
 public abstract class CollectibleSource : ICollectibleSource
@@ -13,7 +13,7 @@ public abstract class CollectibleSource : ICollectibleSource
     public abstract string GetName();
     public abstract List<CollectibleSourceCategory> GetSourceCategories();
     public abstract bool GetIslocatable();
-    public abstract LocationEntry GetLocationEntry();
+    public abstract void DisplayLocation();
 
     protected abstract int GetIconId();
     protected IconHandler IconHandler { get; set; }

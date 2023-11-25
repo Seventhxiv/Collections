@@ -1,6 +1,3 @@
-using Lumina.Excel.GeneratedSheets;
-using System.Collections.Generic;
-
 namespace Collections;
 
 public class CollectibleKeyDataGenerator
@@ -10,14 +7,14 @@ public class CollectibleKeyDataGenerator
 
     public CollectibleKeyDataGenerator()
     {
-        Dev.Start();
+        //Dev.Start();
         PopulateData();
-        Dev.Stop();
+        //Dev.Stop();
     }
 
     private void PopulateData()
     {
-        var itemSheet = Excel.GetExcelSheet<ItemAdapter>();
+        var itemSheet = ExcelCache<ItemAdapter>.GetSheet();
 
         foreach (var item in itemSheet)
         {

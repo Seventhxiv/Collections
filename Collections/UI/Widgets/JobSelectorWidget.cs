@@ -4,20 +4,23 @@ public class JobSelectorWidget
 {
     public Dictionary<ClassJobAdapter, bool> Filters;
 
-    const int JobIconScale = 7;
-    private Vector2 overrideItemSpacing = new(1, 1);
+    private const int JobIconScale = 7;
+    private const int IconSize = 30;
+    private Vector2 overrideItemSpacing = new(2, 1);
 
     private EventService EventService { get; init; }
     public JobSelectorWidget(EventService eventService)
     {
         EventService = eventService;
-        var classJobs = Services.DataProvider.classJobs;
+        var classJobs = Services.DataProvider.SupportedClassJobs;
         Filters = classJobs.ToDictionary(entry => entry, entry => true);
-        classRoleToClassJob = classJobs.GroupBy(entry => entry.GetClassRole()).ToDictionary(entry => entry.Key, entry => entry.ToList());
+        classRoleToClassJob = classJobs.GroupBy(entry => entry.ClassRole).ToDictionary(entry => entry.Key, entry => entry.ToList());
     }
 
     public void Draw()
     {
+        // Draw Buttons
+        ImGui.PushStyleColor(ImGuiCol.Button, Services.WindowsInitializer.MainWindow.originalButtonColor);
         if (ImGui.Button("Enable All"))
         {
             SetAllState(true);
@@ -32,6 +35,9 @@ public class JobSelectorWidget
         {
             SetCurrentJob();
         }
+        ImGui.PopStyleColor();
+
+        // Draw job icons
         JobSelector();
     }
 
@@ -49,7 +55,8 @@ public class JobSelectorWidget
                 var icon = classJob.GetIconLazy();
                 if (icon != null)
                 {
-                    if (UiHelper.ImageToggleButton(icon, new Vector2(icon.Width / JobIconScale, icon.Height / JobIconScale), Filters[classJob]))
+                    //if (UiHelper.ImageToggleButton(icon, new Vector2(icon.Width / JobIconScale, icon.Height / JobIconScale), Filters[classJob]))
+                    if (UiHelper.ImageToggleButton(icon, new Vector2(IconSize, IconSize), Filters[classJob]))
                     {
                         Filters[classJob] = !Filters[classJob];
                         PublishFilterChangeEvent();
@@ -66,10 +73,6 @@ public class JobSelectorWidget
     {
         Filters = Filters.ToDictionary(e => e.Key, e => state);
         PublishFilterChangeEvent();
-    }
-
-    public void OnOpen()
-    {
     }
 
     private void SetCurrentJob()

@@ -1,6 +1,3 @@
-using Lumina.Excel.GeneratedSheets;
-using System.Collections.Generic;
-
 namespace Collections;
 
 public class AchievementsDataGenerator
@@ -9,14 +6,14 @@ public class AchievementsDataGenerator
 
     public AchievementsDataGenerator()
     {
-        Dev.StartStopwatch();
+        //Dev.Start();
         populateData();
-        Dev.EndStopwatch();
+        //Dev.Stop();
     }
 
     private void populateData()
     {
-        var achievementSheet = Excel.GetExcelSheet<Achievement>();
+        var achievementSheet = ExcelCache<Achievement>.GetSheet();
         foreach (var achievement in achievementSheet)
         {
             var itemId = achievement.Item.Row;

@@ -52,6 +52,10 @@
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
             <Visible>false</Visible>
         </Content>
+        <Content Include="Data\Resources\itemsToInstances.csv">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <Visible>false</Visible>
+        </Content>
     </ItemGroup>
 
     <PropertyGroup>
@@ -98,5 +102,4 @@
             <Private>false</Private>
         </Reference>
     </ItemGroup>
-
 </Project>

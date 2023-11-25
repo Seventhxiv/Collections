@@ -1,6 +1,3 @@
-using Dalamud.Logging;
-using Dalamud.Plugin.Services;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
@@ -8,38 +5,36 @@ namespace Collections;
 
 public class Dev
 {
-    public static void Log(string suffix = null, int frames = 1, [CallerMemberName] string caller = "", [CallerFilePath] string file = "")
+    public static void Log(string message = null, int frames = 1, [CallerMemberName] string caller = "", [CallerFilePath] string file = "")
+    {
+        var logMessage = "";
+        if (frames == 1)
+        {
+            var callingFile = StripDirectoryPath(file);
+            logMessage = callingFile + "->" + caller;
+        } else
+        {
+            var frame = new StackFrame(frames, true);
+            var callingFile = StripDirectoryPath(frame.GetFileName());
+            logMessage = callingFile + "->" + frame.GetMethod().Name;
+        }
+
+        if (message != null)
+        {
+            logMessage += $": {message}";
+        }
+
+        Services.PluginLog.Information(logMessage);
+    }
+
+    public static string StripDirectoryPath(string file)
     {
         var lastIndexPathSymbol = file.LastIndexOf("\\");
         if (lastIndexPathSymbol == -1)
         {
             lastIndexPathSymbol = file.LastIndexOf("/");
         }
-        var callingClass = file.Substring(lastIndexPathSymbol + 1);
-
-        var logMessage = callingClass + "::" + caller;
-
-        if (suffix != null)
-        {
-            logMessage += $": {suffix}";
-        }
-
-        Services.PluginLog.Debug(logMessage);
-    }
-
-    // Old stopwatch
-    private static Stopwatch Stopwatch = new();
-    public static void StartStopwatch()
-    {
-        Stopwatch.Restart();
-    }
-
-    public static void EndStopwatch(string prefix = "", [CallerMemberName] string caller = "", [CallerFilePath] string file = "")
-    {
-        Stopwatch.Stop();
-        var timeTaken = Stopwatch.ElapsedMilliseconds;
-        //var timeTaken = Stopwatch.Elapsed.TotalMilliseconds*1000;
-        Log(prefix + "Time Taken: " + timeTaken + "ms", 2, caller, file);
+        return file.Substring(lastIndexPathSymbol + 1).RemoveSuffix(".cs");
     }
 
     // Stopwatch
@@ -54,7 +49,7 @@ public class Dev
     {
         var sp = GetStopwatch(caller, file);
         sp.Stop();
-        var timeTaken = Stopwatch.ElapsedMilliseconds;
+        var timeTaken = sp.ElapsedMilliseconds;
         //var timeTaken = sp.Elapsed.TotalMilliseconds * 1000;
         if (log)
             Log(prefix + "Time Taken: " + timeTaken + "ms", 2, caller, file);

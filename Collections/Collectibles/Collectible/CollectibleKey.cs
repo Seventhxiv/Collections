@@ -9,19 +9,19 @@ public interface ICollectibleKey
     public ItemAdapter item { get; init; }
 }
 
-public class CollectibleKey : ICollectibleKey
+public class CollectibleKey : ICollectibleKey, ICreateable<CollectibleKey, (ItemAdapter, bool)>
 {
     public List<CollectibleSource> CollectibleSources { get; set; } = new();
     public ItemAdapter item { get; init; }
     protected IconHandler IconHandler { get; init; } // TODO remove this
 
-    public CollectibleKey(ItemAdapter item, bool includeShops = true)
+    public CollectibleKey((ItemAdapter, bool) input)
     {
-        this.item = item;
+        this.item = input.Item1;
         IconHandler = new IconHandler(item.Icon);
 
         // For currencies dont bother looking at another level of shops
-        if (includeShops)
+        if (input.Item2)
         {
             if (Services.DataGenerator.ShopsDataGenerator.itemToShopEntry.ContainsKey(item.RowId))
             {
@@ -52,6 +52,13 @@ public class CollectibleKey : ICollectibleKey
         {
             CollectibleSources.AddRange(Services.DataGenerator.QuestsDataGenerator.itemToQuest[item.RowId].Select(entry => new QuestCollectibleSource(entry)));
         }
+
+        //GetSourceTypes();
+    }
+
+    public static CollectibleKey Create((ItemAdapter, bool) input)
+    {
+        return new(input);
     }
 
     private List<CollectibleSourceCategory> sourceTypes;
@@ -70,7 +77,7 @@ public class CollectibleKey : ICollectibleKey
         // Adding beast tribe currencies manually
         if (Services.DataGenerator.BeastTribesDataGenerator.itemToBeastTribe.ContainsKey(item.RowId))
         {
-            sourceTypes.Add(CollectibleSourceCategory.BeastTribe);
+            sourceTypes.Add(CollectibleSourceCategory.BeastTribes);
         }
 
         return sourceTypes;
@@ -110,7 +117,7 @@ public class CollectibleKey : ICollectibleKey
     // TODO move this out of here
     public void OpenGamerEscape()
     {
-        GamerEscapeLink.OpenItem(item.Name);
+        WikiOpener.OpenGamerEscape(item.Name);
     }
 
     public IDalamudTextureWrap GetIconLazy()

@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace Collections;
 
 public class MogStationCollectibleSource : CollectibleSource
@@ -24,9 +22,8 @@ public class MogStationCollectibleSource : CollectibleSource
         return false;
     }
 
-    public override LocationEntry GetLocationEntry()
+    public override void DisplayLocation()
     {
-        return null;
     }
 
     public static int iconId = 61831;

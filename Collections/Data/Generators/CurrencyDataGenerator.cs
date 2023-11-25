@@ -24,9 +24,9 @@ public class CurrencyDataGenerator
 
     public CurrencyDataGenerator()
     {
-        Dev.StartStopwatch();
+        //Dev.Start();
         PopulateData();
-        Dev.EndStopwatch();
+        //Dev.Stop();
     }
 
     public CollectibleSourceCategory CurrencyItemCollectionMethodType(Item item)
@@ -41,14 +41,14 @@ public class CurrencyDataGenerator
     private void PopulateData()
     {
         // Looks up tomestone sheet
-        var TomestonesItemSheet = Excel.GetExcelSheet<TomestonesItem>();
+        var TomestonesItemSheet = ExcelCache<TomestonesItem>.GetSheet();
         foreach (var tomestone in TomestonesItemSheet)
         {
             itemIdToCollectionMethodType[tomestone.Item.Row] = CollectibleSourceCategory.Tomestones;
         }
 
         // Populate based on manual data in itemNameToContentType
-        var ItemSheet = Excel.GetExcelSheet<Item>();
+        var ItemSheet = ExcelCache<Item>.GetSheet(); // TODO ItemAdapter
         foreach (var item in ItemSheet)
         {
             if (itemNameToCollectionMethodType.ContainsKey(item.Name))

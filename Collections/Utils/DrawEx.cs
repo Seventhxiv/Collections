@@ -165,7 +165,7 @@ public class Draw
 
     public void Start(int drawItemCount, ref bool isFavorite)
     {
-        UiHelper.IconButtonWithOffset(drawItemCount, FontAwesomeIcon.Star, 40, 0, ref isFavorite);
+        UiHelper.IconButtonWithOffset(drawItemCount, FontAwesomeIcon.Star, 40, 0, ref isFavorite, 1f);
     }
 
     public void Start2(System.Action draw)

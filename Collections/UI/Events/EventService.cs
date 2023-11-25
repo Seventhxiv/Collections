@@ -1,5 +1,4 @@
-using System;
-using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace Collections;
 
@@ -22,21 +21,21 @@ public class EventService
         return presEvent;
     }
 
-    public void Subscribe<T, TArgs>(Action<TArgs> action)
+    public void Subscribe<T, TArgs>(Action<TArgs> action, [CallerMemberName] string caller = "", [CallerFilePath] string file = "")
         where T : Event<TArgs>, new()
         where TArgs : EventArgs
     {
         var presEvent = GetEvent<T, TArgs>();
-        Dev.Log(typeof(T).ToString(), 1);
+        Dev.Log($"subscribed to {typeof(T)}", 2);
         presEvent.OnPublish += new Event<TArgs>.Delegate(action);
     }
 
-    public void Publish<T, TArgs>(TArgs eventArgs)
+    public void Publish<T, TArgs>(TArgs eventArgs, [CallerMemberName] string caller = "", [CallerFilePath] string file = "")
         where T : Event<TArgs>, new()
         where TArgs : EventArgs
     {
         var presEvent = GetEvent<T, TArgs>();
-        Dev.Log(typeof(T).ToString(), 1);
+        Dev.Log($"published {typeof(T)}");
         presEvent.Publish(eventArgs);
     }
 }

@@ -4,164 +4,168 @@ public class CollectionWidget
 {
     private float iconSize = 55f;
 
-    private string hint = "";
+    private string searchFilter = "";
     private bool isGlam { get; init; } = false;
-    private int iconsPerRow = 1;
+
+    private int dynamicScrollingInitialSize = 200;
+    private int dynamicScrollingIncrementsPerFrame = 40;
 
     private EventService EventService { get; init; }
-    private EquipSlotsWidget EquipSlotsWidget { get; init; }
-    private CollectibleTooltip ItemDetailsWidget { get; init; }
-    public CollectionWidget(EventService eventService, bool isGlam, EquipSlotsWidget equipSlotsWidget = null)
+    private CollectibleTooltipWidget CollectibleTooltipWidget { get; init; }
+    public CollectionWidget(EventService eventService, bool isGlam)
     {
         EventService = eventService;
-        EquipSlotsWidget = equipSlotsWidget;
         this.isGlam = isGlam;
-        ItemDetailsWidget = new CollectibleTooltip();
+        ResetDynamicScrolling();
+        CollectibleTooltipWidget = new CollectibleTooltipWidget(EventService);
     }
 
-    public int maxDisplayItems = 200;
+    private int dynamicScrollingCurrentSize;
     private int obtainedState = 0;
-    public unsafe void Draw(List<ICollectible> collectionList, bool fillWindow = true)
+    public unsafe void Draw(List<ICollectible> collectionList, bool expandAvailableRegion = true, bool enableFilters = true)
     {
+        // Draw filters
+        if (enableFilters)
+            DrawFilters(collectionList);
 
-        var j = 0;
-        ImGui.InputTextWithHint($"##changedItemsFilter{collectionList.Count}", "Filter...", ref hint, 40);
-
-        ImGui.RadioButton("All", ref obtainedState, 0);
-        ImGui.SameLine();
-        ImGui.RadioButton("Obtained", ref obtainedState, 1);
-        ImGui.SameLine();
-        ImGui.RadioButton("Unobtained", ref obtainedState, 2);
-
-        if (isGlam)
-        {
-            if (ImGui.RadioButton("Preview", tryOn == false))
-            {
-                tryOn = false;
-            }
-            ImGui.SameLine();
-            ImGui.TextDisabled("(?)");
-            if (ImGui.IsItemHovered())
-            {
-                ImGui.BeginTooltip();
-                ImGui.Text("Preview items ingame.");
-                ImGui.Text("Not available for Mog Station items.");
-                ImGui.Text("Appearance will be reset when closing this window.");
-                ImGui.EndTooltip();
-            }
-            ImGui.SameLine();
-            if (ImGui.RadioButton("Fitting Room", tryOn == true))
-            {
-                tryOn = true;
-            }
-            ImGui.SameLine();
-            if (ImGui.Button("Reset Preview"))
-            {
-                Services.GameFunctionsExecutor.ResetPreview();
-            }
-        }
-
-        //ImGui.BeginChildFrame(1, new System.Numerics.Vector2(500, 500));
-        //var collectionHeight = ImGui.GetWindowSize().Y - ImGui.CalcTextSize(" ").Y * 3.5f;
-
-        if (fillWindow)
+        // Expand child on remaining window space
+        if (expandAvailableRegion)
         {
             var scrollingChildSize = new Vector2(UiHelper.GetLengthToRightOfWindow(), UiHelper.GetLengthToBottomOfWindow());
-            //scrollingChildSize = new Vector2(0, 0);
-            ImGui.BeginChild("scrolling", scrollingChildSize);
+            ImGui.BeginChild("scroll-area", scrollingChildSize);
         }
 
-        if ((ImGui.GetScrollMaxY() - ImGui.GetScrollY()) / (ImGui.GetScrollMaxY() + 1) < 0.5)
+        // Dynamic scrolling
+        if (EnableDynamicScrolling())
         {
-            maxDisplayItems += 30;
+            if (UiHelper.GetScrollPosition() < 0.5)
+            {
+                dynamicScrollingCurrentSize += dynamicScrollingIncrementsPerFrame;
+            }
         }
 
         drawItemCount = 0;
+        var iconsPerRow = GetIconsPerRow();
 
-        iconsPerRow = (int)Math.Floor(UiHelper.GetLengthToRightOfWindow() / (iconSize + (ImGui.CalcTextSize(" ").X * 4)));
-
-        foreach (var collectible in collectionList)
+        for (var i = 0; i < collectionList.Count; i++)
         {
-            // Maintain maximum amount
-            j++;
-            if (j > maxDisplayItems)
-                break;
-
-            // Filter based on hint
-            if (hint != "")
+            // Dynamic scrolling
+            if (EnableDynamicScrolling())
             {
-                if (!collectible.GetName().Contains(hint, StringComparison.CurrentCultureIgnoreCase))
-                {
-                    continue;
-                }
+                if (i > dynamicScrollingCurrentSize)
+                    break;
             }
+
+            var collectible = collectionList[i];
+            var icon = collectible.GetIconLazy();
+
+            // Missing:
+            //commandeered magitek armor
+            //    red baron
+            //    marid
+            //    midgarsormr
+            //    true griffin
+
+            if (icon is null || collectible.CollectibleKey is null)
+            {
+                continue;
+            }
+
+            // Check filters
+            if (IsFiltered(collectible))
+                continue;
+
+            // Align item rows
+            if (iconsPerRow != 0 && !(drawItemCount % iconsPerRow == 0))
+            {
+                ImGui.SameLine();
+            }
+            drawItemCount++;
 
             // Draw item
             DrawItem(collectible);
         }
-        if (fillWindow)
+
+        if (expandAvailableRegion)
+        {
             ImGui.EndChild();
+        }
     }
 
-    private bool tryOn = false;
+    private void DrawFilters(List<ICollectible> collectionList)
+    {
+        ImGui.InputTextWithHint($"##changedItemsFilter{collectionList.Count}", "Filter...", ref searchFilter, 40);
+
+        if (ImGui.RadioButton("All", ref obtainedState, 0))
+            ResetDynamicScrolling();
+        ImGui.SameLine();
+
+        if (ImGui.RadioButton("Obtained", ref obtainedState, 1))
+            ResetDynamicScrolling();
+        ImGui.SameLine();
+
+        if (ImGui.RadioButton("Unobtained", ref obtainedState, 2))
+            ResetDynamicScrolling();
+
+        if (isGlam)
+        {
+            // Preview Button
+            if (ImGui.RadioButton("Preview", !Services.Configuration.ForceTryOn))
+            {
+                Services.Configuration.ForceTryOn = false;
+            }
+            ImGuiComponents.HelpMarker("Preview items on your character. Resets on window closing.\nDisabled for Mog Station items.");
+            if (ImGui.IsItemHovered())
+            {
+                ImGui.BeginTooltip();
+                ImGui.Text("Preview items on your character. Resets on window closing.");
+                ImGui.Text("Disabled for Mog Station items.");
+                ImGui.EndTooltip();
+            }
+            ImGui.SameLine();
+
+            // Try On Button
+            if (ImGui.RadioButton("Try On", Services.Configuration.ForceTryOn))
+            {
+                Services.Configuration.ForceTryOn = true;
+            }
+            ImGui.SameLine();
+
+            // Reset Preview Button
+            ImGui.PushStyleColor(ImGuiCol.Button, Services.WindowsInitializer.MainWindow.originalButtonColor);
+            if (ImGui.Button("Reset Preview"))
+            {
+                Services.PreviewExecutor.ResetAllPreview();
+            }
+            ImGui.PopStyleColor();
+            ImGui.SameLine();
+
+            // Reapply Preview Button
+            ImGui.PushStyleColor(ImGuiCol.Button, Services.WindowsInitializer.MainWindow.originalButtonColor);
+            if (ImGui.Button("Reapply Preview"))
+            {
+                EventService.Publish<ReapplyPreviewEvent, ReapplyPreviewEventArgs>(new ReapplyPreviewEventArgs());
+            }
+            ImGui.PopStyleColor();
+        }
+    }
+
     private int drawItemCount = 0;
+    private Vector4 defaultTint = new(1f, 1f, 1f, 1f);
     private unsafe void DrawItem(ICollectible collectible)
     {
-        var obtained = collectible.GetIsObtained();
-        if (obtained)
-        {
-            if (obtainedState == 2)
-            {
-                return;
-            }
-        } else
-        {
-            if (obtainedState == 1)
-            {
-                return;
-            }    
-        }
         var icon = collectible.GetIconLazy();
-
-        // Missing:
-        //commandeered magitek armor
-        //    red baron
-        //    marid
-        //    midgarsormr
-        //    true griffin
-
-        // Display icon
-        if (icon is null || collectible.CollectibleKey is null)
-        {
-            return;
-        }
-
-        if (!(drawItemCount % iconsPerRow == 0))
-        {
-            ImGui.SameLine();
-        }
-        drawItemCount++;
 
         ImGui.SetItemAllowOverlap();
 
-        var tint = new Vector4(1f, 1f, 1f, 1f);
-        if (!collectible.GetIsObtained())
-        {
-            tint = ColorsPalette.GREY2;
-        }
+        var tint = collectible.GetIsObtained() ? defaultTint : ColorsPalette.GREY2;
 
-        if (ImGui.ImageButton(icon.ImGuiHandle, new Vector2(iconSize, iconSize), default(Vector2), new Vector2(1f, 1f), -1, default(Vector4), tint))
+        if (ImGui.ImageButton(icon.ImGuiHandle, new Vector2(iconSize, iconSize), default, new Vector2(1f, 1f), -1, default, tint))
         {
+            collectible.Interact();
             if (isGlam)
             {
-                var stain = EquipSlotsWidget.equipSlotToPalette[EquipSlotsWidget.activeEquipSlot].ActiveStain;
-                var stainId = stain == null ? 0 : stain.RowId;
-
-                Services.GameFunctionsExecutor.PreviewGlamourWithTryOnRestrictions(collectible, stainId, tryOn);
-
-                var glamourItem = new GlamourItem() { glamourCollectible = (GlamourCollectible)collectible, stain = EquipSlotsWidget.equipSlotToPalette[EquipSlotsWidget.activeEquipSlot].ActiveStain };
-                EventService.Publish<GlamourItemChangeEvent, GlamourItemChangeEventArgs>(new GlamourItemChangeEventArgs(glamourItem));
-                //GlamourTreeWidget.CurrentGlamourSet.set[EquipSlotsWidget.activeEquipSlot] = new GlamourSet.GlamourItem() { glamourCollectible = (GlamourCollectible)collectible, stain = EquipSlotsWidget.equipSlotToPalette[EquipSlotsWidget.activeEquipSlot].ActiveStain };
+                EventService.Publish<GlamourItemChangeEvent, GlamourItemChangeEventArgs>(new GlamourItemChangeEventArgs((GlamourCollectible)collectible));
             }
         }
 
@@ -169,23 +173,58 @@ public class CollectionWidget
         if (ImGui.IsItemHovered())
         {
             ImGui.BeginTooltip();
-            ItemDetailsWidget.DrawItemTooltip(collectible);
+            CollectibleTooltipWidget.DrawItemTooltip(collectible);
             ImGui.EndTooltip();
         }
 
         // Details on click
-        if (ImGui.BeginPopupContextItem($"click-glam-item##{collectible.GetName()}", ImGuiPopupFlags.MouseButtonRight))
+        if (ImGui.BeginPopupContextItem($"click-glam-item##{collectible.Name}", ImGuiPopupFlags.MouseButtonRight))
         {
-            ItemDetailsWidget.DrawItemTooltip(collectible);
+            CollectibleTooltipWidget.DrawItemTooltip(collectible);
             ImGui.EndPopup();
         }
 
         // Favorite
-        var isFavorite = collectible.isFavorite;
-        UiHelper.IconButtonWithOffset(drawItemCount, FontAwesomeIcon.Star, 40, 0, ref isFavorite);
-        collectible.isFavorite = isFavorite;
+        var isFavorite = collectible.IsFavorite();
+        UiHelper.IconButtonWithOffset(drawItemCount, FontAwesomeIcon.Star, 33, 0, ref isFavorite, 0.9f);
+        if (isFavorite != collectible.IsFavorite())
+        {
+            collectible.SetFavorite(isFavorite);
+            EventService.Publish<FilterChangeEvent, FilterChangeEventArgs>(new FilterChangeEventArgs());
+        }
 
         // Green checkmark
         //UiHelper.IconButtonWithOffset(drawItemCount, FontAwesomeIcon.Check, 40, 150, ref obtained);
+    }
+
+    private bool EnableDynamicScrolling()
+    {
+        return searchFilter == "" && obtainedState != 1; // Disable when searching or filtered by Obtained
+    }
+
+    public void ResetDynamicScrolling()
+    {
+        dynamicScrollingCurrentSize = dynamicScrollingInitialSize;
+    }
+
+    private int GetIconsPerRow()
+    {
+        return (int)Math.Floor(UiHelper.GetLengthToRightOfWindow() / (iconSize + (ImGui.CalcTextSize(" ").X * 4)));
+    }
+
+    private bool IsFiltered(ICollectible collectible)
+    {
+        // Search filter
+        if (searchFilter != "")
+            if (!collectible.Name.Contains(searchFilter, StringComparison.CurrentCultureIgnoreCase))
+                return true;
+
+        // Obtain state filter
+        var obtained = collectible.GetIsObtained();
+        if ((obtained && obtainedState == 2) || (!obtained && obtainedState == 1))
+            return true;
+
+        // Default
+        return false;
     }
 }

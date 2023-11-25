@@ -1,37 +1,26 @@
-using Dalamud.Interface.Components;
 using System.IO;
-using static Collections.UiHelper;
 
 namespace Collections;
 
 public class EquipSlotsWidget
 {
     public EquipSlot activeEquipSlot { get; set; } = EquipSlot.Body;
-    public Dictionary<EquipSlot, PaletteWidget> equipSlotToPalette = new();
+    public Dictionary<EquipSlot, PaletteWidget> paletteWidgets = new();
 
     private Vector2 activeEquipSlotRectSize = new(60.2f, 60.2f);
     private Vector2 equipSlotBackgroundRectSize = new(56, 56);
     private Vector2 paletteWidgetButtonOffset = new(-34, 35);
     private Vector4 paletteWidgetButtonDefaultColor = ColorsPalette.WHITE;
 
-    public static readonly List<EquipSlot> equipSlots = new()
-    {
-        EquipSlot.MainHand,
-        EquipSlot.OffHand,
-        EquipSlot.Head,
-        EquipSlot.Body,
-        EquipSlot.Gloves,
-        EquipSlot.Legs,
-        EquipSlot.Feet,
-    };
-
-    private GlamourSet currentGlamourSet { get; set; }
+    public GlamourSet currentGlamourSet { get; set; }
     private Dictionary<EquipSlot, bool> hoveredPaletteButton = new();
 
     private EventService EventService { get; init; }
+    private CollectibleTooltipWidget CollectibleTooltipWidget { get; init; }
     public EquipSlotsWidget(EventService eventService)
     {
         EventService = eventService;
+        CollectibleTooltipWidget = new CollectibleTooltipWidget(EventService);
         LoadEquipSlotIcons();
         InitializePaletteWidgets();
         eventService.Subscribe<GlamourSetChangeEvent, GlamourSetChangeEventArgs>(OnPublish);
@@ -39,124 +28,125 @@ public class EquipSlotsWidget
         eventService.Subscribe<DyeChangeEvent, DyeChangeEventArgs>(OnPublish);
     }
 
+    private void DrawButtons()
+    {
+        //ImGui.PushStyleColor(ImGuiCol.Button, Services.WindowsInitializer.MainWindow.originalButtonColor);
+        //ImGui.Button("Reapply Preview");
+        //ImGui.Button("Reset Preview");
+        //ImGui.Button("Add to Plate");
+        //ImGui.PopStyleColor();
+    }
+
+    private void ApplyGlamourSetToPlate()
+    {
+        Dev.Log("Applying glamour set to plate");
+        // TODO indication which items exist in Dresser
+        foreach (var (equipSlot, glamourItem) in currentGlamourSet.Items)
+        {
+            PlatesExecutor.SetPlateItem(glamourItem.GetCollectible().CollectibleKey.item, (byte)glamourItem.StainId);
+        }
+    }
     public unsafe void Draw()
     {
-        IDalamudTextureWrap icon;
+        DrawButtons();
+
         var bgColor = *ImGui.GetStyleColorVec4(ImGuiCol.WindowBg);
-        foreach (var equipSlot in equipSlots)
+        foreach (var equipSlot in Services.DataProvider.SupportedEquipSlots)
         {
-            if (Services.DataProvider.GlamourCollection.ContainsKey(equipSlot))
+            // Draw blue rect border over active equip slot
+            var origPos = ImGui.GetCursorPos();
+            if (activeEquipSlot == equipSlot)
             {
-                // Draw blue rect border over active equip slot
-                var origPos = ImGui.GetCursorPos();
-                if (activeEquipSlot == equipSlot)
-                {
-                    ImGui.SetCursorPos(new Vector2(origPos.X - 1.8f, origPos.Y - 1.8f));
-                    ImGui.ColorButton(equipSlot.ToString(), ColorsPalette.BLUE, ImGuiColorEditFlags.NoTooltip, activeEquipSlotRectSize);
-                    ImGui.SetCursorPos(origPos);
-                }
+                ImGui.SetCursorPos(new Vector2(origPos.X - 1.8f, origPos.Y - 1.8f));
+                ImGui.ColorButton(equipSlot.ToString(), ColorsPalette.BLUE, ImGuiColorEditFlags.NoTooltip, activeEquipSlotRectSize);
                 ImGui.SetCursorPos(origPos);
+            }
+            ImGui.SetCursorPos(origPos);
 
-                // Draw bg rect over all equip slots
-                origPos = ImGui.GetCursorPos();
-                ImGui.ColorButton(equipSlot.ToString(), bgColor, ImGuiColorEditFlags.NoTooltip, equipSlotBackgroundRectSize);
-                ImGui.SetCursorPos(origPos);
+            // Draw bg rect over all equip slots
+            origPos = ImGui.GetCursorPos();
+            ImGui.ColorButton(equipSlot.ToString(), bgColor, ImGuiColorEditFlags.NoTooltip, equipSlotBackgroundRectSize);
+            ImGui.SetCursorPos(origPos);
 
-                ImGui.SetItemAllowOverlap();
+            ImGui.SetItemAllowOverlap();
 
-                // Set icon (Glam piece selected)
-                if (currentGlamourSet.set.ContainsKey(equipSlot))
+            // Load collectible if set
+            IDalamudTextureWrap icon = null;
+            GlamourCollectible collectible = null;
+
+            var glamourItem = currentGlamourSet.GetItem(equipSlot);
+            if (glamourItem is not null)
+            {
+                collectible = glamourItem.GetCollectible();
+                icon = collectible.GetIconLazy();
+            }
+
+            // Draw icon
+            if (icon is null)
+                icon = equipSlotIcons[equipSlot];
+
+            // Draw equip slot buttons
+            if (ImGui.ImageButton(icon.ImGuiHandle, new Vector2(48, 50)))
+            {
+                SetEquipSlot(equipSlot);
+            }
+
+            // Interaction with buttons (details / reset), Item must be set in this slot
+            if (ImGui.IsItemHovered() && collectible is not null && !hoveredPaletteButton[equipSlot]) // hoveredPaletteButton is here to take presedence of it over this
+            {
+                // Details on hover
+                ImGui.BeginTooltip();
+                CollectibleTooltipWidget.DrawItemTooltip(collectible);
+                ImGui.EndTooltip();
+
+                // Reset on right click
+                if (ImGui.IsMouseClicked(ImGuiMouseButton.Right))
                 {
-                    icon = currentGlamourSet.set[equipSlot].glamourCollectible.GetIconLazy();
+                    currentGlamourSet.ClearEquipSlot(equipSlot);
+                    Services.PreviewExecutor.ResetSlotPreview(equipSlot);
                 }
-                // Set icon (Empty)
-                else
+            }
+
+            // Set cursor on bottom right to draw Palette Widget button
+            ImGui.SameLine();
+            ImGui.SetItemAllowOverlap(); // Makes this button take precedence
+            ImGui.SetCursorPos(new Vector2(ImGui.GetCursorPos().X + paletteWidgetButtonOffset.X, ImGui.GetCursorPos().Y + paletteWidgetButtonOffset.Y));
+
+            // Draw Palette Widget button
+            var paletteButtonColor = paletteWidgets[equipSlot].ActiveStain.RowId == 0 ?
+                paletteWidgetButtonDefaultColor : paletteWidgets[equipSlot].ActiveStain.VecColor;
+            ImGui.PushStyleColor(ImGuiCol.Text, paletteButtonColor);
+            ImGui.PushStyleColor(ImGuiCol.ButtonHovered, new Vector4(0, 0, 0, 0));
+            ImGuiComponents.IconButton(FontAwesomeIcon.PaintBrush);
+            ImGui.PopStyleColor();
+            ImGui.PopStyleColor();
+
+            // Open Palette Widget popup
+            if (ImGui.BeginPopupContextItem($"palette-widget##{equipSlot}", ImGuiPopupFlags.MouseButtonLeft))
+            {
+                paletteWidgets[equipSlot].Draw();
+                ImGui.EndPopup();
+            }
+
+            // Interaction with palette button (details / reset)
+            if (ImGui.IsItemHovered(ImGuiHoveredFlags.DockHierarchy))
+            {
+                hoveredPaletteButton[equipSlot] = true;
+
+                // Details on hover
+                ImGui.BeginTooltip();
+                var stainName = paletteWidgets[equipSlot].ActiveStain.RowId == 0 ? "No Dye Selected" : paletteWidgets[equipSlot].ActiveStain.Name;
+                ImGui.Text(stainName);
+                ImGui.EndTooltip();
+
+                // Reset on right click
+                if (ImGui.IsMouseClicked(ImGuiMouseButton.Right))
                 {
-                    icon = equipSlotIcons[equipSlot];
+                    paletteWidgets[equipSlot].ResetStain();
                 }
-
-                // Draw equip slot buttons
-                if (ImGui.ImageButton(icon.ImGuiHandle, new Vector2(48, 50)))
-                {
-                    SetEquipSlot(equipSlot);
-                }
-
-                // Interaction with buttons (details / reset)
-                if (ImGui.IsItemHovered() && !hoveredPaletteButton[equipSlot]) // hoveredPaletteButton is here to take presedence of it over this
-                {
-                    // Details on hover
-                    if (currentGlamourSet.set.ContainsKey(equipSlot))
-                    {
-                        ImGui.BeginTooltip();
-                        var itemName = currentGlamourSet.set[equipSlot].glamourCollectible.GetName();
-                        ImGui.Text(itemName);
-                        ImGui.EndTooltip();
-                    }
-
-                    // Reset on right click
-                    if (ImGui.IsMouseClicked(ImGuiMouseButton.Right))
-                    {
-                        currentGlamourSet.set.Remove(equipSlot);
-                    }
-                }
-
-                // Set cursor on bottom right to draw Palette Widget button
-                ImGui.SameLine();
-                ImGui.SetItemAllowOverlap(); // Makes this button take precedence
-                ImGui.SetCursorPos(new Vector2(ImGui.GetCursorPos().X + paletteWidgetButtonOffset.X, ImGui.GetCursorPos().Y + paletteWidgetButtonOffset.Y));
-
-                // Draw Palette Widget button
-                var paletteButtonColor = equipSlotToPalette[equipSlot].ActiveStain == null ?
-                    paletteWidgetButtonDefaultColor : equipSlotToPalette[equipSlot].ActiveStain.VecColor;
-                ImGui.PushStyleColor(ImGuiCol.Text, paletteButtonColor);
-                ImGui.PushStyleColor(ImGuiCol.ButtonHovered, new Vector4(0, 0, 0, 0));
-                //ImGuiComponents.IconButton(FontAwesomeIcon.Square);
-                ImGuiComponents.IconButton(FontAwesomeIcon.PaintBrush);
-                //ImGuiComponents.IconButton(FontAwesomeIcon.SprayCan);
-                //ImGuiComponents.IconButton(FontAwesomeIcon.PaintBrush);
-                ImGui.PopStyleColor();
-                ImGui.PopStyleColor();
-
-                // Open Palette Widget popup
-                if (ImGui.BeginPopupContextItem($"palette-widget##{equipSlot}", ImGuiPopupFlags.MouseButtonLeft))
-                {
-                    equipSlotToPalette[equipSlot].Draw();
-                    ImGui.EndPopup();
-                }
-
-                // Interaction with palette button (details / reset)
-                if (ImGui.IsItemHovered(ImGuiHoveredFlags.DockHierarchy))
-                {
-                    hoveredPaletteButton[equipSlot] = true;
-
-                    // Details on hover
-                    ImGui.BeginTooltip();
-                    var currentStain = equipSlotToPalette[equipSlot].ActiveStain;
-                    var stainName = currentStain == null ? "No Dye Selected" : currentStain.Name;
-                    ImGui.Text(stainName);
-                    ImGui.EndTooltip();
-
-                    // Reset on right click
-                    if (ImGui.IsMouseClicked(ImGuiMouseButton.Right))
-                    {
-                        equipSlotToPalette[equipSlot].ResetStain();
-                    }
-                } else
-                {
-                    hoveredPaletteButton[equipSlot] = false;
-                }
-
-                // Refresh Preview/Try-On on dye change
-                //if (currentGlamourSet.set.ContainsKey(equipSlot))
-                //{
-                //    if (equipSlotToPalette[equipSlot].StateChangeFlag)
-                //    {
-                //        var tryOn = false;
-                //        PreviewGlamour(equipSlot, tryOn);
-                //        currentGlamourSet.set[equipSlot].stain = equipSlotToPalette[equipSlot].ActiveStain;
-                //        equipSlotToPalette[equipSlot].StateChangeFlag = false;
-                //    }
-                //}
+            } else
+            {
+                hoveredPaletteButton[equipSlot] = false;
             }
         }
     }
@@ -167,18 +157,10 @@ public class EquipSlotsWidget
         EventService.Publish<FilterChangeEvent, FilterChangeEventArgs>(new FilterChangeEventArgs());
     }
 
-    private void PreviewGlamour(EquipSlot equipSlot, bool tryOn)
-    {
-        var collectible = currentGlamourSet.set[equipSlot].glamourCollectible;
-        var stain = equipSlotToPalette[equipSlot].ActiveStain;
-        var stainId = stain == null ? 0 : stain.RowId;
-        Services.GameFunctionsExecutor.PreviewGlamourWithTryOnRestrictions(collectible, stainId, tryOn);
-    }
-
     private Dictionary<EquipSlot, IDalamudTextureWrap> equipSlotIcons = new();
     private void LoadEquipSlotIcons()
     {
-        foreach (var equipSlot in equipSlots)
+        foreach (var equipSlot in Services.DataProvider.SupportedEquipSlots)
         {
             var equipSlotName = Enum.GetName(typeof(EquipSlot), equipSlot);
             var iconPath = Path.Combine(Services.PluginInterface.AssemblyLocation.Directory?.FullName!, $"Data\\Resources\\{equipSlotName}.png");
@@ -189,65 +171,64 @@ public class EquipSlotsWidget
 
     private void InitializePaletteWidgets()
     {
-        foreach (var equipSlot in equipSlots)
+        foreach (var equipSlot in Services.DataProvider.SupportedEquipSlots)
         {
-            equipSlotToPalette[equipSlot] = new PaletteWidget(equipSlot, EventService);
+            paletteWidgets[equipSlot] = new PaletteWidget(equipSlot, EventService);
             hoveredPaletteButton[equipSlot] = false;
         }
     }
 
     public void ResetPaletteWidgets()
     {
-        foreach (var equipSlot in equipSlots)
+        foreach (var equipSlot in Services.DataProvider.SupportedEquipSlots)
         {
-            equipSlotToPalette[equipSlot].ResetStain();
+            paletteWidgets[equipSlot].ResetStain();
         }
     }
 
     public void OnPublish(GlamourSetChangeEventArgs args)
     {
+        // Update currentGlamourSet reference
         currentGlamourSet = args.GlamourSet;
-
-        // Reset glamour state. TODO reset Try On
-        Services.GameFunctionsExecutor.ResetPreview();
 
         // Reset palette state
         ResetPaletteWidgets();
 
-        // Preview the selected set
-        foreach (var (equipSlot, glamourItem) in args.GlamourSet.set)
+        // Set pelette stain state
+        foreach (var (equipSlot, glamourItem) in args.GlamourSet.Items)
         {
-            // Set pelette stain state
-            equipSlotToPalette[equipSlot].ActiveStain = glamourItem.stain;
-
-            // Preview
-            var stainId = glamourItem.stain == null ? 0 : glamourItem.stain.RowId;
-            Services.GameFunctionsExecutor.PreviewGlamourWithTryOnRestrictions(glamourItem.glamourCollectible, stainId, false);
+            paletteWidgets[equipSlot].ActiveStain = glamourItem.GetStain();
         }
     }
 
     public void OnPublish(GlamourItemChangeEventArgs args)
     {
-        // Find out equip slot
-        var equipSlot = args.GlamourItem.glamourCollectible.CollectibleKey.item.EquipSlot;
-
-        // Update glamour set state
-        currentGlamourSet.set[equipSlot] = args.GlamourItem;
-
-        // Update stain state
-
-        // Preview - this should probably move to another module, but for now doing it here
-        //PreviewGlamour(equipSlot, )
+        // Update current glamour set
+        var item = args.Collectible.CollectibleKey.item;
+        currentGlamourSet.SetItem(item, paletteWidgets[item.EquipSlot].ActiveStain.RowId);
     }
 
     public void OnPublish(DyeChangeEventArgs args)
     {
-        if (currentGlamourSet.set.ContainsKey(args.EquipSlot))
+        var glamourItem = currentGlamourSet.GetItem(args.EquipSlot);
+
+        // If Dye changed for empty equip slot - do nothing
+        if (glamourItem is null)
         {
-            var tryOn = false;
-            PreviewGlamour(args.EquipSlot, tryOn);
-            currentGlamourSet.set[args.EquipSlot].stain = equipSlotToPalette[args.EquipSlot].ActiveStain;
+            return;
         }
+
+        var equipSlot = args.EquipSlot;
+
+        // Update currentGlamourSet
+        currentGlamourSet.GetItem(equipSlot).StainId = paletteWidgets[equipSlot].ActiveStain.RowId;
+
+        // Refresh Preview
+        Services.PreviewExecutor.PreviewWithTryOnRestrictions(
+            glamourItem.GetCollectible(),
+            paletteWidgets[equipSlot].ActiveStain.RowId,
+            Services.Configuration.ForceTryOn
+            );
     }
 }
 

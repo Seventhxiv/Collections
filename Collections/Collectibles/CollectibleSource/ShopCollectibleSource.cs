@@ -4,16 +4,18 @@ public class ShopCollectibleSource : CollectibleSource
 {
     public List<(CollectibleKey collectibleKey, int amount)> costItems = new();
     public ENpcResident ENpcResident { get; init; }
+    public uint ShopId { get; init; }
     public ShopCollectibleSource(ShopEntry shopEntry)
     {
+        ShopId = shopEntry.ShopId;
         if (shopEntry.ENpcResidentId != null)
         {
-            ENpcResident = Excel.GetExcelSheet<ENpcResident>().GetRow((uint)shopEntry.ENpcResidentId);
+            ENpcResident = ExcelCache<ENpcResident>.GetSheet().GetRow((uint)shopEntry.ENpcResidentId);
         }
         foreach (var cost in shopEntry.Cost)
         {
             // Recursively create collectibleKey (only allow 1 degree) to allow for the currency to determine the source category
-            costItems.Add((new CollectibleKey(cost.Item, false), cost.Amount));
+            costItems.Add((CollectibleKeyCache.Instance.GetObject((cost.Item, false)), cost.Amount));
         }
     }
 
@@ -57,26 +59,34 @@ public class ShopCollectibleSource : CollectibleSource
     private List<CollectibleSourceCategory> sourceCategories;
     public override List<CollectibleSourceCategory> GetSourceCategories()
     {
-        if (sourceCategories != null)
+        try
         {
+            if (sourceCategories != null)
+            {
+                return sourceCategories;
+            }
+
+            // Derive source type from all cost items
+            sourceCategories = costItems.Select(cost => cost.collectibleKey).SelectMany(source => source.GetSourceTypes()).ToList();
+
+            // Add source type of beast tribe currencies TODO
+            if (ENpcResident != null)
+            {
+                var npcName = ENpcResident.Singular.ToString();
+                var beastTribeNpcNames = new List<string>() { "Vath Stickpeddler" };
+                if (beastTribeNpcNames.Any(name => npcName.Equals(name, StringComparison.OrdinalIgnoreCase)))
+                {
+                    sourceCategories.Add(CollectibleSourceCategory.BeastTribes);
+                }
+            }
+
             return sourceCategories;
         }
-
-        // Derive source type from all cost items
-        sourceCategories = costItems.Select(cost => cost.collectibleKey).SelectMany(source => source.GetSourceTypes()).ToList();
-
-        // Add source type of beast tribe currencies
-        if (ENpcResident != null)
+        catch (Exception e)
         {
-            var npcName = ENpcResident.Singular.ToString();
-            var beastTribeNpcNames = new List<string>() { "Vath Stickpeddler" };
-            if (beastTribeNpcNames.Any(name => npcName.Equals(name, StringComparison.OrdinalIgnoreCase)))
-            {
-                sourceCategories.Add(CollectibleSourceCategory.BeastTribe);
-            }
+            Dev.Log(e.ToString());
+            return new List<CollectibleSourceCategory>();
         }
-
-        return sourceCategories;
     }
 
     public override bool GetIslocatable()
@@ -84,9 +94,18 @@ public class ShopCollectibleSource : CollectibleSource
         return GetLocationEntry() is not null;
     }
 
+    public override void DisplayLocation()
+    {
+        var locationEntry = GetLocationEntry();
+        if (locationEntry is not null)
+        {
+            MapFlagPlacer.Place(locationEntry.TerritoryType, locationEntry.Xorigin, locationEntry.Yorigin);
+        }
+    }
+
     private bool locationChecked = false;
     private LocationEntry locationEntry;
-    public override LocationEntry GetLocationEntry()
+    public LocationEntry GetLocationEntry()
     {
         if (locationChecked)
         {

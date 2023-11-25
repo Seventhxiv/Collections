@@ -2,18 +2,18 @@ using FFXIVClientStructs.FFXIV.Client.Game.UI;
 
 namespace Collections;
 
-public class MountCollectible : Collectible<Mount>
+public class MountCollectible : Collectible<Mount>, ICreateable<MountCollectible, Mount>
 {
     protected override Mount excelRow { get; set; }
     public override string Name { get; init; }
     public MountCollectible(Mount excelRow) : base(excelRow)
     {
         Name = excelRow.Singular;
-        // Collectible key
+
         if (Services.DataGenerator.CollectibleKeyDataGenerator.mountUnlockItem.ContainsKey(excelRow.RowId))
         {
             var item = Services.DataGenerator.CollectibleKeyDataGenerator.mountUnlockItem[excelRow.RowId];
-            CollectibleKey = new CollectibleKey(item);
+            CollectibleKey = CollectibleKeyCache.Instance.GetObject((item, true));
         }
         else
         {
@@ -21,9 +21,14 @@ public class MountCollectible : Collectible<Mount>
         }
     }
 
-    public override string GetName()
+    public new static string GetCollectionName()
     {
-        return excelRow.Singular;
+        return "Mounts";
+    }
+
+    public static MountCollectible Create(Mount excelRow)
+    {
+        return new(excelRow);
     }
 
     public override unsafe void UpdateObtainedState()
@@ -36,8 +41,9 @@ public class MountCollectible : Collectible<Mount>
         return excelRow.Icon;
     }
 
-    public new static string GetCollectionName()
+    public override void Interact()
     {
-        return "Mounts";
+        if (isObtained)
+            SummonActionExecutor.SummonMount(excelRow.RowId);
     }
 }

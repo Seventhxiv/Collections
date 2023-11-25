@@ -1,8 +1,5 @@
-using Lumina.Excel;
-using Lumina.Excel.GeneratedSheets;
+using System.IO;
 using LuminaSupplemental.Excel.Model;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Collections;
 
@@ -11,17 +8,18 @@ public class InstancesDataGenerator
     public Dictionary<uint, List<ContentFinderCondition>> itemToContentFinderCondition = new();
     public Dictionary<uint, List<uint>> contentFinderConditionToItems = new();
 
-    private ExcelSheet<ContentFinderCondition> contentFinderConditionList { get; init; }
+    private ExcelCache<ContentFinderCondition> contentFinderConditionList { get; init; }
 
     public InstancesDataGenerator()
     {
-        Dev.Start();
-        contentFinderConditionList = Excel.GetExcelSheet<ContentFinderCondition>();
+        //Dev.Start();
+        contentFinderConditionList = ExcelCache<ContentFinderCondition>.GetSheet();
         setDungeonBossChestList();
         setDungeonBossDropList();
         setDungeonChestList();
         setDungeonDropList();
-        Dev.Stop();
+        setItemsToInstances();
+        //Dev.Stop();
     }
 
     private void setDungeonBossChestList()
@@ -62,6 +60,28 @@ public class InstancesDataGenerator
         }
     }
 
+    private static readonly string ItemsToInstancesPath = Path.Combine(Services.PluginInterface.AssemblyLocation.Directory?.FullName!, @"Data\Resources\itemsToInstances.csv");
+    private void setItemsToInstances()
+    {
+        var itemsToInstancesCSVList = Helpers.LoadCSV<ItemToInstance>(ItemsToInstancesPath);
+        foreach (var entry in itemsToInstancesCSVList)
+        {
+            var itemId = entry.itemId;
+            foreach (var dutyId in entry.dutyIds.Split(";"))
+            {
+                AddItemInstancePair(itemId, Convert.ToUInt32(dutyId));
+            }
+        }
+    }
+
+    private class ItemToInstance
+    {
+        public uint itemId { get; set; }
+        public string Events { get; set; }
+        public bool isMogstation { get; set; }
+        public string dutyIds { get; set; }
+    }
+
     private void AddItemInstancePair(uint itemId, uint contentFinderConditionId)
     {
         var contentFinderCondition = contentFinderConditionList.GetRow(contentFinderConditionId);
@@ -70,13 +90,15 @@ public class InstancesDataGenerator
         {
             itemToContentFinderCondition[itemId] = new List<ContentFinderCondition>();
         }
-        itemToContentFinderCondition[itemId].Add(contentFinderCondition);
+
+        if (!itemToContentFinderCondition[itemId].Contains(contentFinderCondition))
+            itemToContentFinderCondition[itemId].Add(contentFinderCondition);
 
         if (!contentFinderConditionToItems.ContainsKey(contentFinderConditionId))
         {
             contentFinderConditionToItems[contentFinderConditionId] = new List<uint>();
         }
-        contentFinderConditionToItems[contentFinderConditionId].Add(itemId);
-
+        if (!contentFinderConditionToItems[contentFinderConditionId].Contains(itemId))
+            contentFinderConditionToItems[contentFinderConditionId].Add(itemId);
     }
 }

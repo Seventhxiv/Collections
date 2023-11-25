@@ -1,6 +1,6 @@
 namespace Collections;
 
-public enum Currencies
+public enum Currency
 {
     Gil = 1,
     CompanySeals = 20, // Technically also 21,22

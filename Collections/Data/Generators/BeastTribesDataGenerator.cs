@@ -1,6 +1,3 @@
-using Lumina.Excel.GeneratedSheets;
-using System.Collections.Generic;
-
 namespace Collections;
 
 public class BeastTribesDataGenerator
@@ -9,14 +6,14 @@ public class BeastTribesDataGenerator
 
     public BeastTribesDataGenerator()
     {
-        Dev.StartStopwatch();
+        //Dev.Start();
         populateData();
-        Dev.EndStopwatch();
+        //Dev.Stop();
     }
 
     private void populateData()
     {
-        var beastTribeSheet = Excel.GetExcelSheet<BeastTribe>();
+        var beastTribeSheet = ExcelCache<BeastTribe>.GetSheet();
         foreach (var beastTribe in beastTribeSheet)
         {
             itemToBeastTribe[beastTribe.CurrencyItem.Row] = beastTribe;

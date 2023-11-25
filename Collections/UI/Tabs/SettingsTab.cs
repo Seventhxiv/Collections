@@ -4,7 +4,7 @@ public class SettingsTab : IDrawable
 {
     public SettingsTab()
     {
-        autoOpenInstanceTab = Services.Configuration.autoOpenInstanceTab;
+        autoOpenInstanceTab = Services.Configuration.AutoOpenInstanceTab;
     }
 
     //public Dictionary<string, bool> settings = new()
@@ -17,12 +17,17 @@ public class SettingsTab : IDrawable
     {
         if (ImGui.Checkbox("Auto open Instance tab when entering an instance", ref autoOpenInstanceTab))
         {
-            Services.Configuration.autoOpenInstanceTab = autoOpenInstanceTab;
+            Services.Configuration.AutoOpenInstanceTab = autoOpenInstanceTab;
             Services.Configuration.Save();
         }
     }
 
     public void OnOpen()
+    {
+        Dev.Log();
+    }
+
+    public void OnClose()
     {
     }
 

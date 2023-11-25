@@ -9,12 +9,32 @@ public struct RGBColor
 
 public class StainColorConverter
 {
+    // Find the closest stain based on a given color
+    public static StainAdapter FindClosestStain(Vector3 color)
+    {
+        var selectedColor = Vector3ToRGBColor(color);
+        var minDistance = double.MaxValue;
+        StainAdapter closestStain = null;
+
+        foreach (var stain in Services.DataProvider.SupportedStains)
+        {
+            var distance = CalculateDistance(selectedColor, stain.RGBcolor);
+
+            if (distance < minDistance)
+            {
+                minDistance = distance;
+                closestStain = stain;
+            }
+        }
+
+        return closestStain;
+    }
+
     // Convert a HEX color string to an RGBColor
     public static RGBColor HexToRGB(string hexColor)
     {
         if (hexColor.Length != 6)
         {
-            Dev.Log(hexColor);
             throw new ArgumentException("Invalid HEX color string.", nameof(hexColor));
         }
 
@@ -58,29 +78,8 @@ public class StainColorConverter
         return hexString;
     }
 
-    public static RGBColor Vector3ToRGBColor(Vector3 vec)
+    private static RGBColor Vector3ToRGBColor(Vector3 vec)
     {
         return new RGBColor() { R = (int)(vec.X * 255), G = (int)(vec.Y * 255), B = (int)(vec.Z * 255) };
-    }
-
-    // Find the closest stain based on a given color
-    public static StainAdapter FindClosestStain(Vector3 color)
-    {
-        var selectedColor = Vector3ToRGBColor(color);
-        var minDistance = double.MaxValue;
-        StainAdapter closestStain = null;
-
-        foreach (var stain in Services.DataProvider.stains)
-        {
-            var distance = CalculateDistance(selectedColor, stain.RGBcolor);
-
-            if (distance < minDistance)
-            {
-                minDistance = distance;
-                closestStain = stain;
-            }
-        }
-
-        return closestStain;
     }
 }

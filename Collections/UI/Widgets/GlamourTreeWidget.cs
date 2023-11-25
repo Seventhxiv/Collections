@@ -1,48 +1,133 @@
+using FFXIVClientStructs.FFXIV.Client.Game;
+using FFXIVClientStructs.FFXIV.Client.UI.Agent;
+
 namespace Collections;
 
 public class GlamourTreeWidget
 {
-    private GlamourSet currentGlamourSet = new();
-    private List<(string name, List<GlamourSet> setList)> glamourTree = new();
+    private GlamourSet currentGlamourSet;
+    private GlamourTree glamourTree = new();
+    private IconHandler glamourPlateIconHandler = new IconHandler(000125);
+    private IconHandler copyExamineIconHandler = new IconHandler(060642);
+    private Vector2 iconSize = new(21, 21);
 
-    private EventService EventService { get; init ; }
+    private EventService EventService { get; init; }
     public GlamourTreeWidget(EventService eventService)
     {
         EventService = eventService;
-        AddDirectory("Main");
-        AddGlamourSet("Default");
+        InitializeGlamourTreeFromConfiguration();
+
+        if (glamourTree.Directories.Count == 0)
+        {
+            AddDirectory("Main");
+            AddGlamourSet("Default");
+        }
     }
 
     public void Draw()
     {
+        // Icon buttons
+        DrawIconButtons();
+
+        // Folder tree
+        DrawGlamourTree();
+    }
+
+    private void DrawIconButtons()
+    {
         // Directory icon
-        UiHelper.IconButtonWithPopUpInputText(FontAwesomeIcon.Folder, (s) => AddDirectory(s));
+        UiHelper.IconButtonWithPopUpInputText(FontAwesomeIcon.Folder, AddDirectory);
+        if (ImGui.IsItemHovered())
+        {
+            ImGui.SetTooltip("Add Directory");
+        }
         ImGui.SameLine();
 
         // Glamour Set icon
-        UiHelper.IconButtonWithPopUpInputText(FontAwesomeIcon.Plus, (s) => AddGlamourSet(s));
+        UiHelper.IconButtonWithPopUpInputText(FontAwesomeIcon.Plus, AddGlamourSet);
+        if (ImGui.IsItemHovered())
+        {
+            ImGui.SetTooltip("Add Set");
+        }
+        ImGui.SameLine();
 
-        // Folder tree
-        DrawGlamourSetList();
+        // Add to Glamour Plate Button
+        var icon = glamourPlateIconHandler.GetIconLazy();
+        if (icon is not null)
+        {
+            var isInPlateWindow = PlatesExecutor.IsInPlateWindow();
+
+            if (!isInPlateWindow)
+                ImGui.PushStyleColor(ImGuiCol.Text, ColorsPalette.GREY2);
+
+            //ImGui.Text(FontAwesomeIcon.addre.ToIconString());
+            //ImGui.SameLine();
+            //if (ImGui.ImageButton(icon.ImGuiHandle, iconSize))
+            if (ImGuiComponents.IconButton(FontAwesomeIcon.Copy))
+            {
+                if (isInPlateWindow)
+                    ApplyGlamourSetToPlate();
+            }
+            if (!isInPlateWindow)
+                ImGui.PopStyleColor();
+
+            if (ImGui.IsItemHovered())
+            {
+                ImGui.BeginTooltip();
+                ImGui.Text("Add to Glamour Plate");
+
+                if (!isInPlateWindow)
+                {
+                    ImGui.TextColored(ColorsPalette.RED, "Only usable in Plate Creation window.");
+                }
+                ImGui.EndTooltip();
+            }
+            ImGui.SameLine();
+        }
+
+        // Copy from Examine window Button
+        icon = copyExamineIconHandler.GetIconLazy();
+        if (icon is not null)
+        {
+            var isInspecting = IsInspecting();
+
+            if (!isInspecting)
+                ImGui.PushStyleColor(ImGuiCol.Text, ColorsPalette.GREY2);
+
+            //ImGui.ImageButton(icon.ImGuiHandle, iconSize);
+            //UiHelper.InputText("examine-button", isInspecting ? CopyInspectTargetToGlamourSet : null);
+            UiHelper.IconButtonWithPopUpInputText(FontAwesomeIcon.ArrowCircleDown, isInspecting ? CopyInspectTargetToGlamourSet : null);
+
+            if (!isInspecting)
+                ImGui.PopStyleColor();
+
+            if (ImGui.IsItemHovered())
+            {
+                ImGui.BeginTooltip();
+                ImGui.Text("Copy from Examine window");
+
+                if (!isInspecting)
+                {
+                    ImGui.TextColored(ColorsPalette.RED, "Only usable in Examine window.");
+                }
+                ImGui.EndTooltip();
+            }
+        }
     }
 
     private (int directory, int glamourSet) selected;
     private (int directory, int glamourSet) dropSource = (-1, -1);
-    private void DrawGlamourSetList()
+    private void DrawGlamourTree()
     {
 
-        for (var n = 0; n < glamourTree.Count; n++)
+        for (var n = 0; n < glamourTree.Directories.Count; n++)
         {
-            var (name, setList) = glamourTree[n];
+            var directory = glamourTree.Directories[n];
 
-            var treeFlags = ImGuiTreeNodeFlags.None | ImGuiTreeNodeFlags.DefaultOpen | ImGuiTreeNodeFlags.SpanAvailWidth; // | ImGuiTreeNodeFlags.NavLeftJumpsBackHere | ImGuiTreeNodeFlags.FramePadding; //| ImGuiTreeNodeFlags.SpanAvailWidth;
-            //if (hoveredWhileDragging == (n, null))
-            //{
-            //    treeFlags |= ImGuiTreeNodeFlags.Selected;
-            //}
+            var treeFlags = ImGuiTreeNodeFlags.None | ImGuiTreeNodeFlags.DefaultOpen | ImGuiTreeNodeFlags.SpanAvailWidth;
 
             // Directory tree node
-            if (ImGui.TreeNodeEx($"{name}##{n}", treeFlags))
+            if (ImGui.TreeNodeEx($"{directory.Name}##{n}", treeFlags))
             {
                 // Directory - context menu
                 if (ImGui.BeginPopupContextItem())
@@ -69,18 +154,19 @@ public class GlamourTreeWidget
                 }
 
                 // Glamour Sets
-                for (var k = 0; k < setList.Count; k++)
+                for (var k = 0; k < directory.GlamourSets.Count; k++)
                 {
+                    var glamourSet = directory.GlamourSets[k];
 
                     // Selectable Glamour Set
                     var textBaseWidth = ImGui.CalcTextSize("A").X;
                     ImGui.SetNextItemWidth(textBaseWidth * 5);
-                    if (ImGui.Selectable($"   {setList[k].name}##{n}{k}", selected == (n, k), ImGuiSelectableFlags.None))
+                    if (ImGui.Selectable($"   {glamourSet.Name}##{n}{k}", selected == (n, k), ImGuiSelectableFlags.None))
                     {
                         // Change selected set if (actually) clicked on a different set
                         if (selected != (n, k))
                         {
-                            SetSelectedGlamourSet(n, k);
+                            SetSelectedGlamourSet(n, k, true);
                         }
                     }
 
@@ -123,7 +209,7 @@ public class GlamourTreeWidget
                         if (ImGui.IsMouseReleased(ImGuiMouseButton.Left))
                         {
                             // Add to next set in the list
-                            MoveGlamourSet(n, k+1);
+                            MoveGlamourSet(n, k + 1);
                         }
                         ImGui.EndDragDropTarget();
                     }
@@ -134,48 +220,45 @@ public class GlamourTreeWidget
         }
     }
 
-    private void AddGlamourSet(string key)
+    private void AddGlamourSet(string setName)
     {
-       var glamourSet = new GlamourSet() { name = key };
-       glamourTree[0].setList.Add(glamourSet);
+        glamourTree.Directories.First().GlamourSets.Add(new GlamourSet(setName));
     }
 
-    private void AddDirectory(string name)
+    private void AddDirectory(string directoryName)
     {
-        glamourTree.Insert(glamourTree.Count, (name, new List<GlamourSet>()));
+        glamourTree.Directories.Add(new GlamourDirectory(directoryName));
     }
 
-    public void SetSelectedGlamourSet(int directoryIndex, int glamourSetIndex)
+    public void SetSelectedGlamourSet(int directoryIndex, int glamourSetIndex, bool preview)
     {
         // Set internal state
         selected = (directoryIndex, glamourSetIndex);
-        currentGlamourSet = glamourTree[directoryIndex].setList[glamourSetIndex];
+        currentGlamourSet = glamourTree.Directories[directoryIndex].GlamourSets[glamourSetIndex];
 
         // Publish GlamourSetChangeEvent
-        EventService.Publish<GlamourSetChangeEvent, GlamourSetChangeEventArgs>(new GlamourSetChangeEventArgs(currentGlamourSet));
+        EventService.Publish<GlamourSetChangeEvent, GlamourSetChangeEventArgs>(new GlamourSetChangeEventArgs(currentGlamourSet, preview));
     }
 
     private void RenameGlamourSet(int directoryIndex, int glamourSetIndex, string name)
     {
-        glamourTree[directoryIndex].setList[glamourSetIndex].name = name;
+        glamourTree.Directories[directoryIndex].GlamourSets[glamourSetIndex].Name = name;
     }
 
     private void RenameDirectory(int directoryIndex, string name)
     {
-        var directory = glamourTree[directoryIndex];
-        directory.name = name;
-        glamourTree[directoryIndex] = directory;
+        glamourTree.Directories[directoryIndex].Name = name;
     }
 
     private void DeleteGlamourSet(int directoryIndex, int glamourSetIndex)
     {
         // Dont allow deleting last set TODO - make rename/delete buttons grey out
-        if (glamourTree.SelectMany(e => e.setList).Count() == 1)
+        if (glamourTree.Directories.SelectMany(e => e.GlamourSets).Count() == 1)
         {
             return;
         }
 
-        glamourTree[directoryIndex].setList.RemoveAt(glamourSetIndex);
+        glamourTree.Directories[directoryIndex].GlamourSets.RemoveAt(glamourSetIndex);
 
         if (selected == (directoryIndex, glamourSetIndex))
         {
@@ -186,11 +269,11 @@ public class GlamourTreeWidget
     private void DeleteDirectory(int directoryIndex)
     {
         // Dont allow deleting last directory
-        if (glamourTree.Count == 1)
+        if (glamourTree.Directories.Count == 1)
         {
             return;
         }
-        glamourTree.RemoveAt(directoryIndex);
+        glamourTree.Directories.RemoveAt(directoryIndex);
 
         if (selected.directory == directoryIndex)
         {
@@ -200,11 +283,11 @@ public class GlamourTreeWidget
 
     private void SetSelectedGlamourSetToFirst()
     {
-        for (var n = 0; n < glamourTree.Count; n++)
+        for (var n = 0; n < glamourTree.Directories.Count; n++)
         {
-            if (glamourTree[n].setList.Any())
+            if (glamourTree.Directories[n].GlamourSets.Any())
             {
-                SetSelectedGlamourSet(n, 0);
+                SetSelectedGlamourSet(n, 0, true);
             }
         }
     }
@@ -220,19 +303,78 @@ public class GlamourTreeWidget
             {
                 targetOffset = -1;
             }
-
         }
 
         // Update directory tree
-        var sourceGlamourSet = glamourTree[dropSource.directory].setList[dropSource.glamourSet];
-        glamourTree[dropSource.directory].setList.RemoveAt(dropSource.glamourSet);
-        glamourTree[targetDirectory].setList.Insert(targetGlamourSet + targetOffset, sourceGlamourSet);
+        var sourceGlamourSet = glamourTree.Directories[dropSource.directory].GlamourSets[dropSource.glamourSet];
+        glamourTree.Directories[dropSource.directory].GlamourSets.RemoveAt(dropSource.glamourSet);
+        glamourTree.Directories[targetDirectory].GlamourSets.Insert(targetGlamourSet + targetOffset, sourceGlamourSet);
 
         // Update selected glamour set if moved
         var selectedMove = dropSource == selected;
         if (selectedMove)
         {
-            SetSelectedGlamourSet(targetDirectory, targetGlamourSet + targetOffset);
+            SetSelectedGlamourSet(targetDirectory, targetGlamourSet + targetOffset, true);
         }
+    }
+
+    private void ApplyGlamourSetToPlate()
+    {
+        Dev.Log("Applying glamour set to plate");
+        // TODO add indication on which items exist in Dresser
+        foreach (var (equipSlot, glamourItem) in currentGlamourSet.Items)
+        {
+            PlatesExecutor.SetPlateItem(glamourItem.GetCollectible().CollectibleKey.item, (byte)glamourItem.StainId);
+        }
+    }
+
+    // TODO move this to some other module
+    private unsafe bool IsInspecting()
+    {
+        var inspectAgent = AgentInspect.Instance();
+        return inspectAgent->AgentInterface.IsAgentActive();
+    }
+
+    private unsafe void CopyInspectTargetToGlamourSet(string hint)
+    {
+        Dev.Log("Copying inspected target to glamour set");
+
+        // Add new glamour set
+        AddGlamourSet(hint);
+
+        // New glamour set added in first directory (0) on the last slot (Count-1)
+        SetSelectedGlamourSet(0, glamourTree.Directories[0].GlamourSets.Count-1, false);
+
+        var itemSheet = ExcelCache<ItemAdapter>.GetSheet()!;
+        var container = InventoryManager.Instance()->GetInventoryContainer(InventoryType.Examine);
+
+        // Add inspected items to set
+        for (var i = 0; i < 13; i++)
+        {
+            var invSlot = container->GetInventorySlot(i);
+            if (invSlot is not null)
+            {
+                var itemId = invSlot->GlamourID != 0 ? invSlot->GlamourID : invSlot->ItemID;
+                var stainId = invSlot->Stain;
+                var item = itemSheet.GetRow(itemId);
+                if (Services.DataProvider.SupportedEquipSlots.Contains(item.EquipSlot))
+                {
+                    currentGlamourSet.SetItem(item, stainId);
+                }
+            }
+        }
+    }
+
+    public void SaveGlamourTreeToConfiguration()
+    {
+        Dev.Log("Saving glamour tree to configuration...");
+        Services.Configuration.GlamourTree = glamourTree;
+        Services.Configuration.Save();
+    }
+
+    private void InitializeGlamourTreeFromConfiguration()
+    {
+        Dev.Log("Loading glamour tree from configuration...");
+        glamourTree = Services.Configuration.GlamourTree;
     }
 }

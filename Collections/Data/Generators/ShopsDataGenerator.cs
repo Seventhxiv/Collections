@@ -6,32 +6,34 @@ public class ShopsDataGenerator
 
     private Dictionary<uint, uint> NpcDataToNpcBase { get; init; } = new();
 
-    private ExcelSheet<ItemAdapter> ItemSheet { get; init; }
-    private ExcelSheet<ENpcBase> ENpcBaseSheet { get; init; }
-    private ExcelSheet<SpecialShopAdapter> SpecialShopEntitySheet { get; init; }
-    private ExcelSheet<CustomTalk> CustomTalkSheet { get; init; }
-    private ExcelSheet<CustomTalkNestHandlers> CustomTalkNestHandlersSheet { get; init; }
-    private ExcelSheet<InclusionShop> InclusionShopSheet { get; init; }
-    private ExcelSheet<InclusionShopSeries> InclusionShopSeriesSheet { get; init; }
-    private ExcelSheet<TopicSelect> TopicSelectSheet { get; init; }
-    private ExcelSheet<PreHandler> PreHandlerSheet { get; init; }
+    private ExcelCache<ItemAdapter> ItemSheet { get; init; }
+    private ExcelCache<ENpcBase> ENpcBaseSheet { get; init; }
+    private ExcelCache<SpecialShopAdapter> SpecialShopEntitySheet { get; init; }
+    private ExcelCache<CustomTalk> CustomTalkSheet { get; init; }
+    private ExcelCache<CustomTalkNestHandlers> CustomTalkNestHandlersSheet { get; init; }
+    private ExcelCache<InclusionShop> InclusionShopSheet { get; init; }
+    private ExcelCache<InclusionShopSeries> InclusionShopSeriesSheet { get; init; }
+    private ExcelCache<TopicSelect> TopicSelectSheet { get; init; }
+    private ExcelCache<PreHandler> PreHandlerSheet { get; init; }
 
     public ShopsDataGenerator()
     {
-        ItemSheet = Excel.GetExcelSheet<ItemAdapter>();
-        ENpcBaseSheet = Excel.GetExcelSheet<ENpcBase>();
-        SpecialShopEntitySheet = Excel.GetExcelSheet<SpecialShopAdapter>();
-        CustomTalkSheet = Excel.GetExcelSheet<CustomTalk>();
-        CustomTalkNestHandlersSheet = Excel.GetExcelSheet<CustomTalkNestHandlers>();
-        InclusionShopSheet = Excel.GetExcelSheet<InclusionShop>();
-        InclusionShopSeriesSheet = Excel.GetExcelSheet<InclusionShopSeries>();
-        TopicSelectSheet = Excel.GetExcelSheet<TopicSelect>();
-        PreHandlerSheet = Excel.GetExcelSheet<PreHandler>();
+        //Dev.Start();
+        ItemSheet = ExcelCache<ItemAdapter>.GetSheet();
+        ENpcBaseSheet = ExcelCache<ENpcBase>.GetSheet();
+        SpecialShopEntitySheet = ExcelCache<SpecialShopAdapter>.GetSheet();
+        CustomTalkSheet = ExcelCache<CustomTalk>.GetSheet();
+        CustomTalkNestHandlersSheet = ExcelCache<CustomTalkNestHandlers>.GetSheet();
+        InclusionShopSheet = ExcelCache<InclusionShop>.GetSheet();
+        InclusionShopSeriesSheet = ExcelCache<InclusionShopSeries>.GetSheet();
+        TopicSelectSheet = ExcelCache<TopicSelect>.GetSheet();
+        PreHandlerSheet = ExcelCache<PreHandler>.GetSheet();
 
         PopulateNpcDataToNpcBase();
         PopulateGilShop();
         PopulateGCShop();
         PopulateSpecialShop();
+        //Dev.Stop();
     }
 
     internal enum EventHandlerType : uint
@@ -45,7 +47,7 @@ public class ShopsDataGenerator
 
     private void PopulateNpcDataToNpcBase()
     {
-        Dev.StartStopwatch();
+        Dev.Start();
 
         var FirstSpecialShopId = SpecialShopEntitySheet.First().RowId;
         var LastSpecialShopId = SpecialShopEntitySheet.Last().RowId;
@@ -144,8 +146,37 @@ public class ShopsDataGenerator
                 }
             }
         }
-        Dev.EndStopwatch();
+
+        // Inject manual data
+        foreach (var (NpcBaseId, gilShopRowIds) in DataOverrides.GilShopToNpcBase)
+        {
+            foreach (var gilShopRowId in gilShopRowIds)
+            {
+                NpcDataToNpcBase.TryAdd(gilShopRowId, NpcBaseId);
+            }
+        }
+
+        foreach (var (specialShopRowId, NpcBaseId) in DataOverrides.SpecialShopToNpcBase)
+        {
+            NpcDataToNpcBase.TryAdd(specialShopRowId, NpcBaseId);
+        }
+        Dev.Stop();
     }
+
+    private uint? GetNpcBaseFromNpcData(uint npcDataId)
+    {
+        if (NpcDataToNpcBase.ContainsKey(npcDataId))
+        {
+            // Map Journeyman Salvager to Calamity Salvager (locateable)
+            var npcBaseId = NpcDataToNpcBase[npcDataId];
+            if (npcBaseId == 1025924)
+                return 1006004;
+
+            return npcBaseId;
+        }
+        return null;
+    }
+
     private static bool MatchEventHandlerType(uint data, EventHandlerType type)
     {
         return ((data >> 16) & (uint)type) == (uint)type;
@@ -218,12 +249,17 @@ public class ShopsDataGenerator
 
     private void PopulateGilShop()
     {
-        Dev.StartStopwatch();
-        var gilShopSheet = Excel.GetExcelSheet<GilShop>()!;
-        var gilShopItemSheet = Excel.GetExcelSheet<GilShopItem>()!;
-        var gilItem = ItemSheet.GetRow((uint)Currencies.Gil);
+        Dev.Start();
+        var gilShopSheet = ExcelCache<GilShop>.GetSheet()!;
+        var gilShopItemSheet = ExcelCache<GilShopItem>.GetSheet()!;
+        var gilItem = ItemSheet.GetRow((uint)Currency.Gil);
         foreach (var gilShop in gilShopSheet)
         {
+            if (DataOverrides.IgnoreGilShopId.Contains(gilShop.RowId))
+            {
+                continue;
+            }
+
             for (uint i = 0; i < 100; i++)
             {
                 try
@@ -234,43 +270,36 @@ public class ShopsDataGenerator
                     {
                         break;
                     }
-
                     if (!itemToShopEntry.ContainsKey(item.RowId))
                     {
                         itemToShopEntry[item.RowId] = new List<ShopEntry>();
                     }
                     var ENpcDataId = gilShop.RowId;
-                    var ENpcBaseId = NpcDataToNpcBase[ENpcDataId];
+                    uint? ENpcBaseId = null;
+                    if (NpcDataToNpcBase.ContainsKey(ENpcDataId))
+                    {
+                        ENpcBaseId = GetNpcBaseFromNpcData(ENpcDataId);
+                    }
                     var costList = new List<(ItemAdapter Item, int Amount)> { (gilItem, (int)item.PriceMid) };
-                    var shopEntry = new ShopEntry(costList, ENpcBaseId);
-                    //var shopEntry = new ShopEntry()
-                    //{
-                    //    Cost = new List<ShopEntryCost>() {
-                    //        new ShopEntryCost()
-                    //        {
-                    //        CurrencyType = CollectibleSourceType.Gil, Amount = (int)item.PriceMid
-                    //        }
-                    //    },
-                    //    ENpcBaseId = ENpcBaseId
-                    //};
+                    var shopEntry = new ShopEntry(costList, ENpcBaseId, gilShop.RowId);
                     itemToShopEntry[item.RowId].Add(shopEntry);
                 }
                 catch
                 {
-                    break;
+                    continue;
                 }
             }
         }
-        Dev.EndStopwatch();
+        Dev.Stop();
     }
 
     private void PopulateGCShop()
     {
-        Dev.StartStopwatch();
-        var GCShopSheet = Excel.GetExcelSheet<GCShop>()!; // 4 rows
-        var GCScripShopCategorySheet = Excel.GetExcelSheet<GCScripShopCategory>()!; // 31 rows
-        var GCScripShopItemSheet = Excel.GetExcelSheet<GCScripShopItem>()!; // 36.x
-        var GCItem = ItemSheet.GetRow((uint)Currencies.CompanySeals);
+        Dev.Start();
+        var GCShopSheet = ExcelCache<GCShop>.GetSheet()!; // 4 rows
+        var GCScripShopCategorySheet = ExcelCache<GCScripShopCategory>.GetSheet()!; // 31 rows
+        var GCScripShopItemSheet = ExcelCache<GCScripShopItem>.GetSheet()!; // 36.x
+        var GCItem = ItemSheet.GetRow((uint)Currency.CompanySeals);
 
         foreach (var gcShop in GCShopSheet)
         {
@@ -304,18 +333,9 @@ public class ShopsDataGenerator
                             itemToShopEntry[item.RowId] = new List<ShopEntry>();
                         }
                         var ENpcDataId = gcShop.RowId;
-                        var ENpcBaseId = NpcDataToNpcBase[ENpcDataId];
+                        var ENpcBaseId = GetNpcBaseFromNpcData(ENpcDataId);
                         var costList = new List<(ItemAdapter Item, int Amount)> { (GCItem, (int)item.PriceMid) };
-                        var shopEntry = new ShopEntry(costList, ENpcBaseId);
-                        //var shopEntry = new ShopEntry()
-                        //{
-                        //    Cost = new List<ShopEntryCost>() {new ShopEntryCost()
-                        //     {
-                        //        CurrencyType = CollectibleSourceType.CompanySeals, Amount = (int)GCScripShopItem.CostGCSeals
-                        //     }
-                        //    },
-                        //    ENpcBaseId = ENpcBaseId
-                        //};
+                        var shopEntry = new ShopEntry(costList, ENpcBaseId, gcShop.RowId);
                         itemToShopEntry[item.RowId].Add(shopEntry);
                     }
                     catch (Exception)
@@ -325,24 +345,28 @@ public class ShopsDataGenerator
                 }
             }
         }
-        Dev.EndStopwatch();
+        Dev.Stop();
     }
 
     private void PopulateSpecialShop()
     {
-        Dev.StartStopwatch();
+        Dev.Start();
 
         foreach (var specialShop in SpecialShopEntitySheet)
         {
+            if (DataOverrides.IgnoreSpecialShopId.Contains(specialShop.RowId))
+            {
+                continue;
+            }
+
             uint? ENpcBaseId = null;
             if (NpcDataToNpcBase.ContainsKey(specialShop.RowId))
             {
-                ENpcBaseId = NpcDataToNpcBase[specialShop.RowId];
+                ENpcBaseId = GetNpcBaseFromNpcData(specialShop.RowId);
             }
 
             foreach (var entry in specialShop.Entries)
             {
-                //var CostShopEntryList = new List<ShopEntryCost>();
                 var costList = new List<(ItemAdapter Item, int Amount)>();
 
                 foreach (var cost in entry.Cost)
@@ -353,16 +377,7 @@ public class ShopsDataGenerator
                     }
 
                     costList.Add((cost.Item.Value, (int)cost.Count));
-                    //var currencyType = PluginServices.ContentType.getSourceType(cost.Item.Value);
-                    //var costShopEntry = new ShopEntryCost()
-                    //{
-                    //    CurrencyType = currencyType, Amount = (int)cost.Count, Item = cost.Item.Value
-                    //};
-
-                    //CostShopEntryList.Add(costShopEntry);
                 }
-                //costStr += "Cost: " + specialShop.RowId + cost.Item.Value.Name + "x" + cost.Count.ToString() + ", ";
-
                 foreach (var result in entry.Result)
                 {
                     var itemId = result.Item.Value.RowId;
@@ -375,16 +390,11 @@ public class ShopsDataGenerator
                     {
                         itemToShopEntry[itemId] = new List<ShopEntry>();
                     }
-                    var shopEntry = new ShopEntry(costList, ENpcBaseId);
-                    //var shopEntry = new ShopEntry()
-                    //{
-                    //    Cost = CostShopEntryList,
-                    //    ENpcBaseId = ENpcBaseId
-                    //};
+                    var shopEntry = new ShopEntry(costList, ENpcBaseId, specialShop.RowId);
                     itemToShopEntry[itemId].Add(shopEntry);
                 }
             }
         }
-        Dev.EndStopwatch();
+        Dev.Stop();
     }
 }

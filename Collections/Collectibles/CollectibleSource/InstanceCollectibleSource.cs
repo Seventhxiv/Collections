@@ -1,5 +1,4 @@
-using Lumina.Excel.GeneratedSheets;
-using System.Collections.Generic;
+using Collections.Executors;
 
 namespace Collections;
 
@@ -32,16 +31,16 @@ public class InstanceCollectibleSource : CollectibleSource
                 sourceType.Add(CollectibleSourceCategory.PvP);
                 break;
             case "Treasure Hunt":
-                sourceType.Add(CollectibleSourceCategory.TreasureMaps);
+                sourceType.Add(CollectibleSourceCategory.TreasureHunts);
                 break;
             case "Tribal Quests":
-                sourceType.Add(CollectibleSourceCategory.BeastTribe);
+                sourceType.Add(CollectibleSourceCategory.BeastTribes);
                 break;
             case "Deep Dungeons":
                 sourceType.Add(CollectibleSourceCategory.DeepDungeon);
                 break;
             default:
-                sourceType.Add(CollectibleSourceCategory.Instance);
+                sourceType.Add(CollectibleSourceCategory.Duty);
                 break;
         }
         return sourceType;
@@ -49,15 +48,15 @@ public class InstanceCollectibleSource : CollectibleSource
 
     public override bool GetIslocatable()
     {
-        return false;
+        return true;
     }
 
-    public override LocationEntry GetLocationEntry()
+    public override void DisplayLocation()
     {
-        return null;
+        DutyFinderOpener.OpenRegularDuty(ContentFinderCondition.RowId);
     }
 
-    public static int defaultIconId = 60550;
+    public static int defaultIconId = 060414; //60550;
     private int? iconId = null;
     protected override int GetIconId()
     {

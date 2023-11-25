@@ -40,7 +40,7 @@ public class CollectionTab : IDrawable
         // Glam collection
         ImGui.SameLine();
         ImGui.BeginChild("collection");
-        CollectionWidget.Draw(filteredCollection, true);
+        CollectionWidget.Draw(filteredCollection);
         ImGui.EndChild();
     }
 
@@ -56,15 +56,27 @@ public class CollectionTab : IDrawable
         filteredCollection = collection.AsParallel()
             .Where(c => c.CollectibleKey is not null)
             .Where(c => !contentFilters.Any() || contentFilters.Intersect(c.CollectibleKey.GetSourceTypes()).Any())
+            // Order
+            .OrderByDescending(c => c.IsFavorite())
+            .ThenByDescending(c => c.Name)
             .ToList();
     }
 
     public void OnOpen()
     {
-        foreach (var collectible in collection)
+        Dev.Log();
+
+        Task.Run(() =>
         {
-            collectible.UpdateObtainedState();
-        }
+            foreach (var collectible in collection)
+            {
+                collectible.UpdateObtainedState();
+            }
+        });
+    }
+
+    public void OnClose()
+    {
     }
 
     public void Dispose()

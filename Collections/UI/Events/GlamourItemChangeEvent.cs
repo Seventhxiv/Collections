@@ -1,13 +1,11 @@
-using System;
-
 namespace Collections;
 
 public class GlamourItemChangeEventArgs : EventArgs
 {
-    public GlamourItem GlamourItem { get; init; }
-    public GlamourItemChangeEventArgs(GlamourItem glamourItem)
+    public GlamourCollectible Collectible { get; init; }
+    public GlamourItemChangeEventArgs(GlamourCollectible collectible)
     {
-        GlamourItem = glamourItem;
+        Collectible = collectible;
     }
 }
 

@@ -1,7 +1,4 @@
-using Lumina.Excel.GeneratedSheets;
 using LuminaSupplemental.Excel.Model;
-using System;
-using System.Collections.Generic;
 
 namespace Collections;
 
@@ -11,9 +8,9 @@ public class MogStationDataGenerator
 
     public MogStationDataGenerator()
     {
-        Dev.StartStopwatch();
+        //Dev.Start();
         PopulateData();
-        Dev.EndStopwatch();
+        //Dev.Stop();
     }
 
     private void PopulateData()
@@ -26,7 +23,7 @@ public class MogStationDataGenerator
         }
 
         // FittingShopCategoryItem sheet
-        var FittingShopCategoryItemSheet = Excel.GetExcelSheet<FittingShopCategoryItem>()!;
+        var FittingShopCategoryItemSheet = ExcelCache<FittingShopCategoryItem>.GetSheet()!;
 
         foreach (var FittingShopCategoryItem in FittingShopCategoryItemSheet)
         {
@@ -39,7 +36,7 @@ public class MogStationDataGenerator
         }
 
         // FittingShopItemSet sheet
-        var FittingShopItemSetSheet = Excel.GetExcelSheet<FittingShopItemSet>()!;
+        var FittingShopItemSetSheet = ExcelCache<FittingShopItemSet>.GetSheet()!;
 
         foreach (var fittingShopItemSet in FittingShopItemSetSheet)
         {
@@ -49,6 +46,15 @@ public class MogStationDataGenerator
             AddIfNotZero((uint)fittingShopItemSet.Unknown3);
             AddIfNotZero((uint)fittingShopItemSet.Unknown4);
             AddIfNotZero((uint)fittingShopItemSet.Unknown5);
+        }
+
+        // Override items that shouldn't be considered mog station
+        foreach(var itemId in DataOverrides.IgnoreMogStationId)
+        {
+            if (items.Contains(itemId))
+            {
+                items.Remove(itemId);
+            }
         }
     }
 

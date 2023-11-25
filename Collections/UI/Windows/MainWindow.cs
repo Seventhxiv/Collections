@@ -1,84 +1,127 @@
 using Dalamud.Interface.Windowing;
 using Dalamud.Plugin.Services;
-using System.Threading.Tasks;
-using System.Xml.Linq;
 
 namespace Collections;
 
 public class MainWindow : Window, IDisposable
 {
-    public string? forceInstanceTab = null;
-    public Vector4 originalButtonColor { get; set;}
-    private List<(string name, IDrawable window)> collectionTabs { get; init; }
+    public Vector4 originalButtonColor { get; set; }
 
-    public MainWindow() : base(
-        "Collections", ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoCollapse)
+    private List<(string name, IDrawable window)> tabs { get; init; }
+
+    public MainWindow() : base("Collections", ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoCollapse)
     {
-        SetOriginalColors();
+        StoreOriginalColors();
+
         SizeConstraints = new WindowSizeConstraints
         {
-            MinimumSize = new Vector2(500, 300), // 900, 650
-            MaximumSize = new Vector2(2000, 1000) // 2000, 1000
+            MinimumSize = new Vector2(500, 300),
+            MaximumSize = new Vector2(2000, 1000)
         };
 
-        collectionTabs = new List<(string name, IDrawable window)>()
+        tabs = GetCollectionTabs();
+        var additionalTabs = new List<(string name, IDrawable window)>()
         {
-            ("Glamour", new GlamourTab()),
-            ("Mounts", new CollectionTab(Services.DataProvider.GetCollection<MountCollectible>())),
-            ("Minions",  new CollectionTab(Services.DataProvider.GetCollection<MinionCollectible>())),
             ("Instance",  new InstanceTab()),
+            ("Wish List", new WishlistTab()),
             ("Settings", new SettingsTab()),
         };
+
+        tabs.AddRange(additionalTabs);
     }
 
-    public unsafe void SetOriginalColors()
+    public string? forceOpenTab = null;
+    private string previousTabName = String.Empty;
+    public override void Draw()
+    {
+        if (ImGui.BeginTabBar("tab-bar", ImGuiTabBarFlags.FittingPolicyScroll | ImGuiTabBarFlags.AutoSelectNewTabs))
+        {
+            foreach (var (name, window) in tabs)
+            {
+                // Use AutoSelectNewTabs to focus the forceOpenTab
+                if (forceOpenTab == name)
+                {
+                    forceOpenTab = null;
+                    continue;
+                }
+
+                // Tab item
+                if (ImGui.BeginTabItem($"{name}"))
+                {
+                    // Run OnOpen when a new tab is selected
+                    if (name != previousTabName)
+                    {
+                        window.OnOpen();
+                        previousTabName = name;
+                    }
+
+                    // Draw window
+                    window.Draw();
+
+                    ImGui.EndTabItem();
+                }
+            }
+            ImGui.EndTabBar();
+        }
+    }
+
+    private List<(string name, IDrawable window)> GetCollectionTabs()
+    {
+        var collections = Services.DataProvider.collections;
+        return collections.Select(kv => (kv.Value.name, GetCollectionTab(kv.Key))).ToList();
+
+    }
+
+    private IDrawable GetCollectionTab(Type T)
+    {
+        if (T == typeof(GlamourCollectible))
+            return new GlamourTab();
+        else
+            return new CollectionTab(Services.DataProvider.GetCollection(T));
+
+    }
+
+    public void OpenTab(string tabName)
+    {
+        forceOpenTab = tabName;
+        IsOpen = true;
+    }
+
+    public unsafe void StoreOriginalColors()
     {
         originalButtonColor = *ImGui.GetStyleColorVec4(ImGuiCol.Button);
     }
 
     public override void OnOpen()
     {
-        Task.Run(() =>
-        {
-            foreach (var (_, window) in collectionTabs)
-            {
-                window.OnOpen();
-            }
-        });
     }
 
     public override void OnClose()
     {
-        Services.GameFunctionsExecutor.ResetPreview();
+        previousTabName = string.Empty;
+
+        Services.PreviewExecutor.ResetAllPreview();
+
+        foreach (var (_, window) in tabs)
+        {
+            window.OnClose();
+        }
     }
 
     public void Dispose()
     {
-        foreach (var (_, window) in collectionTabs)
+        foreach (var (_, window) in tabs)
         {
             window.Dispose();
         }
     }
 
-    public override void Draw()
+    // Resets preview under certain conditions (GPose open)
+    public void OnFrameworkTick(IFramework framework)
     {
-        if (ImGui.BeginTabBar("TabBar", ImGuiTabBarFlags.FittingPolicyScroll | ImGuiTabBarFlags.AutoSelectNewTabs))
+        if (IsOpen && PreviewExecutor.IsInGPose())
         {
-            foreach (var (name, window) in collectionTabs)
-            {
-                // Use AutoSelectNewTabs to focus the forceInstanceTab
-                if (forceInstanceTab == name)
-                {
-                    forceInstanceTab = null;
-                    continue;
-                }
-                if (ImGui.BeginTabItem($"{name}"))
-                {
-                    window.Draw();
-                    ImGui.EndTabItem();
-                }
-            }
-            ImGui.EndTabBar();
+            Services.PreviewExecutor.ResetAllPreview();
         }
     }
 
@@ -93,21 +136,12 @@ public class MainWindow : Window, IDisposable
         ImGui.PopStyleColor();
         ImGui.PopStyleVar();
     }
-
-    // Resets preview under certain conditions (GPose open)
-    public void OnFrameworkTick(IFramework framework)
-    {
-        if (IsOpen && GameActionsExecutor.IsInGPose())
-        {
-            Services.GameFunctionsExecutor.ResetPreview();
-        }
-    }
-
 }
 
 public interface IDrawable : IDisposable
 {
     public void Draw();
     public void OnOpen();
+    public void OnClose();
 }
 

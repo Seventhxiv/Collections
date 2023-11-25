@@ -1,8 +1,14 @@
 namespace Collections;
 
-public class CollectibleTooltip
+public class CollectibleTooltipWidget
 {
-    public void DrawItemTooltip(ICollectible collectible)
+    private EventService EventService { get; init; }
+    public CollectibleTooltipWidget(EventService eventService)
+    {
+        EventService = eventService;
+    }
+
+    public unsafe void DrawItemTooltip(ICollectible collectible)
     {
         var icon = collectible.GetIconLazy();
         var CollectibleKey = collectible.CollectibleKey;
@@ -29,7 +35,7 @@ public class CollectibleTooltip
             ImGui.TableNextColumn();
 
             // Item name
-            ImGui.Text($"{collectible.GetName()}");
+            ImGui.Text($"{collectible.Name}");
 
             // Level + Jobs
             if (item.IsEquipment)
@@ -59,30 +65,28 @@ public class CollectibleTooltip
 
             // Obtained
             var isObtained = collectible.GetIsObtained();
-            UiHelper.IconButtonStateful(0, FontAwesomeIcon.Check, ref isObtained, ColorsPalette.GREY2, ColorsPalette.WHITE);
+            UiHelper.IconButtonStateful("obtained-button", FontAwesomeIcon.Check, ref isObtained, ColorsPalette.GREY2, ColorsPalette.WHITE);
             if (ImGui.IsItemHovered())
             {
                 ImGui.SetTooltip(isObtained ? "Obtained" : "Unobtained");
             }
             ImGui.SameLine();
 
-            // Wish List TODO
-            var isWishlisted = collectible.isFavorite;
-            UiHelper.IconButtonStateful(1, FontAwesomeIcon.Hourglass, ref isWishlisted, ColorsPalette.GREY2, ColorsPalette.WHITE);
-            collectible.isFavorite = isWishlisted;
-            if (ImGui.IsItemHovered())
+            // Wish List
+            var isWishlist = collectible.IsWishlist();
+            if (UiHelper.IconButtonStateful("wishlist-button", FontAwesomeIcon.ShoppingCart, ref isWishlist, ColorsPalette.GREY2, ColorsPalette.YELLOW, isWishlist ? "In Wishlist" : "Add to Wishlist"))
             {
-                ImGui.SetTooltip(isWishlisted ? "In Wishlist" : "Add to Wishlist");
+                collectible.SetWishlist(isWishlist);
+                EventService.Publish<FilterChangeEvent, FilterChangeEventArgs>(new FilterChangeEventArgs());
             }
             ImGui.SameLine();
 
             // Favorite
-            var isFavorite = collectible.isFavorite;
-            UiHelper.IconButtonStateful(0, FontAwesomeIcon.Star, ref isFavorite, ColorsPalette.GREY2, ColorsPalette.YELLOW);
-            collectible.isFavorite = isFavorite;
-            if (ImGui.IsItemHovered())
+            var isFavorite = collectible.IsFavorite();
+            if (UiHelper.IconButtonStateful("favourite-button", FontAwesomeIcon.Star, ref isFavorite, ColorsPalette.GREY2, ColorsPalette.YELLOW, isFavorite ? "Favorite" : "Add to Favorite"))
             {
-                ImGui.SetTooltip(isFavorite ? "Favorite" : "Add to Favorite");
+                collectible.SetFavorite(isFavorite);
+                EventService.Publish<FilterChangeEvent, FilterChangeEventArgs>(new FilterChangeEventArgs());
             }
 
             // Wiki links
@@ -177,14 +181,13 @@ public class CollectibleTooltip
                         if (ImGui.IsItemHovered())
                         {
                             hoveredRowIndex = i;
-                            ImGui.SetTooltip("Open Map");
+                            ImGui.SetTooltip("Open Link");
                         }
 
-                        // Open map link on click
+                        // Open link on click
                         if (ImGui.IsItemClicked(ImGuiMouseButton.Left))
                         {
-                            var locationEntry = source.GetLocationEntry();
-                            MapFlag.Place(locationEntry.TerritoryType, locationEntry.Xorigin, locationEntry.Yorigin);
+                            source.DisplayLocation();
                         }
                     }
                 }

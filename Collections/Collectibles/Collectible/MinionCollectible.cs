@@ -2,7 +2,7 @@ using FFXIVClientStructs.FFXIV.Client.Game.UI;
 
 namespace Collections;
 
-public class MinionCollectible : Collectible<Companion>
+public class MinionCollectible : Collectible<Companion>, ICreateable<MinionCollectible, Companion>
 {
     protected override Companion excelRow { get; set; }
     public override string Name { get; init; }
@@ -10,11 +10,10 @@ public class MinionCollectible : Collectible<Companion>
     {
         Name = excelRow.Singular;
 
-        // Collectible key
         if (Services.DataGenerator.CollectibleKeyDataGenerator.minionUnlockItem.ContainsKey(excelRow.RowId))
         {
             var item = Services.DataGenerator.CollectibleKeyDataGenerator.minionUnlockItem[excelRow.RowId];
-            CollectibleKey = new CollectibleKey(item);
+            CollectibleKey = CollectibleKeyCache.Instance.GetObject((item, true));
         }
         else
         {
@@ -22,9 +21,14 @@ public class MinionCollectible : Collectible<Companion>
         }
     }
 
-    public override string GetName()
+    public static MinionCollectible Create(Companion excelRow)
     {
-        return excelRow.Singular;
+        return new(excelRow);
+    }
+
+    public new static string GetCollectionName()
+    {
+        return "Minions";
     }
 
     public override unsafe void UpdateObtainedState()
@@ -37,8 +41,9 @@ public class MinionCollectible : Collectible<Companion>
         return excelRow.Icon;
     }
 
-    public new static string GetCollectionName()
+    public override void Interact()
     {
-        return "Minions";
+        if (isObtained)
+            SummonActionExecutor.SummonMinion(excelRow.RowId);
     }
 }
