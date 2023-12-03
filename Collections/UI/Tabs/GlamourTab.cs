@@ -137,7 +137,7 @@ public class GlamourTab : IDrawable
 
         Task.Run(() =>
         {
-            foreach(var collectible in Services.DataProvider.GetCollection<GlamourCollectible>())
+            foreach (var collectible in Services.DataProvider.GetCollection<GlamourCollectible>())
             {
                 collectible.UpdateObtainedState();
             }

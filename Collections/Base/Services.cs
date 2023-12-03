@@ -54,8 +54,8 @@ public class Services
         PreviewExecutor = new PreviewExecutor();
         ContentTypeResolver = new CurrencyDataGenerator();
         UniversalisClient = new UniversalisClient();
-        DresserObserver = new DresserObserver();
         ItemFinder = new ItemFinder();
+        DresserObserver = new DresserObserver();
 
         // Data
         DataGenerator = new DataGenerator();

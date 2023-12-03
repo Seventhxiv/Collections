@@ -8,6 +8,7 @@ public class Configuration : IPluginConfiguration
     public HashSet<uint> Favorites = new();
     public HashSet<uint> WishListed = new();
     public List<uint> DresserItemIds = new();
+    public List<uint> ArmoireItemIds = new();
     public GlamourTree GlamourTree = new();
     public bool AutoOpenInstanceTab = true;
     public bool ForceTryOn = false;

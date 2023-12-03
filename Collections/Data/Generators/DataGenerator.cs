@@ -12,6 +12,7 @@ public class DataGenerator
     public AchievementsDataGenerator AchievementsDataGenerator { get; private set; }
     public BeastTribesDataGenerator BeastTribesDataGenerator { get; private set; }
     public QuestsDataGenerator QuestsDataGenerator { get; private set; }
+    public CraftingDataGenerator CraftingDataGenerator { get; private set; }
 
     public DataGenerator()
     {
@@ -26,6 +27,7 @@ public class DataGenerator
         CollectibleKeyDataGenerator = new CollectibleKeyDataGenerator();
         ContainersDataGenerator = new ContainersDataGenerator();
         AchievementsDataGenerator = new AchievementsDataGenerator();
+        CraftingDataGenerator = new CraftingDataGenerator();
         Dev.Stop();
     }
 }

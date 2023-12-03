@@ -24,7 +24,7 @@ public class GlamourCollectible : Collectible<ItemAdapter>, ICreateable<GlamourC
     public override void UpdateObtainedState()
     {
         isObtained = Services.ItemFinder.IsItemInInventory(excelRow.RowId)
-                    || Services.ItemFinder.IsItemInArmoire(excelRow.RowId)
+                    || Services.ItemFinder.IsItemInArmoireCache(excelRow.RowId)
                     || Services.ItemFinder.IsItemInDresser(excelRow.RowId);
     }
 

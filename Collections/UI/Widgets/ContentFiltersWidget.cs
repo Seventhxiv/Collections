@@ -27,6 +27,7 @@ public class ContentFiltersWidget
             {CollectibleSourceCategory.IslandSanctuary, 65096},
             {CollectibleSourceCategory.HuntSeals, 65034},
             {CollectibleSourceCategory.TreasureHunts, 000115}, //61829
+            {CollectibleSourceCategory.Crafting, 62202},
 
             // Here for reference:
             //{CollectibleSourceType.WolfMarks, 65014},

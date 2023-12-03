@@ -24,15 +24,22 @@ public unsafe class PlatesExecutor
             if (Services.ItemFinder.IsItemInDresser(item.RowId))
             {
                 Dev.Log($"Found {item.Name} ({item.RowId}) in Dresser, Adding to plate with stain: {stainId}");
-                SetPlateItem(PlateItemSource.Dresser, item.RowId, stainId);
+                var index = Services.DresserObserver.DresserItemIds.IndexOf(item.RowId);
+                SetPlateItem(PlateItemSource.Dresser, index, item.RowId, stainId);
             }
 
             // Look up in Armoire
-            else if (Services.ItemFinder.IsItemInArmoire(item.RowId))
+            else if (Services.ItemFinder.IsItemInArmoireCache(item.RowId))
             {
                 Dev.Log($"Found {item.Name} ({item.RowId}) in Armoire, Adding to plate with stain: {stainId}");
-                //var cabinetId = (uint)Services.ItemFinder.CabinetIdFromItemId(item.RowId);
-                SetPlateItem(PlateItemSource.Armoire, item.RowId, stainId);
+
+                // Checking Armoire Loaded since it's not always loaded when in plates window
+                if (!Services.DresserObserver.IsArmoireLoaded())
+                {
+                    Dev.Log($"Armoire not loaded, not applying {item.Name} ({item.RowId}) to plate");
+                }
+                var cabinetId = (int)Services.ItemFinder.CabinetIdFromItemId(item.RowId);
+                SetPlateItem(PlateItemSource.Armoire, cabinetId, item.RowId, stainId);
             }
 
             else
@@ -46,9 +53,9 @@ public unsafe class PlatesExecutor
         }
     }
 
-    private static unsafe void SetPlateItem(PlateItemSource plateItemSource, uint itemId, byte stainId = 0)
+    private static unsafe void SetPlateItem(PlateItemSource plateItemSource, int index, uint itemId, byte stainId = 0)
     {
-        Services.AddressResolver.setGlamourPlateSlot((IntPtr)plateAgent, plateItemSource, 0, itemId, stainId);
+        Services.AddressResolver.setGlamourPlateSlot((IntPtr)plateAgent, plateItemSource, index, itemId, stainId);
     }
 
     private static unsafe void SetPlateAgentToEquipSlot(EquipSlot equipSlot)

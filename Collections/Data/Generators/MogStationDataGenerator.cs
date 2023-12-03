@@ -4,13 +4,11 @@ namespace Collections;
 
 public class MogStationDataGenerator
 {
-    public List<uint> items = new();
+    public HashSet<uint> items = new();
 
     public MogStationDataGenerator()
     {
-        //Dev.Start();
         PopulateData();
-        //Dev.Stop();
     }
 
     private void PopulateData()

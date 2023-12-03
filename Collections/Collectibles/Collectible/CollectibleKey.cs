@@ -1,5 +1,3 @@
-using System.Threading.Tasks;
-
 namespace Collections;
 
 // Represents an item that is used to unlock a collectible
@@ -13,7 +11,7 @@ public class CollectibleKey : ICollectibleKey, ICreateable<CollectibleKey, (Item
 {
     public List<CollectibleSource> CollectibleSources { get; set; } = new();
     public ItemAdapter item { get; init; }
-    protected IconHandler IconHandler { get; init; } // TODO remove this
+    protected IconHandler IconHandler { get; init; }
 
     public CollectibleKey((ItemAdapter, bool) input)
     {
@@ -52,8 +50,10 @@ public class CollectibleKey : ICollectibleKey, ICreateable<CollectibleKey, (Item
         {
             CollectibleSources.AddRange(Services.DataGenerator.QuestsDataGenerator.itemToQuest[item.RowId].Select(entry => new QuestCollectibleSource(entry)));
         }
-
-        //GetSourceTypes();
+        if (Services.DataGenerator.CraftingDataGenerator.itemsToRecipes.ContainsKey(item.RowId))
+        {
+            CollectibleSources.AddRange(Services.DataGenerator.CraftingDataGenerator.itemsToRecipes[item.RowId].Select(entry => new CraftingCollectibleSource(entry)));
+        }
     }
 
     public static CollectibleKey Create((ItemAdapter, bool) input)

@@ -5,22 +5,11 @@ namespace Collections;
 
 public unsafe class ItemFinder
 {
-    public ItemFinder()
-    {
-    }
-
     private static FFXIVClientStructs.FFXIV.Client.Game.UI.Cabinet Cabinet = UIState.Instance()->Cabinet;
-    public bool IsItemInArmoire(uint itemId)
-    {
-        if (Cabinet.IsCabinetLoaded())
-        {
-            var cabinetId = CabinetIdFromItemId(itemId);
-            if (cabinetId is null)
-                return false;
 
-            return Cabinet.IsItemInCabinet((int)cabinetId);
-        }
-        return false;
+    public bool IsItemInArmoireCache(uint itemId)
+    {
+        return Services.DresserObserver.ArmoireItemIds.Contains(itemId);
     }
 
     public uint? CabinetIdFromItemId(uint itemId)
@@ -29,10 +18,21 @@ public unsafe class ItemFinder
         return cabinetItem is not null ? cabinetItem.RowId : null;
     }
 
+    public uint? ItemIdFromCabinetId(uint cabinetId)
+    {
+        var cabinetItem = ExcelCache<Lumina.Excel.GeneratedSheets.Cabinet>.GetSheet().GetRow(cabinetId);
+        return cabinetItem is not null ? cabinetItem.Item.Row : null;
+    }
 
     public bool IsItemInDresser(uint itemId)
     {
-        return Services.DresserObserver.itemIds.Contains(itemId);
+        var pureItemId = GetPureItemId(itemId);
+        return Services.DresserObserver.DresserItemIds.Contains(pureItemId);
+    }
+
+    public uint GetPureItemId(uint itemId)
+    {
+        return itemId > 1000000 ? itemId - 1000000 : itemId;
     }
 
     public bool IsItemInInventory(uint itemId)

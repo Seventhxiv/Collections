@@ -18,6 +18,7 @@ public enum CollectibleSourceCategory
     Quest,
     BeastTribes,
     TreasureHunts,
+    Crafting,
     Other,
     //CenturioSeals,
     //AlliedSeals,
