@@ -2,13 +2,11 @@ namespace Collections;
 
 public class GlamourCollectible : Collectible<ItemAdapter>, ICreateable<GlamourCollectible, ItemAdapter>
 {
-    protected override ItemAdapter excelRow { get; set; }
-    public override string Name { get; init; }
+    public new static string CollectionName => "Glamour";
+
     public GlamourCollectible(ItemAdapter excelRow) : base(excelRow)
     {
-        CollectibleKey = CollectibleKeyCache.Instance.GetObject((excelRow, true));
-        this.excelRow = excelRow;
-        Name = excelRow.Name;
+        //CollectibleKey = CollectibleKeyCache<ItemCollectibleKey, ItemAdapter>.Instance.GetObject((excelRow, true));
     }
 
     public static GlamourCollectible Create(ItemAdapter excelRow)
@@ -16,21 +14,31 @@ public class GlamourCollectible : Collectible<ItemAdapter>, ICreateable<GlamourC
         return new(excelRow);
     }
 
-    public new static string GetCollectionName()
+    protected override string GetCollectionName()
     {
-        return "Glamour";
+        return CollectionName;
+    }
+
+    protected override string GetName()
+    {
+        return ExcelRow.Name;
+    }
+
+    protected override uint GetId()
+    {
+        return ExcelRow.RowId;
     }
 
     public override void UpdateObtainedState()
     {
-        isObtained = Services.ItemFinder.IsItemInInventory(excelRow.RowId)
-                    || Services.ItemFinder.IsItemInArmoireCache(excelRow.RowId)
-                    || Services.ItemFinder.IsItemInDresser(excelRow.RowId);
+        isObtained = Services.ItemFinder.IsItemInInventory(ExcelRow.RowId)
+                    || Services.ItemFinder.IsItemInArmoireCache(ExcelRow.RowId)
+                    || Services.ItemFinder.IsItemInDresser(ExcelRow.RowId);
     }
 
     protected override int GetIconId()
     {
-        return excelRow.Icon;
+        return ExcelRow.Icon;
     }
 
     public override void Interact()

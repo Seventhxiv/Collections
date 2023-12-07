@@ -324,7 +324,7 @@ public class GlamourTreeWidget
         // TODO add indication on which items exist in Dresser
         foreach (var (equipSlot, glamourItem) in currentGlamourSet.Items)
         {
-            PlatesExecutor.SetPlateItem(glamourItem.GetCollectible().CollectibleKey.item, (byte)glamourItem.StainId);
+            PlatesExecutor.SetPlateItem(glamourItem.GetCollectible().ExcelRow, (byte)glamourItem.StainId);
         }
     }
 

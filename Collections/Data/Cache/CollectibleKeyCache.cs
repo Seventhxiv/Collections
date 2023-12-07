@@ -1,14 +1,16 @@
 namespace Collections;
 
-public class CollectibleKeyCache : ObjectCache<CollectibleKeyCache, CollectibleKey, (ItemAdapter, bool), (uint, bool)>
+public class CollectibleKeyCache<TCollectibleKey, TExcel> : ObjectCache<CollectibleKeyCache<TCollectibleKey, TExcel>, TCollectibleKey, (TExcel, bool), (uint, bool)>
+    where TExcel : ExcelRow
+    where TCollectibleKey : ICreateable<TCollectibleKey, (TExcel, bool)>
 {
-    protected override (uint, bool) GetKey((ItemAdapter, bool) input)
+    protected override (uint, bool) GetKey((TExcel, bool) input)
     {
         return (input.Item1.RowId, input.Item2);
     }
 
-    protected override (ItemAdapter, bool) GetInput((uint, bool) key)
+    protected override (TExcel, bool) GetInput((uint, bool) key)
     {
-        return (ExcelCache<ItemAdapter>.GetSheet().GetRow(key.Item1), key.Item2);
+        return (ExcelCache<TExcel>.GetSheet().GetRow(key.Item1), key.Item2);
     }
 }

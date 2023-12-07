@@ -26,7 +26,7 @@ public class EventService
         where TArgs : EventArgs
     {
         var presEvent = GetEvent<T, TArgs>();
-        Dev.Log($"subscribed to {typeof(T)}", 2);
+        //Dev.Log($"subscribed to {typeof(T)}", 2);
         presEvent.OnPublish += new Event<TArgs>.Delegate(action);
     }
 

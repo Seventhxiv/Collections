@@ -1,3 +1,5 @@
+using System.Xml.Linq;
+
 namespace Collections;
 
 public class InstanceTab : IDrawable
@@ -47,8 +49,22 @@ public class InstanceTab : IDrawable
     {
         foreach (var (name, collection) in collections)
         {
-            ImGui.Text(name);
-            CollectionWidget.Draw(collection, false, false);
+            if (collection.Any())
+            {
+                // Save glam for last row
+                if (name == GlamourCollectible.CollectionName)
+                {
+                    continue;
+                }
+                ImGui.Selectable(name);
+                CollectionWidget.Draw(collection, false, false);
+            }
+        }
+
+        if (collections.ContainsKey(GlamourCollectible.CollectionName))
+        {
+            ImGui.Selectable(GlamourCollectible.CollectionName);
+            CollectionWidget.Draw(collections[GlamourCollectible.CollectionName], false, false);
         }
     }
 
@@ -61,7 +77,7 @@ public class InstanceTab : IDrawable
         foreach (var (name, collection) in collections)
         {
             collections[name] = collection
-                .Where(c => c.CollectibleKey is not null && currentDutyItemIds.Contains(c.CollectibleKey.item.RowId))
+                .Where(c => c.CollectibleKey is not null && currentDutyItemIds.Contains(c.CollectibleKey.Id))
                 .ToList();
         }
     }

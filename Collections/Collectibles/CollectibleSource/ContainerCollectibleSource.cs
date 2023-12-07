@@ -3,11 +3,11 @@ namespace Collections;
 public class ContainerCollectibleSource : CollectibleSource
 {
     private ItemAdapter container { get; init; }
-    private CollectibleKey CollectibleKey { get; init; }
+    private CollectibleKey<ItemAdapter> CollectibleKey { get; init; }
     public ContainerCollectibleSource(uint containerId)
     {
         container = ExcelCache<ItemAdapter>.GetSheet().GetRow(containerId);
-        CollectibleKey = CollectibleKeyCache.Instance.GetObject((container, true));
+        CollectibleKey = CollectibleKeyCache<ItemCollectibleKey, ItemAdapter>.Instance.GetObject((container, true));
     }
 
     public override string GetName()
@@ -24,7 +24,7 @@ public class ContainerCollectibleSource : CollectibleSource
         }
 
         // Item originated from a container has its SourceType dictated by the container
-        sourceType = CollectibleKey.GetSourceTypes();
+        sourceType = CollectibleKey.GetSourceCategories();
         return sourceType;
     }
 

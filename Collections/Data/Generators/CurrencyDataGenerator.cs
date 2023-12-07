@@ -2,64 +2,58 @@ namespace Collections;
 
 public class CurrencyDataGenerator
 {
-    private Dictionary<uint, CollectibleSourceCategory> itemIdToCollectionMethodType = new()
+    public Dictionary<uint, CollectibleSourceCategory> ItemIdToSourceCategory = new()
     {
-        //{ 25, CollectibleSourceType.WolfMarks },
-        //{ 25, CollectibleSourceType.PvP },
-    };
-    private Dictionary<string, CollectibleSourceCategory> itemNameToCollectionMethodType = new(StringComparer.InvariantCultureIgnoreCase)
-    {
-        { "Gil", CollectibleSourceCategory.Gil },
-        { "Storm Seal", CollectibleSourceCategory.CompanySeals }, // designated company seals
-        { "Wolf Mark", CollectibleSourceCategory.PvP },
-        { "Gatherers' Scrip", CollectibleSourceCategory.Scrips },
-        { "Crafters' Scrip", CollectibleSourceCategory.Scrips },
-        { "Centurio Seal", CollectibleSourceCategory.HuntSeals },
-        { "Allied Seal", CollectibleSourceCategory.HuntSeals },
-        { "Sack Of Nuts", CollectibleSourceCategory.HuntSeals },
-        { "MGP", CollectibleSourceCategory.MGP },
-        { "Seafarer's Cowrie", CollectibleSourceCategory.IslandSanctuary },
-        { "Gelmorran potsherd", CollectibleSourceCategory.DeepDungeon },
+        { 1, CollectibleSourceCategory.Gil }, // Gil
+        { 20, CollectibleSourceCategory.CompanySeals }, // Storm Seal (designated company seals)
+        { 25, CollectibleSourceCategory.PvP }, // Wolf Mark
+        { 10310, CollectibleSourceCategory.Scrips }, // Blue gatherers scrip
+        { 10311, CollectibleSourceCategory.Scrips }, // Red gatherers scrip
+        { 17834, CollectibleSourceCategory.Scrips }, // Yellow gatherers scrip
+        { 25200, CollectibleSourceCategory.Scrips }, // White gatherers scrip
+        { 33914, CollectibleSourceCategory.Scrips }, // Purple gatherers scrip
+        { 10308, CollectibleSourceCategory.Scrips }, // Blue gatherers scrip
+        { 10309, CollectibleSourceCategory.Scrips }, // Red gatherers scrip
+        { 17833, CollectibleSourceCategory.Scrips }, // Yellow gatherers scrip
+        { 25199, CollectibleSourceCategory.Scrips }, // White gatherers scrip
+        { 33913, CollectibleSourceCategory.Scrips }, // Purple gatherers scrip
+        { 10307, CollectibleSourceCategory.HuntSeals }, // Centurio Seal
+        { 27, CollectibleSourceCategory.HuntSeals }, // Allied Seal
+        { 26533, CollectibleSourceCategory.HuntSeals }, // Sack of nuts
+        { 29, CollectibleSourceCategory.MGP }, // MGP
+        { 37549, CollectibleSourceCategory.IslandSanctuary }, // Seafarer's Cowrie
+        { 15422, CollectibleSourceCategory.DeepDungeon }, // Gemorran potsherd
     };
 
     public CurrencyDataGenerator()
     {
-        //Dev.Start();
         PopulateData();
-        //Dev.Stop();
-    }
-
-    public CollectibleSourceCategory CurrencyItemCollectionMethodType(Item item)
-    {
-        if (itemIdToCollectionMethodType.ContainsKey(item.RowId))
-        {
-            return itemIdToCollectionMethodType[item.RowId];
-        }
-        return CollectibleSourceCategory.Other;
     }
 
     private void PopulateData()
     {
-        // Looks up tomestone sheet
+        // Add Tomestones
         var TomestonesItemSheet = ExcelCache<TomestonesItem>.GetSheet();
         foreach (var tomestone in TomestonesItemSheet)
         {
-            itemIdToCollectionMethodType[tomestone.Item.Row] = CollectibleSourceCategory.Tomestones;
+            ItemIdToSourceCategory[tomestone.Item.Row] = CollectibleSourceCategory.Tomestones;
         }
 
-        // Populate based on manual data in itemNameToContentType
-        var ItemSheet = ExcelCache<Item>.GetSheet(); // TODO ItemAdapter
-        foreach (var item in ItemSheet)
+        // Add Beast tribe currencies
+        var beastTribeSheet = ExcelCache<BeastTribe>.GetSheet();
+        foreach (var beastTribe in beastTribeSheet)
         {
-            if (itemNameToCollectionMethodType.ContainsKey(item.Name))
-            {
-                var contentType = itemNameToCollectionMethodType[item.Name];
-                itemIdToCollectionMethodType[item.RowId] = contentType;
-            }
-            else if (item.Name.ToString().EndsWith("Gatherers' Scrip") || item.Name.ToString().EndsWith("Crafters' Scrip"))
-            {
-                itemIdToCollectionMethodType[item.RowId] = CollectibleSourceCategory.Scrips;
-            }
+            ItemIdToSourceCategory[beastTribe.CurrencyItem.Row] = CollectibleSourceCategory.BeastTribes;
         }
+
+        // Add Gatherer/Crafter Scrips (Added manually - not really necassary, keeping it here for now)
+        //var ItemSheet = ExcelCache<ItemAdapter>.GetSheet(Dalamud.ClientLanguage.English);
+        //foreach (var item in ItemSheet)
+        //{
+        //    if (item.Name.ToString().EndsWith("Gatherers' Scrip") || item.Name.ToString().EndsWith("Crafters' Scrip"))
+        //    {
+        //        itemIdToSourceCategory[item.RowId] = CollectibleSourceCategory.Scrips;
+        //    }
+        //}
     }
 }

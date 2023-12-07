@@ -41,4 +41,14 @@ public static class Extensions
 
         return s;
     }
+
+    public static string RemovePrefix(this string s, string prefix)
+    {
+        if (s.StartsWith(prefix))
+        {
+            return s.Substring(prefix.Length);
+        }
+
+        return s;
+    }
 }

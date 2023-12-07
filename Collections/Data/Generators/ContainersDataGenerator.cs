@@ -8,9 +8,7 @@ public class ContainersDataGenerator
 
     public ContainersDataGenerator()
     {
-        //Dev.Start();
         PopulateData();
-        //Dev.Stop();
     }
 
     private void PopulateData()

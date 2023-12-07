@@ -3,15 +3,15 @@ using FFXIVClientStructs.FFXIV.Client.Game.UI;
 
 namespace Collections;
 
-public class MinionCollectible : Collectible<Companion>, ICreateable<MinionCollectible, Companion>
+public class TripleTriadCollectible : Collectible<TripleTriadCard>, ICreateable<TripleTriadCollectible, TripleTriadCard>
 {
-    public new static string CollectionName => "Minions";
+    public new static string CollectionName => "Triple Triad";
 
-    public MinionCollectible(Companion excelRow) : base(excelRow)
+    public TripleTriadCollectible(TripleTriadCard excelRow) : base(excelRow)
     {
     }
 
-    public static MinionCollectible Create(Companion excelRow)
+    public static TripleTriadCollectible Create(TripleTriadCard excelRow)
     {
         return new(excelRow);
     }
@@ -23,7 +23,7 @@ public class MinionCollectible : Collectible<Companion>, ICreateable<MinionColle
 
     protected override string GetName()
     {
-        return ExcelRow.Singular;
+        return ExcelRow.Name;
     }
 
     protected override uint GetId()
@@ -33,17 +33,22 @@ public class MinionCollectible : Collectible<Companion>, ICreateable<MinionColle
 
     public override unsafe void UpdateObtainedState()
     {
-        isObtained = UIState.Instance()->IsCompanionUnlocked(ExcelRow.RowId);
+        isObtained = UIState.Instance()->IsTripleTriadCardUnlocked((ushort)ExcelRow.RowId);
     }
 
     protected override int GetIconId()
     {
-        return ExcelRow.Icon;
+        return (int)ExcelRow.RowId + 87000;
     }
 
     public override unsafe void Interact()
     {
         if (isObtained)
             ActionManager.Instance()->UseAction(ActionType.Companion, ExcelRow.RowId);
+    }
+
+    public override void OpenGamerEscape()
+    {
+        WikiOpener.OpenGamerEscape(Name + "_(Triple_Triad_Card)");
     }
 }

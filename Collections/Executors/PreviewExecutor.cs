@@ -16,14 +16,14 @@ public unsafe class PreviewExecutor
 
     public void PreviewWithTryOnRestrictions(GlamourCollectible collectible, uint stainId, bool tryOn)
     {
-        var tryOnOverride = tryOn || collectible.CollectibleKey.GetSourceTypes().Contains(CollectibleSourceCategory.MogStation);
+        var tryOnOverride = tryOn || collectible.CollectibleKey.GetSourceCategories().Contains(CollectibleSourceCategory.MogStation);
         if (tryOnOverride)
         {
-            TryOn(collectible.CollectibleKey.item.RowId, (byte)stainId);
+            TryOn(collectible.ExcelRow.RowId, (byte)stainId);
         }
         else
         {
-            Preview(collectible.CollectibleKey.item, (byte)stainId);
+            Preview(collectible.ExcelRow, (byte)stainId);
         }
     }
 

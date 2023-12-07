@@ -24,9 +24,9 @@ public class AchievementCollectibleSource : CollectibleSource
 
         var achievementKind = Achievement.AchievementCategory.Value.AchievementKind;
         sourceType = new List<CollectibleSourceCategory>() { CollectibleSourceCategory.Achievement };
-        switch (achievementKind.Value.Name)
+        switch (achievementKind.Value.RowId)
         {
-            case "PvP":
+            case 2: // PvP
                 sourceType.Add(CollectibleSourceCategory.PvP);
                 break;
         }

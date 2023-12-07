@@ -1,15 +1,12 @@
-using System;
-
 namespace Collections;
 
 public class DyeChangeEventArgs : EventArgs
 {
     public StainAdapter StainEntity { get; init; }
     public EquipSlot EquipSlot { get; init; }
-    public DyeChangeEventArgs(EquipSlot equipSlot, StainAdapter stainEntity)
+    public DyeChangeEventArgs(EquipSlot equipSlot)
     {
         EquipSlot = equipSlot;
-        StainEntity = stainEntity;
     }
 }
 

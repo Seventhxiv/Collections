@@ -19,10 +19,4 @@ public enum CollectibleSourceCategory
     BeastTribes,
     TreasureHunts,
     Crafting,
-    Other,
-    //CenturioSeals,
-    //AlliedSeals,
-    //Nuts,
-    //WolfMarks,
-    //SeafarersCowries,
 }

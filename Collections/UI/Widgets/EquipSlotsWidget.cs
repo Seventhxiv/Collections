@@ -43,7 +43,7 @@ public class EquipSlotsWidget
         // TODO indication which items exist in Dresser
         foreach (var (equipSlot, glamourItem) in currentGlamourSet.Items)
         {
-            PlatesExecutor.SetPlateItem(glamourItem.GetCollectible().CollectibleKey.item, (byte)glamourItem.StainId);
+            PlatesExecutor.SetPlateItem(glamourItem.GetCollectible().ExcelRow, (byte)glamourItem.StainId);
         }
     }
     public unsafe void Draw()
@@ -143,6 +143,7 @@ public class EquipSlotsWidget
                 if (ImGui.IsMouseClicked(ImGuiMouseButton.Right))
                 {
                     paletteWidgets[equipSlot].ResetStain();
+                    EventService.Publish<DyeChangeEvent, DyeChangeEventArgs>(new DyeChangeEventArgs(equipSlot));
                 }
             } else
             {
@@ -204,7 +205,7 @@ public class EquipSlotsWidget
     public void OnPublish(GlamourItemChangeEventArgs args)
     {
         // Update current glamour set
-        var item = args.Collectible.CollectibleKey.item;
+        var item = args.Collectible.ExcelRow;
         currentGlamourSet.SetItem(item, paletteWidgets[item.EquipSlot].ActiveStain.RowId);
     }
 

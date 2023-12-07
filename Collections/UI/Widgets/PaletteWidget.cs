@@ -59,7 +59,7 @@ public class PaletteWidget
                 {
                     ActiveStain = stain;
                     pickedColor = new Vector3(ActiveStain.RGBcolor.R / 255f, ActiveStain.RGBcolor.G / 255f, ActiveStain.RGBcolor.B / 255f);
-                    EventService.Publish<DyeChangeEvent, DyeChangeEventArgs>(new DyeChangeEventArgs(EquipSlot, ActiveStain));
+                    EventService.Publish<DyeChangeEvent, DyeChangeEventArgs>(new DyeChangeEventArgs(EquipSlot));
                 }
 
                 if (ImGui.IsItemHovered())
@@ -106,7 +106,7 @@ public class PaletteWidget
             if (newStain is not null && ActiveStain != newStain)
             {
                 ActiveStain = newStain;
-                EventService.Publish<DyeChangeEvent, DyeChangeEventArgs>(new DyeChangeEventArgs(EquipSlot, ActiveStain));
+                EventService.Publish<DyeChangeEvent, DyeChangeEventArgs>(new DyeChangeEventArgs(EquipSlot));
             }
 
             //ImGui.Text(color);

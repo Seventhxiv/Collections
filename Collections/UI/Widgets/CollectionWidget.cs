@@ -2,14 +2,13 @@ namespace Collections;
 
 public class CollectionWidget
 {
-    private float iconSize = 55f;
-
-    private string searchFilter = "";
-    private bool isGlam { get; init; } = false;
-
+    private float iconSize = 65f;
     private int dynamicScrollingInitialSize = 200;
     private int dynamicScrollingIncrementsPerFrame = 40;
 
+    private string searchFilter = "";
+
+    private bool isGlam { get; init; } = false;
     private EventService EventService { get; init; }
     private CollectibleTooltipWidget CollectibleTooltipWidget { get; init; }
     public CollectionWidget(EventService eventService, bool isGlam)
@@ -59,14 +58,7 @@ public class CollectionWidget
             var collectible = collectionList[i];
             var icon = collectible.GetIconLazy();
 
-            // Missing:
-            //commandeered magitek armor
-            //    red baron
-            //    marid
-            //    midgarsormr
-            //    true griffin
-
-            if (icon is null || collectible.CollectibleKey is null)
+            if (icon is null)
             {
                 continue;
             }
@@ -209,7 +201,7 @@ public class CollectionWidget
 
     private int GetIconsPerRow()
     {
-        return (int)Math.Floor(UiHelper.GetLengthToRightOfWindow() / (iconSize + (ImGui.CalcTextSize(" ").X * 4)));
+        return (int)Math.Floor((UiHelper.GetLengthToRightOfWindow() + UiHelper.UnitWidth() * 3) / (iconSize + (UiHelper.UnitWidth() * 2)));
     }
 
     private bool IsFiltered(ICollectible collectible)

@@ -82,6 +82,6 @@ public class GlamourItem
 
     public EquipSlot GetEquipSlot()
     {
-        return GetCollectible().CollectibleKey.item.EquipSlot;
+        return GetCollectible().ExcelRow.EquipSlot;
     }
 }

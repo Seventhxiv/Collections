@@ -2,7 +2,7 @@ namespace Collections;
 
 public class QuestsDataGenerator
 {
-    public readonly Dictionary<uint, List<Quest>> itemToQuest = new();
+    public readonly Dictionary<uint, List<Quest>> itemToQuests = new();
     public readonly Dictionary<uint, Quest> emoteToQuest = new();
 
     public QuestsDataGenerator()
@@ -22,11 +22,11 @@ public class QuestsDataGenerator
             foreach (var itemId in items)
             {
                 if (itemId == 0) continue;
-                if (!itemToQuest.ContainsKey(itemId))
+                if (!itemToQuests.ContainsKey(itemId))
                 {
-                    itemToQuest[itemId] = new List<Quest>();
+                    itemToQuests[itemId] = new List<Quest>();
                 }
-                itemToQuest[itemId].Add(quest);
+                itemToQuests[itemId].Add(quest);
             }
 
             var emoteId = quest.EmoteReward.Row;

@@ -51,19 +51,23 @@ public class DataProvider
         InitializeGlamourCollection();
         InitializeMountCollection();
         InitializeMinionCollection();
+        InitializeEmoteCollection();
+        InitializeHairstyleCollection();
+        InitializeTripleTriadCollection();
+        InitializeBardingCollection();
     }
 
     private void InitializeGlamourCollection()
     {
         collections[typeof(GlamourCollectible)] = (
-            GlamourCollectible.GetCollectionName(),
+            GlamourCollectible.CollectionName,
             ExcelCache<ItemAdapter>.GetSheet().AsParallel()
             .Where(entry => entry.LevelEquip >= 1)
             .Where(entry => SupportedEquipSlots.Contains(entry.EquipSlot))
-            .Where(entry => !entry.Name.ToString().StartsWith("Dated ")) // Filter Dated items TODO probably doesnt work on other languages
+            .Where(entry => !entry.Name.ToString().StartsWith("Dated ")) // TODO filter only works in English
             .Select(entry => (ICollectible)CollectibleCache<GlamourCollectible, ItemAdapter>.Instance.GetObject(entry))
             .OrderByDescending(c => c.IsFavorite())
-            .ThenByDescending(c => c.CollectibleKey.item.LevelEquip)
+            .ThenByDescending(c => ((ItemCollectibleKey)c.CollectibleKey).excelRow.LevelEquip)
             .ThenByDescending(c => c.Name)
             .ToList()
             );
@@ -72,9 +76,9 @@ public class DataProvider
     private void InitializeMountCollection()
     {
         collections[typeof(MountCollectible)] = (
-            MountCollectible.GetCollectionName(),
+            MountCollectible.CollectionName,
             ExcelCache<Mount>.GetSheet().AsParallel()
-            .Where(entry => entry.Singular != null && entry.Singular != "")
+            .Where(entry => entry.Singular != null && entry.Singular != "" && entry.Order != -1)
             .Select(entry => (ICollectible)CollectibleCache<MountCollectible, Mount>.Instance.GetObject(entry))
             .OrderByDescending(c => c.IsFavorite())
             .ThenByDescending(c => c.Name)
@@ -85,10 +89,62 @@ public class DataProvider
     private void InitializeMinionCollection()
     {
         collections[typeof(MinionCollectible)] = (
-            MinionCollectible.GetCollectionName(),
+            MinionCollectible.CollectionName,
             ExcelCache<Companion>.GetSheet().AsParallel()
-            .Where(entry => entry.Singular != null && entry.Singular != "")
+            .Where(entry => entry.Singular != null && entry.Singular != "" && !DataOverrides.IgnoreMinionId.Contains(entry.RowId))
             .Select(entry => (ICollectible)CollectibleCache<MinionCollectible, Companion>.Instance.GetObject(entry))
+            .OrderByDescending(c => c.IsFavorite())
+            .ThenByDescending(c => c.Name)
+            .ToList()
+            );
+    }
+
+    private void InitializeEmoteCollection()
+    {
+        collections[typeof(EmoteCollectible)] = (
+            EmoteCollectible.CollectionName,
+            ExcelCache<Emote>.GetSheet().AsParallel()
+            .Where(entry => entry.Name != null && entry.Name != "" && entry.Icon != 0 && !DataOverrides.IgnoreEmoteId.Contains(entry.RowId) && entry.UnlockLink != 0)
+            .Select(entry => (ICollectible)CollectibleCache<EmoteCollectible, Emote>.Instance.GetObject(entry))
+            .OrderByDescending(c => c.IsFavorite())
+            .ThenByDescending(c => c.Name)
+            .ToList()
+            );
+    }
+
+    private void InitializeHairstyleCollection()
+    {
+        collections[typeof(HairstyleCollectible)] = (
+            HairstyleCollectible.CollectionName,
+            ExcelCache<CharaMakeCustomize>.GetSheet().AsParallel()
+            .Where(entry => entry.IsPurchasable && (entry.RowId < 100 || (entry.RowId >= 2050 && entry.RowId < 2100)))
+            .Select(entry => (ICollectible)CollectibleCache<HairstyleCollectible, CharaMakeCustomize>.Instance.GetObject(entry))
+            .OrderByDescending(c => c.IsFavorite())
+            .ThenByDescending(c => c.Name)
+            .ToList()
+            );
+    }
+
+    private void InitializeTripleTriadCollection()
+    {
+        collections[typeof(TripleTriadCollectible)] = (
+            TripleTriadCollectible.CollectionName,
+            ExcelCache<TripleTriadCard>.GetSheet().AsParallel()
+            .Where(entry => entry.Name != "" && entry.Name != "0")
+            .Select(entry => (ICollectible)CollectibleCache<TripleTriadCollectible, TripleTriadCard>.Instance.GetObject(entry))
+            .OrderByDescending(c => c.IsFavorite())
+            .ThenByDescending(c => c.Name)
+            .ToList()
+            );
+    }
+
+    private void InitializeBardingCollection()
+    {
+        collections[typeof(BardingCollectible)] = (
+            BardingCollectible.CollectionName,
+            ExcelCache<BuddyEquip>.GetSheet().AsParallel()
+            .Where(entry => entry.Name != "" && !DataOverrides.IgnoreBardingId.Contains(entry.RowId))
+            .Select(entry => (ICollectible)CollectibleCache<BardingCollectible, BuddyEquip>.Instance.GetObject(entry))
             .OrderByDescending(c => c.IsFavorite())
             .ThenByDescending(c => c.Name)
             .ToList()

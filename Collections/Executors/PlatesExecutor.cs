@@ -8,6 +8,7 @@ public unsafe class PlatesExecutor
 
     public static unsafe bool IsInPlateWindow()
     {
+        AgentCharaCard.Instance();
         return plateAgent->AgentInterface.IsAgentActive();
     }
 

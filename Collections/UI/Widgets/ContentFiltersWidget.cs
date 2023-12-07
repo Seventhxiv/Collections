@@ -28,13 +28,6 @@ public class ContentFiltersWidget
             {CollectibleSourceCategory.HuntSeals, 65034},
             {CollectibleSourceCategory.TreasureHunts, 000115}, //61829
             {CollectibleSourceCategory.Crafting, 62202},
-
-            // Here for reference:
-            //{CollectibleSourceType.WolfMarks, 65014},
-            //{CollectibleSourceType.CenturioSeals, 65034},
-            //{CollectibleSourceType.AlliedSeals, 65024},
-            //{CollectibleSourceType.Nuts, 65068},
-            //{CollectibleSourceType.Other, 61807},
     };
 
     private int columns { get; init; }
@@ -115,7 +108,7 @@ public class ContentFiltersWidget
     {
         if (collection != null)
         {
-            var sourceTypes = collection.Where(c => c.CollectibleKey != null).SelectMany(c => c.CollectibleKey.GetSourceTypes()).ToHashSet();
+            var sourceTypes = collection.Where(c => c.CollectibleKey != null).SelectMany(c => c.CollectibleKey.GetSourceCategories()).ToHashSet();
 
             foreach (var (sourceType, iconId) in contentTypesToIconId)
             {

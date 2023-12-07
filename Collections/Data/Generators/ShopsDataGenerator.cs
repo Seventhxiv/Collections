@@ -2,7 +2,7 @@ namespace Collections;
 
 public class ShopsDataGenerator
 {
-    public Dictionary<uint, List<ShopEntry>> itemToShopEntry = new();
+    public Dictionary<uint, List<ShopEntry>> itemToShopEntries = new();
 
     private Dictionary<uint, uint> NpcDataToNpcBase { get; init; } = new();
 
@@ -47,7 +47,7 @@ public class ShopsDataGenerator
 
     private void PopulateNpcDataToNpcBase()
     {
-        Dev.Start();
+        //Dev.Start();
 
         var FirstSpecialShopId = SpecialShopEntitySheet.First().RowId;
         var LastSpecialShopId = SpecialShopEntitySheet.Last().RowId;
@@ -160,7 +160,7 @@ public class ShopsDataGenerator
         {
             NpcDataToNpcBase.TryAdd(specialShopRowId, NpcBaseId);
         }
-        Dev.Stop();
+        //Dev.Stop();
     }
 
     private uint? GetNpcBaseFromNpcData(uint npcDataId)
@@ -249,7 +249,7 @@ public class ShopsDataGenerator
 
     private void PopulateGilShop()
     {
-        Dev.Start();
+        //Dev.Start();
         var gilShopSheet = ExcelCache<GilShop>.GetSheet()!;
         var gilShopItemSheet = ExcelCache<GilShopItem>.GetSheet()!;
         var gilItem = ItemSheet.GetRow((uint)Currency.Gil);
@@ -270,9 +270,9 @@ public class ShopsDataGenerator
                     {
                         break;
                     }
-                    if (!itemToShopEntry.ContainsKey(item.RowId))
+                    if (!itemToShopEntries.ContainsKey(item.RowId))
                     {
-                        itemToShopEntry[item.RowId] = new List<ShopEntry>();
+                        itemToShopEntries[item.RowId] = new List<ShopEntry>();
                     }
                     var ENpcDataId = gilShop.RowId;
                     uint? ENpcBaseId = null;
@@ -282,7 +282,7 @@ public class ShopsDataGenerator
                     }
                     var costList = new List<(ItemAdapter Item, int Amount)> { (gilItem, (int)item.PriceMid) };
                     var shopEntry = new ShopEntry(costList, ENpcBaseId, gilShop.RowId);
-                    itemToShopEntry[item.RowId].Add(shopEntry);
+                    itemToShopEntries[item.RowId].Add(shopEntry);
                 }
                 catch
                 {
@@ -290,12 +290,12 @@ public class ShopsDataGenerator
                 }
             }
         }
-        Dev.Stop();
+        //Dev.Stop();
     }
 
     private void PopulateGCShop()
     {
-        Dev.Start();
+        //Dev.Start();
         var GCShopSheet = ExcelCache<GCShop>.GetSheet()!; // 4 rows
         var GCScripShopCategorySheet = ExcelCache<GCScripShopCategory>.GetSheet()!; // 31 rows
         var GCScripShopItemSheet = ExcelCache<GCScripShopItem>.GetSheet()!; // 36.x
@@ -328,15 +328,15 @@ public class ShopsDataGenerator
                         }
 
 
-                        if (!itemToShopEntry.ContainsKey(item.RowId))
+                        if (!itemToShopEntries.ContainsKey(item.RowId))
                         {
-                            itemToShopEntry[item.RowId] = new List<ShopEntry>();
+                            itemToShopEntries[item.RowId] = new List<ShopEntry>();
                         }
                         var ENpcDataId = gcShop.RowId;
                         var ENpcBaseId = GetNpcBaseFromNpcData(ENpcDataId);
                         var costList = new List<(ItemAdapter Item, int Amount)> { (GCItem, (int)item.PriceMid) };
                         var shopEntry = new ShopEntry(costList, ENpcBaseId, gcShop.RowId);
-                        itemToShopEntry[item.RowId].Add(shopEntry);
+                        itemToShopEntries[item.RowId].Add(shopEntry);
                     }
                     catch (Exception)
                     {
@@ -345,12 +345,12 @@ public class ShopsDataGenerator
                 }
             }
         }
-        Dev.Stop();
+        //Dev.Stop();
     }
 
     private void PopulateSpecialShop()
     {
-        Dev.Start();
+        //Dev.Start();
 
         foreach (var specialShop in SpecialShopEntitySheet)
         {
@@ -386,15 +386,15 @@ public class ShopsDataGenerator
                         break;
                     }
 
-                    if (!itemToShopEntry.ContainsKey(itemId))
+                    if (!itemToShopEntries.ContainsKey(itemId))
                     {
-                        itemToShopEntry[itemId] = new List<ShopEntry>();
+                        itemToShopEntries[itemId] = new List<ShopEntry>();
                     }
                     var shopEntry = new ShopEntry(costList, ENpcBaseId, specialShop.RowId);
-                    itemToShopEntry[itemId].Add(shopEntry);
+                    itemToShopEntries[itemId].Add(shopEntry);
                 }
             }
         }
-        Dev.Stop();
+        //Dev.Stop();
     }
 }

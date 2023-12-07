@@ -1,10 +1,11 @@
 namespace Collections;
 
-// Represents something that can be collected (Glamour, Mount, Minion, etc..)
+// Represents something that can be collected
 public interface ICollectible
 {
     public string Name { get; init; }
-    public CollectibleKey CollectibleKey { get; init; }
+    public uint Id { get; init; }
+    public ICollectibleKey CollectibleKey { get; init; }
     public bool IsFavorite();
     public void SetFavorite(bool favorite);
     public bool IsWishlist();
@@ -18,27 +19,36 @@ public interface ICollectible
 
 public abstract class Collectible<T> : ICollectible where T : ExcelRow
 {
-    public abstract string Name { get; init; }
+    public string Name { get; init; }
+    public uint Id { get; init; }
+    public string CollectionName;
     public abstract void UpdateObtainedState();
     public abstract void Interact();
-    protected abstract int GetIconId();
 
-    public CollectibleKey CollectibleKey { get; init; }
-    protected abstract T excelRow { get; set; }
+    protected abstract int GetIconId();
+    protected abstract uint GetId();
+    protected abstract string GetName();
+    protected abstract string GetCollectionName();
+
+    public ICollectibleKey CollectibleKey { get; init; }
+    public T ExcelRow { get; set; }
     protected IconHandler IconHandler { get; init; }
 
     public Collectible(T excelRow)
     {
-        this.excelRow = excelRow;
+        ExcelRow = excelRow;
+        Id = GetId();
+        CollectibleKey = CollectibleKeyFactory.Get(this);
+        Name = GetName();
         IconHandler = new IconHandler(GetIconId());
+
+        if (CollectibleKey is null)
+        {
+            Dev.Log($"Missing collectible key: {Name} ({Id})");
+        }
     }
 
-    public static string GetCollectionName()
-    {
-        throw new NotImplementedException();
-    }
-
-    public void OpenGamerEscape()
+    public virtual void OpenGamerEscape()
     {
         WikiOpener.OpenGamerEscape(Name);
     }
@@ -51,48 +61,62 @@ public abstract class Collectible<T> : ICollectible where T : ExcelRow
 
     public bool IsFavorite()
     {
-        if (CollectibleKey is not null)
-            return Services.Configuration.Favorites.Contains(CollectibleKey.item.RowId);
-        else
-            return false;
+        var key = GetCollectionName();
+        if (!Services.Configuration.Favorites.ContainsKey(key))
+        {
+            Services.Configuration.Favorites[key] = new();
+        }
+        return Services.Configuration.Favorites[key].Contains(Id);
     }
 
     public void SetFavorite(bool favorite)
     {
-        var itemId = CollectibleKey.item.RowId;
+        var key = GetCollectionName();
+        if (!Services.Configuration.Favorites.ContainsKey(key))
+        {
+            Services.Configuration.Favorites[key] = new();
+        }
+
         if (favorite)
         {
-            Dev.Log($"Adding {itemId} to Favorites");
-            Services.Configuration.Favorites.Add(itemId);
+            Dev.Log($"Adding {Id} to Favorites");
+            Services.Configuration.Favorites[key].Add(Id);
         }
         else
         {
-            Dev.Log($"Removing {itemId} from Favorites");
-            Services.Configuration.Favorites.Remove(itemId);
+            Dev.Log($"Removing {Id} from Favorites");
+            Services.Configuration.Favorites[key].Remove(Id);
         }
         Services.Configuration.Save();
     }
 
     public bool IsWishlist()
     {
-        if (CollectibleKey is not null)
-            return Services.Configuration.WishListed.Contains(CollectibleKey.item.RowId);
-
-        return false;
+        var key = GetCollectionName();
+        if (!Services.Configuration.Wishlist.ContainsKey(key))
+        {
+            Services.Configuration.Wishlist[key] = new();
+        }
+        return Services.Configuration.Wishlist[key].Contains(Id);
     }
 
     public void SetWishlist(bool wishlist)
     {
-        var itemId = CollectibleKey.item.RowId;
+        var key = GetCollectionName();
+        if (!Services.Configuration.Wishlist.ContainsKey(key))
+        {
+            Services.Configuration.Wishlist[key] = new();
+        }
+
         if (wishlist)
         {
-            Dev.Log($"Adding {itemId} to Wishlist");
-            Services.Configuration.WishListed.Add(itemId);
+            Dev.Log($"Adding {Id} to Wishlist");
+            Services.Configuration.Wishlist[key].Add(Id);
         }
         else
         {
-            Dev.Log($"Removing {itemId} from Wishlist");
-            Services.Configuration.WishListed.Remove(itemId);
+            Dev.Log($"Removing {Id} from Wishlist");
+            Services.Configuration.Wishlist[key].Remove(Id);
         }
         Services.Configuration.Save();
     }

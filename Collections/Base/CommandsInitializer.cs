@@ -11,10 +11,10 @@ public class CommandsInitializer
 
     public CommandsInitializer()
     {
-        registerCommand();
+        RegisterCommands();
     }
 
-    public void registerCommand()
+    public void RegisterCommands()
     {
         Services.CommandManager.AddHandler(mainWindowSecondaryCmd, new CommandInfo(OpenMainWindow)
         {

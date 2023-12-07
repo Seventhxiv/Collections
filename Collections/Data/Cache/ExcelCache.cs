@@ -1,24 +1,28 @@
 using System.Collections;
-using System.Collections.Concurrent;
 
 namespace Collections;
 
 public class ExcelCache<T> : IEnumerable<T> where T : ExcelRow
 {
-    private static ExcelCache<T>? InternalInstance;
-    public static ExcelCache<T> Instance => InternalInstance ??= new ExcelCache<T>();
+    private static Dictionary<Dalamud.ClientLanguage, ExcelCache<T>> InternalInstance = new();
 
     private ExcelSheet<T> excelSheet { get; set; }
-    private readonly ConcurrentDictionary<uint, T> rowCache = new();
-    private readonly ConcurrentDictionary<Tuple<uint, uint>, T> subRowCache = new();
+    //private readonly ConcurrentDictionary<uint, T> rowCache = new();
+    //private readonly ConcurrentDictionary<Tuple<uint, uint>, T> subRowCache = new();
 
-    private ExcelCache()
+    private ExcelCache(Dalamud.ClientLanguage language)
     {
-        excelSheet = Services.DataManager.GetExcelSheet<T>(Dalamud.ClientLanguage.English);
+        excelSheet = Services.DataManager.GetExcelSheet<T>(language);
     }
-    public static ExcelCache<T> GetSheet()
+
+    public static ExcelCache<T> GetSheet(Dalamud.ClientLanguage? language = null)
     {
-        return Instance;
+        var sheetLanguage = language is not null ? (Dalamud.ClientLanguage)language : Services.DataManager.Language;
+        if (InternalInstance.TryGetValue(sheetLanguage, out var instance))
+        {
+            return instance;
+        }
+        return InternalInstance[sheetLanguage] = new ExcelCache<T>(sheetLanguage);
     }
 
     public IEnumerator<T> GetEnumerator()

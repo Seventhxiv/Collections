@@ -2,6 +2,9 @@ namespace Collections;
 
 public class CollectibleTooltipWidget
 {
+    private Vector2 iconSize = new(78, 78);
+    private Vector2 sourceIconSize = new(20, 20);
+
     private EventService EventService { get; init; }
     public CollectibleTooltipWidget(EventService eventService)
     {
@@ -11,17 +14,12 @@ public class CollectibleTooltipWidget
     public unsafe void DrawItemTooltip(ICollectible collectible)
     {
         var icon = collectible.GetIconLazy();
-        var CollectibleKey = collectible.CollectibleKey;
-        ItemAdapter item = null;
-        if (CollectibleKey != null)
-        {
-            item = CollectibleKey.item;
-        }
+        var collectibleKey = collectible.CollectibleKey;
 
         // Icon
         if (icon != null)
         {
-            ImGui.Image(icon.ImGuiHandle, new Vector2(icon.Width, icon.Height));
+            ImGui.Image(icon.ImGuiHandle, iconSize);
             ImGui.SameLine();
         }
 
@@ -38,16 +36,17 @@ public class CollectibleTooltipWidget
             ImGui.Text($"{collectible.Name}");
 
             // Level + Jobs
-            if (item.IsEquipment)
+            if (collectibleKey is ItemCollectibleKey)
             {
+                var item = ((ItemCollectibleKey)collectibleKey).excelRow;
                 ImGui.Text($"Lv. {item.LevelEquip}");
                 ImGui.Text($"{item.ClassJobCategory.Value.Name}");
             }
 
             // Marketplace price / Untradeable
-            if (CollectibleKey.GetIsTradeable())
+            if (collectibleKey is not null && collectibleKey.GetIsTradeable())
             {
-                var price = CollectibleKey.GetMarketBoardPriceLazy();
+                var price = collectibleKey.GetMarketBoardPriceLazy();
                 if (price != null)
                 {
                     ImGui.Text($"Market Price: {price}");
@@ -94,24 +93,24 @@ public class CollectibleTooltipWidget
             ImGui.PushStyleColor(ImGuiCol.Button, originalButtonColor);
             if (ImGui.Button("Gamer Escape"))
             {
-                CollectibleKey.OpenGamerEscape();
+                collectible.OpenGamerEscape();
             }
             ImGui.PopStyleColor();
 
             ImGui.EndTable();
         }
         
-        if (CollectibleKey == null)
+        if (collectibleKey == null)
         {
             return;
         }
 
         // Source list
-        DrawSources(CollectibleKey);
+        DrawSources(collectibleKey);
     }
 
     private int hoveredRowIndex = -1;
-    private unsafe void DrawSources(CollectibleKey CollectibleKey)
+    private unsafe void DrawSources(ICollectibleKey CollectibleKey)
     {
         var unlockSources = CollectibleKey.CollectibleSources;
         IDalamudTextureWrap icon;
@@ -155,7 +154,7 @@ public class CollectibleTooltipWidget
                                 ImGui.Image(icon.ImGuiHandle, new Vector2(icon.Width / 3, icon.Height / 3));
                                 ImGui.SameLine();
                             }
-                            ImGui.Text(costItem.collectibleKey.item.Name + " x" + costItem.amount);
+                            ImGui.Text(costItem.collectibleKey.Name + " x" + costItem.amount);
                             ImGui.SameLine();
                         }
                         var npcName = shopSource.ENpcResident != null ? shopSource.ENpcResident.Singular.ToString() : "Unknown NPC";
@@ -167,7 +166,7 @@ public class CollectibleTooltipWidget
                         icon = source.GetIconLazy();
                         if (icon != null)
                         {
-                            ImGui.Image(icon.ImGuiHandle, new Vector2(icon.Width / 3, icon.Height / 3));
+                            ImGui.Image(icon.ImGuiHandle, sourceIconSize);
                             ImGui.SameLine();
                         }
                         ImGui.Text($"{source.GetName()}");

@@ -2,9 +2,78 @@ namespace Collections;
 
 public class DataOverrides
 {
+    public static readonly Dictionary<Type, Dictionary<uint, uint>> collectibleIdToUnlockAchievementId = new()
+    {
+        {typeof(Emote), new Dictionary<uint, uint>() {
+            {373, 1966}, // Squats, Push Ups, Sit Ups, Breath Control
+        }},
+    };
+
+    public static readonly Dictionary<Type, Dictionary<uint, uint>> collectibleIdToUnlockQuestId = new()
+    {
+        {typeof(Mount), new Dictionary<uint, uint>() {
+            {50, 67204}, // Midgarsormr
+        }},
+        {typeof(Emote), new Dictionary<uint, uint>() {
+            {340, 68020}, // Water Flip (151)
+            {229, 67114}, // Embrace (113)
+        }},
+        {typeof(CharaMakeCustomize), new Dictionary<uint, uint>() {
+            {228 , 67114}, // Ceremony hairstyle (23)
+        }},
+        {typeof(BuddyEquip), new Dictionary<uint, uint>() {
+            {1, 66237}, // Lominsan Saddle
+            {5, 66236}, // Gridanian Saddle
+            {9, 66238}, // Ul'dahn Saddle
+        }},
+    };
+
+    public static readonly Dictionary<Type, Dictionary<uint, string>> collectibleIdToUnlockMisc = new()
+    {
+        {typeof(BuddyEquip), new Dictionary<uint, string>() {
+            {13, "Reach max Attacker rank with your Chocobo Companion"}, // Paladin Barding
+            {14, "Reach max Attacker rank with your Chocobo Companion"}, // Dragoon Barding
+            {15, "Reach max Defender rank with your Chocobo Companion"}, // White Mage Barding
+        }},
+    };
+
+    public static readonly Dictionary<Type, Dictionary<uint, uint>> collectibleIdToUnlockInstanceId = new()
+    {
+        {typeof(Companion), new Dictionary<uint, uint>() {
+            {119 , 32}, // Midgarsormr
+        }},
+    };
+
+    public static readonly List<uint> IgnoreBardingId = new()
+    {
+        0, // Leather Barding
+    };
+
+    public static readonly List<uint> IgnoreEmoteId = new()
+    {
+        // Removed
+        51, // Stand up
+        53, // Stand up
+        86, // Snowball
+        87, // Snowball
+    };
+
+    public static readonly List<uint> IgnoreMinionId = new()
+    {
+        // 3 variants of Minion of Light
+        68,
+        69,
+        70,
+
+        // 3 variants of Wind up Leader
+        72,
+        73,
+        74,
+    };
+
     public static readonly List<uint> IgnoreMogStationId = new()
     {
-       12995, // Silver chocobo feathers
+       12995, // Silver chocobo feather
     };
 
     public static readonly List<uint> IgnoreSpecialShopId = new()

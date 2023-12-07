@@ -155,18 +155,18 @@ public class GlamourTab : IDrawable
 
         // (1) Equip Slot filter
         filteredCollection = Services.DataProvider.GetCollection<GlamourCollectible>()
-            .Where(c => c.CollectibleKey.item.EquipSlot == EquipSlotsWidget.activeEquipSlot).AsParallel()
+            .Where(c => ((GlamourCollectible)c).ExcelRow.EquipSlot == EquipSlotsWidget.activeEquipSlot).AsParallel()
 
         // (2) Content type filters
         .Where(c => c.CollectibleKey is not null)
-        .Where(c => !contentFilters.Any() || contentFilters.Intersect(c.CollectibleKey.GetSourceTypes()).Any())
+        .Where(c => !contentFilters.Any() || contentFilters.Intersect(c.CollectibleKey.GetSourceCategories()).Any())
 
         // (3) job filters
         .Where(c =>
             {
                 if (!jobFilters.Any())
                     return true;
-                var itemJobs = c.CollectibleKey.item.Jobs;
+                var itemJobs = ((GlamourCollectible)c).ExcelRow.Jobs;
                 foreach (var jobFilter in jobFilters)
                 {
                     var jobFilterAbbreviation = jobFilter.Job;
@@ -185,14 +185,14 @@ public class GlamourTab : IDrawable
 
         // Order
         .OrderByDescending(c => c.IsFavorite())
-        .ThenByDescending(c => c.CollectibleKey.item.LevelEquip)
+        .ThenByDescending(c => ((GlamourCollectible)c).ExcelRow.LevelEquip)
         .ThenByDescending(c => c.Name)
         .ToList();
     }
 
     public void OnPublish(GlamourItemChangeEventArgs args)
     {
-        var equipSlot = args.Collectible.CollectibleKey.item.EquipSlot;
+        var equipSlot = args.Collectible.ExcelRow.EquipSlot;
         var stainId = EquipSlotsWidget.paletteWidgets[equipSlot].ActiveStain.RowId;
         Services.PreviewExecutor.PreviewWithTryOnRestrictions(args.Collectible, stainId, Services.Configuration.ForceTryOn);
     }

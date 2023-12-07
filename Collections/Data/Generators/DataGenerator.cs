@@ -10,9 +10,9 @@ public class DataGenerator
     public MogStationDataGenerator MogStationDataGenerator { get; private set; }
     public ContainersDataGenerator ContainersDataGenerator { get; private set; }
     public AchievementsDataGenerator AchievementsDataGenerator { get; private set; }
-    public BeastTribesDataGenerator BeastTribesDataGenerator { get; private set; }
     public QuestsDataGenerator QuestsDataGenerator { get; private set; }
     public CraftingDataGenerator CraftingDataGenerator { get; private set; }
+    public CurrencyDataGenerator CurrencyDataGenerator { get; private set; }
 
     public DataGenerator()
     {
@@ -21,13 +21,13 @@ public class DataGenerator
         NpcLocationDataGenerator = new NpcLocationDataGenerator();
         InstancesDataGenerator = new InstancesDataGenerator();
         EventDataGenerator = new EventDataGenerator();
-        BeastTribesDataGenerator = new BeastTribesDataGenerator();
         MogStationDataGenerator = new MogStationDataGenerator();
         QuestsDataGenerator = new QuestsDataGenerator();
         CollectibleKeyDataGenerator = new CollectibleKeyDataGenerator();
         ContainersDataGenerator = new ContainersDataGenerator();
         AchievementsDataGenerator = new AchievementsDataGenerator();
         CraftingDataGenerator = new CraftingDataGenerator();
+        CurrencyDataGenerator = new CurrencyDataGenerator();
         Dev.Stop();
     }
 }

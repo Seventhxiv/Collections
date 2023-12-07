@@ -4,8 +4,9 @@ namespace Collections;
 
 public class Configuration : IPluginConfiguration
 {
-    public int Version { get; set; } = 0;
-    public HashSet<uint> Favorites = new();
+    public int Version { get; set; } = 1;
+    public Dictionary<string, HashSet<uint>> Favorites = new();
+    public Dictionary<string, HashSet<uint>> Wishlist = new();
     public HashSet<uint> WishListed = new();
     public List<uint> DresserItemIds = new();
     public List<uint> ArmoireItemIds = new();

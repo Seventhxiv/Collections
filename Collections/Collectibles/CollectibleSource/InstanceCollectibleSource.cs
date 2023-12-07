@@ -25,18 +25,18 @@ public class InstanceCollectibleSource : CollectibleSource
 
         sourceType = new List<CollectibleSourceCategory>();
         var contentType = ContentFinderCondition.ContentType;
-        switch (contentType.Value.Name.ToString())
+        switch (contentType.Value.RowId)
         {
-            case "PvP":
+            case 6:
                 sourceType.Add(CollectibleSourceCategory.PvP);
                 break;
-            case "Treasure Hunt":
+            case 9:
                 sourceType.Add(CollectibleSourceCategory.TreasureHunts);
                 break;
-            case "Tribal Quests":
+            case 13:
                 sourceType.Add(CollectibleSourceCategory.BeastTribes);
                 break;
-            case "Deep Dungeons":
+            case 21:
                 sourceType.Add(CollectibleSourceCategory.DeepDungeon);
                 break;
             default:
