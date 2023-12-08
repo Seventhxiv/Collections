@@ -64,7 +64,7 @@ public abstract class Collectible<T> : ICollectible where T : ExcelRow
         var key = GetCollectionName();
         if (!Services.Configuration.Favorites.ContainsKey(key))
         {
-            Services.Configuration.Favorites[key] = new();
+            return false;
         }
         return Services.Configuration.Favorites[key].Contains(Id);
     }
@@ -95,7 +95,7 @@ public abstract class Collectible<T> : ICollectible where T : ExcelRow
         var key = GetCollectionName();
         if (!Services.Configuration.Wishlist.ContainsKey(key))
         {
-            Services.Configuration.Wishlist[key] = new();
+            return false;
         }
         return Services.Configuration.Wishlist[key].Contains(Id);
     }

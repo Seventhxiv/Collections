@@ -20,6 +20,10 @@ public class GlamourTreeWidget
         if (glamourTree.Directories.Count == 0)
         {
             AddDirectory("Main");
+        }
+
+        if (glamourTree.Directories.First().GlamourSets.Count == 0)
+        {
             AddGlamourSet("Default");
         }
     }

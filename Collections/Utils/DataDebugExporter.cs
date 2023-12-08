@@ -28,7 +28,7 @@ public class DataDebugExporter
         {
             foreach (var entry in collection.CollectiblesData)
             {
-                if (entry.CollectibleKeyData is null)
+                if (entry.CollectibleSourcesData is null || !entry.CollectibleSourcesData.Any())
                 {
                     flattenedData.Add(new CollectibleFlattenedData()
                     {
