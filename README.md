@@ -1,9 +1,9 @@
 # Collections
 
 ## Disclaimer
-This is a very initial version of the plugin (pretty much a POC), more functionality is planned.
+The plugin is still in "beta" phase, expect some bugs.
 
-Feel free to add any suggestions/issues.
+Please send any feedback / suggestions / issues either here (Issues tab), or on Discord.
 
 For reaching out on discord: `seventh0`
 
@@ -28,5 +28,5 @@ This plugins aims to provide an interface for:
 ### Instance Window
 ![Main Window](./Collections/Data/Resources/instancewindow.png)
 
-### Inspect Window
+### Inspect Window (Deprecated for now)
 ![Main Window](./Collections/Data/Resources/inspectwindow.png)
