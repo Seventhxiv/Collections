@@ -13,6 +13,7 @@ public class DataGenerator
     public QuestsDataGenerator QuestsDataGenerator { get; private set; }
     public CraftingDataGenerator CraftingDataGenerator { get; private set; }
     public CurrencyDataGenerator CurrencyDataGenerator { get; private set; }
+    public BlueMageDataGenerator BlueMageDataGenerator { get; private set; }
 
     public DataGenerator()
     {
@@ -28,6 +29,7 @@ public class DataGenerator
         AchievementsDataGenerator = new AchievementsDataGenerator();
         CraftingDataGenerator = new CraftingDataGenerator();
         CurrencyDataGenerator = new CurrencyDataGenerator();
+        BlueMageDataGenerator = new BlueMageDataGenerator();
         Dev.Stop();
     }
 }

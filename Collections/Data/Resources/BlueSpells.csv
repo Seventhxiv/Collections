@@ -1,0 +1,274 @@
+ActionId,MobDescription,LocationDescription,DutyId,TerritoryId,X,Y
+11385,Default,,966,474,,
+11402,Gobmachine G-VI,Brayflox's Longstop (Hard),20,,,
+11390,Ultros,The Dragon's Neck,81,,,
+11389,Cornu - Rank A Elite Mark,Outer La Noscea,,486,,
+11398,Abandoned Vanguard in Reverse Engineering - Level 46 FATE,Northern Thanalan,,483,18,15
+11387,ADS,The Binding Coil of Bahamut - Turn 1,93,,,
+11387,ADS,The Binding Coil of Bahamut - Turn 2,94,,,
+11401,Flame Sergeant Dalvag - Rank B Elite Mark,Northern Thanalan,,483,,
+11407,Killer Wespe,Middle La Noscea,,285,15,15
+11386,Siren (Last Boss),Pharos Sirius,17,510,,
+11404,Coincounter (2nd Boss),The Aurum Vale,5,,,
+11391,Clay Golem,North Shroud,,324,19,29
+11393,Angry Sow in Picking Up the Piercers - Level 1 Levequest,Central Shroud,,1015,,
+11406,Whalaqee White Wind Totem - Learn 10 Blue Magic Spells,,966,474,,
+11414,Manor Sentry,Haukke Manor,6,1040,,
+11400,Marberry - Rank A Elite Mark,Upper La Noscea,,466,,
+11418,Trickster Imp,Central Shroud,,1015,27,24
+11395,Chigoe,Central Shroud,,1015,25,20
+11392,Treant Sapling,North Shroud,,324,27,28
+11396,Goblin Fisher & Goblin Gambler,Middle La Noscea,,285,23,21
+11411,Learn 5 Blue Magic Spells,,966,474,,
+11408,Glide Bomb Level 12,Western Thanalan,,1049,27,16
+11409,Learn 20 Blue Magic Spells,,966,474,,
+11403,Qiqirn Gullroaster in Survivor Rats Level 6 - FATE,Central Thanalan,,314,18,20
+11423,Apkallu,Eastern La Noscea,,867,27,35
+11383,Typhon,The Dragon's Neck,81,,,
+11384,Ultros,The Dragon's Neck,81,,,
+11399,Denizen of the Dark in Necrologos: The Liminal Ones - Level 45 Levequest,Mor Dhona,,672,29,12
+11388,Stroper,Central Shroud,,1015,13,21
+11424,Cuca Fera (2nd Boss),The Stone Vigil (Hard),25,,,
+11417,Learn 10 Blue Magic Spells,,966,474,,
+11412,Cane Toad in You Call that a Toad - Level 2 FATE,Lower La Noscea,,495,24,22
+11410,Giggling Gigantoad,Western Thanalan,,1049,15,7
+11419,Chimera (Last Boss),Cutter's Cry,12,1020,,
+11420,Chimera (Last Boss),Cutter's Cry,12,1020,,
+11405,Enkidu,Battle in the Big Keep,85,,,
+11397,Sabotender Bailaor in Flower Power - Levequest,Southern Thanalan,,669,18,13
+11422,Kraken,Sastasha (Hard),28,,,
+11425,Frumious Koheel Ja,The Wanderer's Palace (Hard),30,,,
+11415,Clear 10 Stages,The Masked Carnivale,,,,
+11413,Karlabos,Sastasha (Hard),28,,,
+11394,Galvanth the Dominator,The Tam-Tara Deepcroft,2,1037,,
+11416,Clear 20 Stages,The Masked Carnivale,,,,
+11421,Lentic Mudpuppy,Mor Dhona,,672,13,10
+11426,Garuda,The Howling Eye (Extreme),65,,,
+11427,Ifrit,The Bowl of Embers,56,,,
+11427,Ifrit,The Bowl of Embers (Hard),59,,,
+11427,Ifrit,The Bowl of Embers (Extreme),63,,,
+11428,Titan,The Navel (Hard),60,,,
+11428,Titan,The Navel (Extreme),64,,,
+11429,Ramuh,The Striking Tree (Hard),77,,,
+11429,Ramuh,The Striking Tree (Hard),77,,,
+11430,Shiva,The Akh Afah Amphitheatre (Extreme),80,,,
+11431,Leviathan,The Whorleater (Hard),72,,,
+11431,Leviathan,The Whorleater (Extreme),73,,,
+18295,Opinicus,The Dusk Vigil,36,,,
+18296,Salt and Light - Rank S Elite Mark,The Lochs,,687,,
+18297,Lone Yeti,Coerthas Western Highlands,,866,20,31
+18298,Conodont,The Sea of Clouds,,492,26,33
+18299,Faust & Strum Doll,Alexander - The Fist of the Father,112,,,
+18300,Arch Demon in Necrologos: His Treasure Forhelen - Levequest,Foundation,,700,10,10
+18301,Paissa,The Sea of Clouds,,492,19,35
+18302,Enkidu,Battle in the Big Keep,85,,,
+18303,Furryfoot Kupli Kipp,Thornmarch (Hard),66,,,
+18303,Furryfoot Kupli Kipp,Thornmarch (Extreme),67,,,
+18304,Slipkinx Steeljoints - Rank A Elite Mark,The Dravanian Hinterlands,,503,,
+18305,Apanda,The Great Gubal Library (Hard),196,,,
+18306,Queen Hawk,Saint Mocianne's Arboretum,41,1022,,
+18307,Poroggo,The Dravanian Hinterlands,,503,12,34
+18308,Blackblood Zu,Ancient Wisdom (Quest),,,,
+18309,Dhalmel,The Sea of Clouds,,492,16,32
+18310,White Knight,The Vault,34,1066,,
+18311,Black Knight,The Vault,34,1066,,
+18312,Page 64,The Great Gubal Library,31,1109,,
+18313,Lethal Weapon in The Magitek Is Back - FATE,The Peaks,,1019,,
+18314,The Manipulator,Alexander - The Burden of the Father,115,,,
+18314,The Manipulator,Alexander - The Burden of the Father (Savage),119,,,
+18315,Sabotender Guardia,The Sunken Temple of Qarn (Hard),26,,,
+18316,Learn 50 Blue Magic Spells,,966,474,,
+18317,Clear 30 Stages,The Masked Carnivale,,,,
+18318,Wamoura,The Lost City of Amdapor,22,722,,
+18319,Cloud Wyvern,The Churning Mists,,715,24,29
+18320,Mahisha - Rank A Elite Mark,The Lochs,,687,,
+18321,Mechanoscribe,The Great Gubal Library (Hard),196,,,
+18322,Ghrah Luminary,Pharos Sirius (Hard),40,,,
+18323,Ravana,Thok ast Thok (Hard),86,,,
+18323,Ravana,Thok ast Thok (Extreme),87,,,
+18324,Sophia,Containment Bay P1T6,183,577,,
+18325,Brute Justice (Last Phase),Alexander - The Burden of the Son,139,,,
+23264,Thieving Namazu in Rice and Shine - FATE,Yanxia,,685,,
+23265,Thieving Namazu in Rice and Shine - FATE,Yanxia,,685,,
+23266,Dojun-maru,Kugane Castle,262,662,,
+23267,Mist Dragon,The Burn,585,1173,,
+23416,Lakshmi,Emanation,263,720,,
+23270,Phantom Train,Sigmascape V1.0,286,752,,
+23271,Tokkapchi (Final Boss),Saint Mocianne's Arboretum (Hard),584,,,
+23272,Reach Blue Mage level 70,,966,474,,
+23273,Genbu,Hells' Lid,284,742,,
+23275,Ivon Coeurlfist,The Temple of the Fist,236,663,,
+23276,Master Coeurl,Upper La Noscea,,466,,
+23277,Kongamato,The Peaks,,1019,11,25
+23278,Alte Roite,Deltascape V1.0,252,695,,
+23279,Omega,Alphascape V3.0,589,,,
+23280,Learn 100 Blue Magic Spells,,966,474,,
+23281,Salt Dhruva,The Lochs,,687,22,22
+23282,Kelpie,The Drowned City of Skalla,279,1172,,
+23283,Sai Taisui,The Swallow's Compass,536,1017,,
+23284,Courser Chocobo,The Dravanian Forelands,,1023,37.5,23.7
+23285,Learn 100 Blue Magic Spells,,966,474,,
+23286,Omega (Hands in Normal),Alphascape V3.0,589,,,
+23287,Qitian Dasheng (Final Boss),The Swallow's Compass,536,1017,,
+23288,Suzaku,Hells' Kier,596,811,,
+23290,Tsukuyomi,Castrum Fluminis,537,786,,
+34563,Hobgoblin,Kholusia,,870,37,28
+34564,Greater Armadillo,Malikah's Well,656,836,,
+34565,Long-tailed Armadillo,Amh Araeng,,872,,
+34566,Slippery Armadillo,Amh Araeng,,872,33.9,11.9
+34567,Reach Blue Mage level 80,,966,474,,
+34568,Spectral Berserker,The Heroes' Gauntlet,737,916,,
+34569,Mudman,Matoya's Relict,746,933,,
+34570,Seeker Of Solitude,The Grand Cosmos,692,884,,
+34571,The Ruby Weapon,Cinder Drift,717,912,,
+34572,Titania,The Dancing Plague,657,873,,
+34573,Eden Prime,Eden's Gate: Resurrection,653,,,
+34574,Forgiven Obscenity,Mt. Gulg,659,822,,
+34575,Learn 120 Blue Magic Spells,,966,474,,
+34576,Innocence,The Crown of the Immaculate,666,880,,
+34577,Eden's Promise,Eden's Promise: Eternity,758,,,
+34578,"Aenc Thon, Lord of the Lingering Gaze",Dohn Mheg,649,821,,
+34579,Lugus,The Grand Cosmos,692,884,,
+34580,Nixie,Matoya's Relict,746,933,,
+34581,Therion,Amaurot,652,838,,
+34582,Titania,The Dancing Plague,657,873,,
+11402,Magitek Gunship,The Keeper of the Lake,32,1063,,
+11390,Leviathan,The Whorleater (Hard),72,,,
+11390,Leviathan,The Whorleater (Extreme),73,,,
+11389,Zu (2nd Boss),Pharos Sirius,17,510,,
+11398,Magitek Vanguard H-2,Northern Thanalan,,483,16,15
+11387,Bestial Node,Stage 15 Masked Carnivale - The Me Nobody Nodes,,,,
+11401,Dantalion,The Tam-Tara Deepcroft (Hard),24,,,
+11401,Phantom Knight,The Tam-Tara Deepcroft (Hard),24,,,
+11407,Temple Bee,The Sunken Temple of Qarn,9,367,,
+11386,Aglaope - Rank S Elite Mark,Il Mheg,,869,,
+11404,Brontes - Rank S Elite Mark,Central Thanalan,,314,,
+11391,Sandstone Golem,Southern Thanalan,,669,24,13
+11393,Charging Hog in A Mother Scorned - FATE,Central Shroud,,1015,29,23
+11406,Enkidu,Battle in the Big Keep,85,,,
+11400,Tonberry King (Last Boss),The Wanderer's Palace,10,329,,
+11418,Vandalous Imp,Eastern Thanalan,,668,15,19
+11395,Cave Bat,Lower La Noscea,,495,27,16
+11392,Treant Sapling,Central Shroud,,1015,27,15
+11396,Goblin Glider,The Dravanian Hinterlands,,503,29,23
+11396,Goblin Brandisher,The Dravanian Hinterlands,,503,29,23
+11408,Blasting Cap,Copperbell Mines,3,1038,,
+11403,Qiqirn Shellsweeper,Central Thanalan,,314,16,19
+11423,Bloody Mary - Rank B Elite Mark,Eastern La Noscea,,867,,
+11383,Typhon,Stage 20 Masked Carnivale - Miss Typhon,,,,
+11399,Anantaboga (Last Boss),Amdapor Keep,14,721,,
+11388,Halitostroper,Central Shroud,,1015,15,21
+11412,Toxic Toad,Central Thanalan,,314,27,19
+11419,"Gorgimera in Go, Go, Gorgimera - FATE",Northern Thanalan,,483,18,13
+11420,"Gorgimera in Go, Go, Gorgimera - FATE",Northern Thanalan,,483,18,13
+11405,Guardian,Sigmascape V3.0,288,754,,
+11397,Sabotender Bailaor,Southern Thanalan,,669,16,15
+11413,Reflection of Karlabos,The Sirensong Sea,238,1142,,
+11394,Blaster,Alexander - The Burden of the Son,139,,,
+11421,Kurrea - Rank A Elite Mark,Mor Dhona,,672,,
+18295,Griffin,The Sea of Clouds,,492,36,9
+18296,Living Liquid (Last Boss),Alexander - The Arm of the Father,114,,,
+18297,Slate Yeti,Coerthas Western Highlands,,866,17,27
+18298,Hikagiri,Shisui of the Violet Tides,235,616,,
+18299,Jagd Doll,Alexander - The Cuff of the Father,113,,,
+18300,Ash,Haukke Manor (Hard),19,,,
+18301,Apotamkin in A Long Way Down - FATE,Sea of Clouds,,492,36,33
+18302,Empuse,Azys Lla,,459,29,12
+18304,Alexandrian Hider & Alexandrian Slider,Alexander - The Breath of the Creator,187,,,
+18305,Epilogi,Stage 24 Masked Carnivale - Amazing Technicolor Pit Fiends,,,,
+18307,Bero Roggo in Toad Alone - FATE,The Dravanian Hinterlands,,503,12,35
+18308,Cornu - Rank A Elite Mark,Outer La Noscea,,486,,
+18309,Jhammel,The Peaks,,1019,26.5,28.5
+18313,Gamma - Rank S Elite Mark,Yanxia,,685,,
+18318,Abalathian Wamoura,The Sea of Clouds,,492,10,17
+18320,Yilan - Rank A Elite Mark,Thavnair,,957,,
+18321,Arena Scribe,Stage 24 Masked Carnivale - Amazing Technicolor Pit Fiends,,,,
+23264,Ebisu Catfish,Yanxia,,685,28,6
+23265,Ebisu Catfish,Yanxia,,685,28,6
+23271,The Mudman - Rank A Elite Mark,Il Mheg,,869,,
+23276,Coeurl Smriti,The Temple of the Fist,236,663,,
+23277,Gwas-y-neidr - Rank B Elite Mark,The Peaks,,1019,,
+23281,Luminare - Rank A Elite Mark,The Lochs,,687,,
+34563,Hobgoblin Guard,Kholusia,,870,,
+34565,Vajrakumara - Rank B Elite Mark,Thavnair,,957,,
+34575,Sephirot,Containment Bay S1T7 (Extreme),135,,,
+11402,Omega,Alphascape V3.0,589,,,
+11390,Ultros,Stage 20 Masked Carnivale - Miss Typhon,,,,
+11389,Alpha Zu,Unhidden Leather Map,,,,
+11398,Magitek Vanguard and Magitek Vanguard H-1,Castrum Meridianum,15,1043,,
+11401,Baalzephon,The Lost City of Amdapor,22,722,,
+11391,Nunyunuwi - Rank S Elite Mark,Southern Thanalan,,669,,
+11393,Wild Boar,East Shroud,,839,18,24
+11418,Manor Jester (Second Boss),Haukke Manor,6,1040,,
+11395,Sun Bat,Central Thanalan,,314,26,18
+11392,Treant Sapling,East Shroud,,839,13,25
+11396,Slipkinx Steeljoints - Rank A Elite Mark,The Dravanian Hinterlands,,503,,
+11408,Flambeau,Copperbell Mines,3,1038,,
+11403,Qiqirn Eggdigger,Lower La Noscea,,495,18,35
+11383,Typhon,Stage 27 Masked Carnivale - Lock up Your Snorters,,,,
+11399,Valefor,The Labyrinth of the Ancients,92,,,
+11388,Stroper,South Shroud,,473,20,28
+11412,Doomed Gigantoad in Doomed - FATE,Western Thanalan,,1049,24.5,21.5
+11419,Dhorme Chimera,A Relic Reborn: The Chimera,74,,,
+11420,Dhorme Chimera,A Relic Reborn: The Chimera,74,,,
+11397,Sabotender Desertor,Cutter's Cry,12,1020,,
+11413,Crag Claw,The Peaks,,1019,25,11
+11394,Mindflayer - Rank S Elite Mark,South Shroud,,473,,
+11421,Surf Eft,Brayflox's Longstop,8,1041,,
+18295,True Griffin,The Peaks,,1019,27,25
+18296,Shikigami of the Undertow,"Stage 29 Masked Carnivale Red, Fraught, and Blue",,,,
+18297,Mirka - Rank A Elite Mark,Coerthas Western Highlands,,866,,
+18300,Everlasting Bibliotaph,The Great Gubal Library,31,1109,,
+18301,Squonk - Rank B Elite Mark,Sea of Clouds,,492,,
+18302,Arioch (2nd Boss),The Lost City of Amdapor,22,722,,
+18308,Zu,Pharos Sirius,17,510,,
+18309,Nenaunir in Slaughterwife-five - FATE,The Peaks,,1019,23,30
+18313,Armored Weapon,Baelsar's Wall,219,1114,,
+18320,the Decaying Gourmand,The Lost City of Amdapor,22,722,,
+23264,Gyorai Quickstrike - Rank B Elite Mark,Yanxia,,685,,
+23265,Gyorai Quickstrike - Rank B Elite Mark,Yanxia,,685,,
+23281,Rusalka - Rank A Elite Mark,The Tempest,,932,,
+34563,Li'l Murderer - Rank A Elite Mark,Kholusia,,870,,
+11398,Magitek Vangob G-III,Brayflox's Longstop (Hard),20,,,
+11391,Basalt Golem,Outer La Noscea,,486,16,16
+11418,Azulmagia,Stage 25 Masked Carnivale - Dirty Rotten Azulmagia,,,,
+11395,Dusk Bat,Western La Noscea,,675,27,24
+11392,Wulgaru - Rank S Elite Mark,East Shroud,,839,,
+11396,Illuminati Commander,Brayflox's Longstop (Hard),20,,,
+11408,Gas Bomb,Halatali,7,460,,
+11403,Qiqirn Gullroaster in Careless Whiskers - FATE,Eastern La Noscea,,867,29,34
+11399,Bibliolater,The Great Gubal Library (Hard),196,,,
+11388,Reflective Rebekkah,Stage 19 Masked Carnivale - On a Clear Day You Can Smell Forever,,,,
+11412,Laughing Toad,Western Thanalan,,1049,15,7
+11419,Apademak,Stage 21 Masked Carnivale - Chimera on a Hot Tin Roof,,,,
+11420,Apademak,Stage 21 Masked Carnivale - Chimera on a Hot Tin Roof,,,,
+11413,Brutal Barber in Barbershoppe - FATE,The Peaks,,1019,23.3,9.3
+11421,Hellbender (Second Boss),Brayflox's Longstop,8,1041,,
+18295,Neckbreaker in Breakneck - FATE,The Peaks,,1019,27,25
+18297,Yeti,Snowcloak,27,1062,,
+18301,Stolas - Rank A Elite Mark,The Dravanian Hinterlands,,503,,
+18308,Anzu Crone in Anzu Trois - FATE,The Sea of Clouds,,492,30,36
+18309,Dhalmel,Neverreap,33,420,,
+18313,Doman Armored Weapon,Doma Castle,241,1144,,
+18320,Caduceus,The Binding Coil of Bahamut - Turn 1,93,,,
+11391,Gogmagolem (2nd Boss),Copperbell Mines (Hard),18,,,
+11395,Black Bat,East Shroud,,839,17,23
+11408,Shrapnel,Cutter's Cry,12,1020,,
+11403,Qiqirn Gullroaster,Eastern La Noscea,,867,26,32
+11388,Morbol,The Aurum Vale,5,,,
+11412,Gigantoad,Eastern La Noscea,,867,18,26
+11419,Azulmagia,Stage 25 Masked Carnivale - Dirty Rotten Azulmagia,,,,
+11420,Azulmagia,Stage 25 Masked Carnivale - Dirty Rotten Azulmagia,,,,
+11413,Clay Claw,Alexander - The Arm of the Father,114,,,
+11421,Loch Nanka,The Lochs,,687,17,20
+18295,Vochstein - Rank A Elite Mark,The Peaks,,1019,,
+18308,Anzu,The Sea of Clouds,,492,25,6
+18320,Rafflesia,The Second Coil of Bahamut - Turn 1,98,,,
+11391,Azulmagia,Stage 25 Masked Carnivale - Dirty Rotten Azulmagia,,,,
+11395,Barbastelle - Rank B Elite Mark,Lower La Noscea,,495,,
+11408,Arena Cherry Bomb,Stage 8 Masked Carnivale - The Bomb-edy of Errors,,,,
+11412,Bone Nix,Dzemael Darkhold,13,171,,
+11419,Shadowcourt Hound,Dun Scaith,220,627,,
+11420,Shadowcourt Hound,Dun Scaith,220,627,,
+11413,Pterygotus - Rank B Elite Mark,The Dravanian Hinterlands,,503,,
+18320,Cerberus,World of Darkness,111,151,,

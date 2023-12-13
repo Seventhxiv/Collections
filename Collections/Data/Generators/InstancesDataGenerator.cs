@@ -1,4 +1,3 @@
-using System.IO;
 using LuminaSupplemental.Excel.Model;
 
 namespace Collections;
@@ -60,26 +59,21 @@ public class InstancesDataGenerator
         }
     }
 
-    private static readonly string ItemsToInstancesPath = Path.Combine(Services.PluginInterface.AssemblyLocation.Directory?.FullName!, @"Data\Resources\itemsToInstances.csv");
+    private static readonly string FileName = "ItemIdToDuty.csv";
     private void setItemsToInstances()
     {
-        var itemsToInstancesCSVList = Helpers.LoadCSV<ItemToInstance>(ItemsToInstancesPath);
+        var itemsToInstancesCSVList = CSVHandler.Load<ItemIdToSource>(FileName);
         foreach (var entry in itemsToInstancesCSVList)
         {
-            var itemId = entry.itemId;
-            foreach (var dutyId in entry.dutyIds.Split(";"))
-            {
-                AddItemInstancePair(itemId, Convert.ToUInt32(dutyId));
-            }
-        }
-    }
+            if (entry.SourceId == 0)
+                continue;
 
-    private class ItemToInstance
-    {
-        public uint itemId { get; set; }
-        public string Events { get; set; }
-        public bool isMogstation { get; set; }
-        public string dutyIds { get; set; }
+            AddItemInstancePair(entry.ItemId, entry.SourceId);
+            //foreach (var dutyId in entry.dutyIds.Split(";"))
+            //{
+            //    AddItemInstancePair(itemId, Convert.ToUInt32(dutyId));
+            //}
+        }
     }
 
     private void AddItemInstancePair(uint itemId, uint contentFinderConditionId)

@@ -1,9 +1,3 @@
-using System.IO;
-using System.Text;
-using CsvHelper;
-using System.Globalization;
-using CsvHelper.Configuration;
-
 namespace Collections;
 
 public class DataDebugExporter
@@ -28,13 +22,25 @@ public class DataDebugExporter
         {
             foreach (var entry in collection.CollectiblesData)
             {
-                if (entry.CollectibleSourcesData is null || !entry.CollectibleSourcesData.Any())
+                if (entry.CollectibleKeyData is null)
                 {
                     flattenedData.Add(new CollectibleFlattenedData()
                     {
                         CollectionName = collection.CollectionName,
                         Id = entry.Id,
                         Name = entry.Name,
+                    });
+                }
+                else if (entry.CollectibleSourcesData is null || !entry.CollectibleSourcesData.Any())
+                {
+                    flattenedData.Add(new CollectibleFlattenedData()
+                    {
+                        CollectionName = collection.CollectionName,
+                        Id = entry.Id,
+                        Name = entry.Name,
+                        KeyId = entry.CollectibleKeyData.Id,
+                        KeyName = entry.CollectibleKeyData.Name,
+                        KeyType = entry.CollectibleKeyData.Type,
                     });
                 }
                 else
@@ -61,7 +67,7 @@ public class DataDebugExporter
                 }
             }
         }
-        SaveToCSV(flattenedData, "DataDebug.csv");
+        CSVHandler.Write(flattenedData, "DataDebug.csv");
     }
 
     public static List<CollectibleData> GetCollectiblesData(List<ICollectible> collection)
@@ -204,8 +210,7 @@ public class DataDebugExporter
             }
         }
 
-
-        SaveToCSV(data, "DataDebug.csv");
+        CSVHandler.Write(data, "DataDebug.csv");
     }
 
     public class CollectibleFlattenedData
@@ -267,22 +272,6 @@ public class DataDebugExporter
         public uint itemId { get; set; }
         public string itemName { get; set; }
         public string costDescription { get; set; }
-    }
-
-    public static void SaveToCSV<T>(List<T> data, string path = "")
-    {
-        var csvConfig = new CsvConfiguration(CultureInfo.CurrentCulture)
-        {
-            HasHeaderRecord = true,
-            Delimiter = ",",
-            Encoding = Encoding.UTF8
-        };
-
-        using (var writer = new StreamWriter(path))
-        using (var csvWriter = new CsvWriter(writer, csvConfig))
-        {
-            csvWriter.WriteRecords(data);
-        }
     }
 }
 

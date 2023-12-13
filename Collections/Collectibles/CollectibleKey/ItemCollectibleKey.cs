@@ -34,11 +34,11 @@ public class ItemCollectibleKey : CollectibleKey<ItemAdapter>, ICreateable<ItemC
         {
             CollectibleSources.AddRange(containers.Select(itemId => new ContainerCollectibleSource(itemId)));
         }
-        if (Services.DataGenerator.AchievementsDataGenerator.itemToAchievement.TryGetValue(excelRow.RowId, out var achievement))
+        if (Services.DataGenerator.AchievementsDataGenerator.itemToAchievement.TryGetValue(excelRow.RowId, out var achievements))
         {
-            CollectibleSources.Add(new AchievementCollectibleSource(achievement));
+            CollectibleSources.AddRange(achievements.Select(entry => new AchievementCollectibleSource(entry)));
         }
-        if (Services.DataGenerator.QuestsDataGenerator.itemToQuests.TryGetValue(excelRow.RowId, out var quests))
+        if (Services.DataGenerator.QuestsDataGenerator.ItemToQuests.TryGetValue(excelRow.RowId, out var quests))
         {
             CollectibleSources.AddRange(quests.Select(entry => new QuestCollectibleSource(entry)));
         }

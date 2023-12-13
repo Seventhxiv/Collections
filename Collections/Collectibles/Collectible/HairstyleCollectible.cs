@@ -39,6 +39,16 @@ public class HairstyleCollectible : Collectible<CharaMakeCustomize>, ICreateable
         return ExcelRow.Data;
     }
 
+    protected override string GetPrimaryDescription()
+    {
+        return "";
+    }
+
+    protected override string GetSecondaryDescription()
+    {
+        return "";
+    }
+
     public override unsafe void UpdateObtainedState()
     {
         isObtained = UIState.Instance()->IsUnlockLinkUnlocked(ExcelRow.Data);

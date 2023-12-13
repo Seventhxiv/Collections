@@ -31,6 +31,16 @@ public class TripleTriadCollectible : Collectible<TripleTriadCard>, ICreateable<
         return ExcelRow.RowId;
     }
 
+    protected override string GetPrimaryDescription()
+    {
+        return "";
+    }
+
+    protected override string GetSecondaryDescription()
+    {
+        return "";
+    }
+
     public override unsafe void UpdateObtainedState()
     {
         isObtained = UIState.Instance()->IsTripleTriadCardUnlocked((ushort)ExcelRow.RowId);

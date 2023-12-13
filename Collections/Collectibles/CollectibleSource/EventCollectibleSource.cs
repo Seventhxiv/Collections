@@ -21,11 +21,12 @@ public class EventCollectibleSource : CollectibleSource
 
     public override bool GetIslocatable()
     {
-        return false;
+        return true;
     }
 
     public override void DisplayLocation()
     {
+        WikiOpener.OpenGamerEscape(eventName);
     }
 
     public static int iconId = 61757;

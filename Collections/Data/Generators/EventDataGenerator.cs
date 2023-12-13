@@ -1,33 +1,21 @@
-using System.IO;
-
 namespace Collections;
-
-public class CollectibleToEvent
-{
-    public string SheetName { get; set; }
-    public uint id { get; set; }
-    public string Name { get; set; }
-    public string Events { get; set; }
-    public bool isMogstation { get; set; }
-}
 
 public class EventDataGenerator
 {
     public Dictionary<uint, List<string>> itemsToEvents = new();
 
-    private static readonly string CollectibleToEventPath = Path.Combine(Services.PluginInterface.AssemblyLocation.Directory?.FullName!, @"Data\Resources\collectibleToEvent.csv");
+    private static readonly string FileName = "ItemIdToEvent.csv";
     public EventDataGenerator()
     {
-        //Dev.Start();
         PopulateData();
-        //Dev.Stop();
     }
 
     private void PopulateData()
     {
-        var gamerEscapeItemToCSVList = Helpers.LoadCSV<CollectibleToEvent>(CollectibleToEventPath);
-        itemsToEvents = gamerEscapeItemToCSVList
-            .AsParallel().Where(entry => entry.Events != "")
-            .ToDictionary(value => value.id, value => value.Events.Split(",", 10).ToList());
+        var resourceData = CSVHandler.Load<ItemIdToSource>(FileName);
+        itemsToEvents = resourceData
+            .AsParallel().Where(entry => entry.SourceDescription != "")
+            .GroupBy(entry => entry.ItemId)
+            .ToDictionary(kv => kv.Key, kv => kv.Select(e => e.SourceDescription).ToList());
     }
 }

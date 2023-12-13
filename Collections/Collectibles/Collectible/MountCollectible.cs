@@ -31,6 +31,16 @@ public class MountCollectible : Collectible<Mount>, ICreateable<MountCollectible
         return ExcelRow.RowId;
     }
 
+    protected override string GetPrimaryDescription()
+    {
+        return "";
+    }
+
+    protected override string GetSecondaryDescription()
+    {
+        return "";
+    }
+
     public override unsafe void UpdateObtainedState()
     {
         isObtained = PlayerState.Instance()->IsMountUnlocked(ExcelRow.RowId);

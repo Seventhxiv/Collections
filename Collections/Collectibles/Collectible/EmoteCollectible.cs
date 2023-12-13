@@ -30,6 +30,16 @@ public class EmoteCollectible : Collectible<Emote>, ICreateable<EmoteCollectible
         return ExcelRow.UnlockLink;
     }
 
+    protected override string GetPrimaryDescription()
+    {
+        return "";
+    }
+
+    protected override string GetSecondaryDescription()
+    {
+        return "";
+    }
+
     public override unsafe void UpdateObtainedState()
     {
         isObtained = UIState.Instance()->IsEmoteUnlocked((ushort)ExcelRow.RowId);

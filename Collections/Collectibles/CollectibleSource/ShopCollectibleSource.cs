@@ -95,8 +95,8 @@ public class ShopCollectibleSource : CollectibleSource
     }
 
     private bool locationChecked = false;
-    private LocationEntry locationEntry;
-    public LocationEntry GetLocationEntry()
+    private Location locationEntry;
+    public Location GetLocationEntry()
     {
         if (locationChecked)
         {

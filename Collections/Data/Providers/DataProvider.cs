@@ -54,6 +54,7 @@ public class DataProvider
         InitializeEmoteCollection();
         InitializeHairstyleCollection();
         InitializeTripleTriadCollection();
+        InitializeBlueMageCollection();
         InitializeBardingCollection();
     }
 
@@ -145,6 +146,19 @@ public class DataProvider
             ExcelCache<BuddyEquip>.GetSheet().AsParallel()
             .Where(entry => entry.Name != "" && !DataOverrides.IgnoreBardingId.Contains(entry.RowId))
             .Select(entry => (ICollectible)CollectibleCache<BardingCollectible, BuddyEquip>.Instance.GetObject(entry))
+            .OrderByDescending(c => c.IsFavorite())
+            .ThenByDescending(c => c.Name)
+            .ToList()
+            );
+    }
+
+    private void InitializeBlueMageCollection()
+    {
+        collections[typeof(BlueMageCollectible)] = (
+            BlueMageCollectible.CollectionName,
+            ExcelCache<Lumina.Excel.GeneratedSheets.Action>.GetSheet().AsParallel()
+            .Where(entry => entry.ClassJob.Row == 36 && entry.Name != "")
+            .Select(entry => (ICollectible)CollectibleCache<BlueMageCollectible, Lumina.Excel.GeneratedSheets.Action>.Instance.GetObject(entry))
             .OrderByDescending(c => c.IsFavorite())
             .ThenByDescending(c => c.Name)
             .ToList()

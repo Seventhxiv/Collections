@@ -49,6 +49,13 @@ public class CollectibleKeyFactory
                 return new MiscCollectibleKey(misc);
             }
         }
+        if (type == typeof(Lumina.Excel.GeneratedSheets.Action))
+        {
+            if (Services.DataGenerator.BlueMageDataGenerator.ActionIdToBlueSpell.TryGetValue(id, out var monster))
+            {
+                return new MonsterCollectibleKey(monster);
+            }
+        }
         return null;
     }
 }

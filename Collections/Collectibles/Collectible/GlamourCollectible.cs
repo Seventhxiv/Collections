@@ -6,7 +6,6 @@ public class GlamourCollectible : Collectible<ItemAdapter>, ICreateable<GlamourC
 
     public GlamourCollectible(ItemAdapter excelRow) : base(excelRow)
     {
-        //CollectibleKey = CollectibleKeyCache<ItemCollectibleKey, ItemAdapter>.Instance.GetObject((excelRow, true));
     }
 
     public static GlamourCollectible Create(ItemAdapter excelRow)
@@ -27,6 +26,16 @@ public class GlamourCollectible : Collectible<ItemAdapter>, ICreateable<GlamourC
     protected override uint GetId()
     {
         return ExcelRow.RowId;
+    }
+
+    protected override string GetPrimaryDescription()
+    {
+        return $"Lv. {ExcelRow.LevelEquip}\n{ExcelRow.ClassJobCategory.Value.Name}";
+    }
+
+    protected override string GetSecondaryDescription()
+    {
+        return "";
     }
 
     public override void UpdateObtainedState()

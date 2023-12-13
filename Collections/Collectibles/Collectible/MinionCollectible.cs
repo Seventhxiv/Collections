@@ -31,6 +31,16 @@ public class MinionCollectible : Collectible<Companion>, ICreateable<MinionColle
         return ExcelRow.RowId;
     }
 
+    protected override string GetPrimaryDescription()
+    {
+        return "";
+    }
+
+    protected override string GetSecondaryDescription()
+    {
+        return "";
+    }
+
     public override unsafe void UpdateObtainedState()
     {
         isObtained = UIState.Instance()->IsCompanionUnlocked(ExcelRow.RowId);

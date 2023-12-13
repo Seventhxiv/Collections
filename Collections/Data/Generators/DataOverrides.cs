@@ -73,7 +73,7 @@ public class DataOverrides
 
     public static readonly List<uint> IgnoreMogStationId = new()
     {
-       12995, // Silver chocobo feather
+        12995, // Silver chocobo feather
     };
 
     public static readonly List<uint> IgnoreSpecialShopId = new()
@@ -225,10 +225,10 @@ public class DataOverrides
         {1037636, (957, 10.3, 23.3) }, // thavnir
 
         // junkmonger
-        {1037725, (958, 31.3, 17.5) }, // garlemald
+        //{1037725, (958, 31.3, 17.5) }, // garlemald
 
         // disreputable priest
-        {1018655, (250, 5, 5) }, // wolves den
+        //{1018655, (250, 5, 5) }, // wolves den
 
         // Limbeth
         {1027566, (820, 11.7, 11) }, // Eulmore - the buttress

@@ -5,6 +5,8 @@ public interface ICollectible
 {
     public string Name { get; init; }
     public uint Id { get; init; }
+    public string PrimaryDescription { get; init; }
+    public string SecondaryDescription { get; init; }
     public ICollectibleKey CollectibleKey { get; init; }
     public bool IsFavorite();
     public void SetFavorite(bool favorite);
@@ -21,6 +23,8 @@ public abstract class Collectible<T> : ICollectible where T : ExcelRow
 {
     public string Name { get; init; }
     public uint Id { get; init; }
+    public string PrimaryDescription { get; init; }
+    public string SecondaryDescription { get; init; }
     public string CollectionName;
     public abstract void UpdateObtainedState();
     public abstract void Interact();
@@ -28,6 +32,8 @@ public abstract class Collectible<T> : ICollectible where T : ExcelRow
     protected abstract int GetIconId();
     protected abstract uint GetId();
     protected abstract string GetName();
+    protected abstract string GetPrimaryDescription();
+    protected abstract string GetSecondaryDescription();
     protected abstract string GetCollectionName();
 
     public ICollectibleKey CollectibleKey { get; init; }
@@ -40,6 +46,8 @@ public abstract class Collectible<T> : ICollectible where T : ExcelRow
         Id = GetId();
         CollectibleKey = CollectibleKeyFactory.Get(this);
         Name = GetName();
+        PrimaryDescription = GetPrimaryDescription();
+        SecondaryDescription = GetSecondaryDescription();
         IconHandler = new IconHandler(GetIconId());
 
         if (CollectibleKey is null)

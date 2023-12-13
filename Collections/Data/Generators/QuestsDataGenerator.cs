@@ -2,18 +2,18 @@ namespace Collections;
 
 public class QuestsDataGenerator
 {
-    public readonly Dictionary<uint, List<Quest>> itemToQuests = new();
-    public readonly Dictionary<uint, Quest> emoteToQuest = new();
+    public readonly Dictionary<uint, HashSet<Quest>> ItemToQuests = new();
+    public readonly Dictionary<uint, Quest> EmoteToQuest = new();
 
     public QuestsDataGenerator()
     {
-        //Dev.Start();
         PopulateData();
-        //Dev.Stop();
     }
 
+    private static readonly string FileName = "ItemIdToQuest.csv";
     private void PopulateData()
     {
+        // Based on sheet
         var questSheet = ExcelCache<Quest>.GetSheet();
         foreach (var quest in questSheet)
         {
@@ -21,19 +21,35 @@ public class QuestsDataGenerator
             items.AddRange(quest.OptionalItemReward.Select(entry => entry.Row).ToList());
             foreach (var itemId in items)
             {
-                if (itemId == 0) continue;
-                if (!itemToQuests.ContainsKey(itemId))
-                {
-                    itemToQuests[itemId] = new List<Quest>();
-                }
-                itemToQuests[itemId].Add(quest);
+                if (itemId == 0)
+                    continue;
+                AddEntry(itemId, quest);
             }
 
             var emoteId = quest.EmoteReward.Row;
             if (emoteId != 0)
             {
-                emoteToQuest[emoteId] = quest;
+                EmoteToQuest[emoteId] = quest;
             }
         }
+
+        // Based on resource data
+        var resourceData = CSVHandler.Load<ItemIdToSource>(FileName);
+        foreach (var entry in resourceData)
+        {
+            if (entry.SourceId == 0)
+                continue;
+
+            AddEntry(entry.ItemId, questSheet.GetRow(entry.SourceId));
+        }
+    }
+
+    private void AddEntry(uint itemId, Quest quest)
+    {
+        if (!ItemToQuests.ContainsKey(itemId))
+        {
+            ItemToQuests[itemId] = new HashSet<Quest>();
+        }
+        ItemToQuests[itemId].Add(quest);
     }
 }

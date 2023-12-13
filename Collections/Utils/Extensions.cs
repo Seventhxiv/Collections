@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Text.RegularExpressions;
 
 namespace Collections;
@@ -30,6 +31,11 @@ public static class Extensions
     public static string ToSentence(this string s)
     {
         return Regex.Replace(s, "([a-z]{2})_?([A-Z])", "$1 $2");
+    }
+
+    public static string ToTitleCase(this string s)
+    {
+        return CultureInfo.CurrentCulture.TextInfo.ToTitleCase(s.ToLower());
     }
 
     public static string RemoveSuffix(this string s, string suffix)

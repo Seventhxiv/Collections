@@ -4,19 +4,9 @@ using LuminaSupplemental.Excel.Model;
 
 namespace Collections;
 
-public class LocationEntry
-{
-    public TerritoryType TerritoryType { get; set; }
-    //public Map Map { get; set; }
-    public double Xmap { get; set; }
-    public double Ymap { get; set; }
-    public float Xorigin { get; set; }
-    public float Yorigin { get; set; }
-}
-
 public class NpcLocationDataGenerator
 {
-    public Dictionary<uint, LocationEntry> npcToLocation = new();
+    public Dictionary<uint, Location> npcToLocation = new();
 
     public NpcLocationDataGenerator()
     {
@@ -51,12 +41,7 @@ public class NpcLocationDataGenerator
                 continue;
             }
 
-            var sTerritoryType = level.Territory.Value;
-            var map = sTerritoryType.Map.Value;
-            var x = ToMapCoordinate(level.X, map.SizeFactor, map.OffsetX);
-            var y = ToMapCoordinate(level.Z, map.SizeFactor, map.OffsetY);
-
-            npcToLocation[npcRowId] = new LocationEntry() { TerritoryType = sTerritoryType, Xmap = x, Ymap = y, Xorigin = level.X, Yorigin = level.Z };
+            npcToLocation[npcRowId] = new Location(level.Territory.Value, level.X, level.Z);
 
         }
 
@@ -94,10 +79,7 @@ public class NpcLocationDataGenerator
                         continue;
                     }
 
-                    var map = sTerritoryType.Map.Value;
-                    var x = ToMapCoordinate(instanceObject.Transform.Translation.X, map.SizeFactor, map.OffsetX);
-                    var y = ToMapCoordinate(instanceObject.Transform.Translation.Z, map.SizeFactor, map.OffsetY);
-                    npcToLocation[npcRowId] = new LocationEntry() { TerritoryType = sTerritoryType, Xmap = x, Ymap = y, Xorigin = instanceObject.Transform.Translation.X, Yorigin = instanceObject.Transform.Translation.Z };
+                    npcToLocation[npcRowId] = new Location(sTerritoryType, instanceObject.Transform.Translation.X, instanceObject.Transform.Translation.Z);
                 }
             }
         }
@@ -117,10 +99,7 @@ public class NpcLocationDataGenerator
                 continue;
             }
 
-            var map = territoryType.Map.Value;
-            var x = ToMapCoordinate(entry.Position.X, map.SizeFactor, map.OffsetX);
-            var y = ToMapCoordinate(entry.Position.Y, map.SizeFactor, map.OffsetY);
-            npcToLocation[entry.ENpcResidentId] = new LocationEntry() { TerritoryType = territoryType, Xmap = x, Ymap = y, Xorigin = entry.Position.X, Yorigin = entry.Position.Y };
+            npcToLocation[entry.ENpcResidentId] = new Location(territoryType, entry.Position.X, entry.Position.Y);
         }
 
         // Inject from manual overrides
@@ -137,20 +116,8 @@ public class NpcLocationDataGenerator
                 continue;
             }
 
-            var map = territoryType.Map.Value;
-            var x = ToMapCoordinate((float)X, map.SizeFactor, map.OffsetX);
-            var y = ToMapCoordinate((float)Y, map.SizeFactor, map.OffsetY);
-            npcToLocation[npcId] = new LocationEntry() { TerritoryType = territoryType, Xmap = x, Ymap = y, Xorigin = (float)X, Yorigin = (float)Y };
+            npcToLocation[npcId] = new Location(territoryType, (float)X, (float)Y);
         }
         Dev.Stop();
-    }
-
-    private static float ToMapCoordinate(float val, float scale, short offset)
-    {
-        var c = scale / 100.0f;
-
-        val = (val + offset) * c;
-
-        return (41.0f / c * ((val + 1024.0f) / 2048.0f)) + 1;
     }
 }

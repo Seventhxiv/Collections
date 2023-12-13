@@ -69,7 +69,7 @@ public class Services
 
         Dev.Stop();
 
-        //DataDebugExporter.ExportCollectionsData(new List<Type>() { typeof(TripleTriadCollectible), typeof(BardingCollectible) });
+        //DataDebugExporter.ExportCollectionsData();
     }
 
     public static void Dispose()

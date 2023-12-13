@@ -1,3 +1,5 @@
+using System.Globalization;
+
 namespace Collections;
 
 public class CollectibleTooltipWidget
@@ -23,7 +25,7 @@ public class CollectibleTooltipWidget
             ImGui.SameLine();
         }
 
-        // Top right icons: Obtained / Wish list / Favourite
+        // Description + Top right icons (Obtained / Wish list / Favourite)
         if (ImGui.BeginTable("collectible-tooltip-icons", 2, ImGuiTableFlags.None))
         {
             // Stretch to push the icons in 2nd columns to the right
@@ -33,15 +35,10 @@ public class CollectibleTooltipWidget
             ImGui.TableNextColumn();
 
             // Item name
-            ImGui.Text($"{collectible.Name}");
+            ImGui.TextWrapped($"{collectible.Name.ToTitleCase()}");
 
-            // Level + Jobs
-            if (collectibleKey is ItemCollectibleKey)
-            {
-                var item = ((ItemCollectibleKey)collectibleKey).excelRow;
-                ImGui.Text($"Lv. {item.LevelEquip}");
-                ImGui.Text($"{item.ClassJobCategory.Value.Name}");
-            }
+            // Description
+            ImGui.Text(collectible.PrimaryDescription);
 
             // Marketplace price / Untradeable
             if (collectibleKey is not null && collectibleKey.GetIsTradeable())
@@ -99,7 +96,13 @@ public class CollectibleTooltipWidget
 
             ImGui.EndTable();
         }
-        
+
+        // Secondary Description
+        if (collectible.SecondaryDescription is not null && collectible.SecondaryDescription != string.Empty)
+        {
+            ImGui.TextUnformatted(collectible.SecondaryDescription);
+        }
+
         if (collectibleKey == null)
         {
             return;

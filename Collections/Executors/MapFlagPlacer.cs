@@ -11,16 +11,28 @@ public static class MapFlagPlacer
 
     public static unsafe void Place(TerritoryType territory, float xCord, float yCord)
     {
-        Place(territory.RowId, territory.Map.Row, xCord, yCord, (territory.Map.Value?.SizeFactor ?? 100f) / 100f);
+        PlaceFromInternalCoords(territory.RowId, territory.Map.Row, xCord, yCord);
     }
 
-    public static unsafe void Place(uint territoryId, uint mapId, float xCord, float yCord, double sizeFactor)
+    public static unsafe void PlaceFromMapCoords(TerritoryType territory, float xCord, float yCord)
     {
-        Dev.Log($"{territoryId},{mapId},{xCord},{yCord},{sizeFactor}");
-        var agentMap = AgentMap.Instance();
-        agentMap->IsFlagMarkerSet = 0;
+        var sizeFactor = (territory.Map.Value?.SizeFactor ?? 100f) / 100f;
+        var x = MapCordToInternal(xCord * 100, sizeFactor);
+        var y = MapCordToInternal(yCord * 100, sizeFactor);
+        PlaceFromInternalCoords(territory.RowId, territory.Map.Row, x, y);
+    }
+
+    private static unsafe void PlaceFromInternalCoords(uint territoryId, uint mapId, float xCord, float yCord)
+    {
+        var territory = ExcelCache<TerritoryType>.GetSheet().GetRow(territoryId);
+        var sizeFactor = (territory.Map.Value?.SizeFactor ?? 100f) / 100f;
         var x = MapCordToInternal(xCord, sizeFactor);
         var y = MapCordToInternal(yCord, sizeFactor);
+
+        Dev.Log($"TerritoryId: {territoryId} at ({xCord},{yCord}) coords, sizeFactor: {sizeFactor}, adjusted coords ({x},{y})");
+        var agentMap = AgentMap.Instance();
+        agentMap->IsFlagMarkerSet = 0;
+
         agentMap->SetFlagMapMarker(territoryId, mapId, xCord, yCord, FlagIconId);
         agentMap->OpenMap(mapId, territoryId);
     }

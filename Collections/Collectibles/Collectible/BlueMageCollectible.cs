@@ -2,15 +2,15 @@ using FFXIVClientStructs.FFXIV.Client.Game.UI;
 
 namespace Collections;
 
-public class BardingCollectible : Collectible<BuddyEquip>, ICreateable<BardingCollectible, BuddyEquip>
+public class BlueMageCollectible : Collectible<Lumina.Excel.GeneratedSheets.Action>, ICreateable<BlueMageCollectible, Lumina.Excel.GeneratedSheets.Action>
 {
-    public new static string CollectionName => "Bardings";
+    public new static string CollectionName => "Blue Mage";
 
-    public BardingCollectible(BuddyEquip excelRow) : base(excelRow)
+    public BlueMageCollectible(Lumina.Excel.GeneratedSheets.Action excelRow) : base(excelRow)
     {
     }
 
-    public static BardingCollectible Create(BuddyEquip excelRow)
+    public static BlueMageCollectible Create(Lumina.Excel.GeneratedSheets.Action excelRow)
     {
         return new(excelRow);
     }
@@ -32,22 +32,22 @@ public class BardingCollectible : Collectible<BuddyEquip>, ICreateable<BardingCo
 
     protected override string GetPrimaryDescription()
     {
-        return "";
+        return $"Cast: {ExcelRow.Cast100ms / 100f}s\nRecast: {ExcelRow.Recast100ms / 100f}s";
     }
 
     protected override string GetSecondaryDescription()
     {
-        return "";
+        return ExcelCache<ActionTransient>.GetSheet().GetRow(ExcelRow.RowId).Description.ToString();
     }
 
     public override unsafe void UpdateObtainedState()
     {
-        isObtained = UIState.Instance()->Buddy.IsBuddyEquipUnlocked(ExcelRow.RowId);
+        isObtained = UIState.Instance()->IsUnlockLinkUnlocked(ExcelRow.UnlockLink);
     }
 
     protected override int GetIconId()
     {
-        return ExcelRow.IconBody != 0 ? ExcelRow.IconBody : ExcelRow.IconHead;
+        return ExcelRow.Icon;
     }
 
     public override void Interact()
