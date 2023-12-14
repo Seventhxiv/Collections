@@ -28,3 +28,9 @@ This plugins aims to provide an interface for:
 
 ### Inspect Window (Deprecated for now)
 ![inspectwindow](https://github.com/Seventhxiv/Collections/assets/140892523/9ec9f83d-44d9-4df8-8ecc-886820984c87)
+
+<!-- 
+Storage:
+![mainwindow730](https://github.com/Seventhxiv/Collections/assets/140892523/2762dfed-e9c7-46a5-aaf5-d395aa62ce22)
+![mountwindow730](https://github.com/Seventhxiv/Collections/assets/140892523/d81ae15a-a91e-4af6-8a34-7f7c121f68f6)
+--->
