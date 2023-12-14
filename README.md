@@ -1,32 +1,30 @@
 # Collections
 
 ## Disclaimer
-The plugin is still in "beta" phase, expect some bugs.
+The plugin is still in "beta", expect some bugs.
 
-Please send any feedback / suggestions / issues either here (Issues tab), or on Discord.
-
-For reaching out on discord: `seventh0`
+Please send any feedback / suggestions / issues either here ("Issues" tab), or Discord: `seventh0`
 
 ## Plugin
 
-Collections plugin for Dalamud.
+Collections plugin for Dalamud, provides an interface to track, discover and interact with your various Collections in game.
 
-Provides an interface to track and discover collectibles.
+Integrates with Glamour systems (Preview, Create Sets, Glamour Plates).
 
-Glamour, Mounts, Minions and more to come.
+Supported collections: Glamour, Mounts, Minions, Emotes, Hairstyles, Triple Triad, Blue Mage, Bardings.
 
 ## Features
 This plugins aims to provide an interface for:
-1. Keeping track of your collectibles (What you have or don't have)
+1. Keeping track of your collectibles
 2. Find new collectibles that you want to obtain
 3. Provide guidance on how to obtain them
 
 ### Collection Window
-![Main Window](./Collections/Data/Resources/mainwindow.png)
-![Main Window](./Collections/Data/Resources/mountwindow.png)
+![mainwindow](https://github.com/Seventhxiv/Collections/assets/140892523/92afee48-6f4e-48e3-a5b1-417cce295e9b)
+![mountwindow](https://github.com/Seventhxiv/Collections/assets/140892523/cabded45-c2cb-4e33-99db-e23d6fa5194e)
 
 ### Instance Window
-![Main Window](./Collections/Data/Resources/instancewindow.png)
+![instancewindow](https://github.com/Seventhxiv/Collections/assets/140892523/64b26a39-9159-41f1-917a-bb89fdd2ba01)
 
 ### Inspect Window (Deprecated for now)
-![Main Window](./Collections/Data/Resources/inspectwindow.png)
+![inspectwindow](https://github.com/Seventhxiv/Collections/assets/140892523/9ec9f83d-44d9-4df8-8ecc-886820984c87)
