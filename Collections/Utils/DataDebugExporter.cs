@@ -8,7 +8,7 @@ public class DataDebugExporter
         var filteredCollections = collectionFilters is not null ? collections.Where(k => collectionFilters.Contains(k.Key)) : collections;
 
         var data = new List<CollectionData2>();
-        foreach (var (type, (name, collection)) in filteredCollections)
+        foreach (var (type, (name, orderKey, collection)) in filteredCollections)
         {
             data.Add(new CollectionData2()
             {

@@ -67,7 +67,7 @@ public class MainWindow : Window, IDisposable
 
     private List<(string name, IDrawable window)> GetCollectionTabs()
     {
-        var collections = Services.DataProvider.collections;
+        var collections = Services.DataProvider.collections.OrderBy(e => e.Value.orderKey);
         return collections.Select(kv => (kv.Value.name, GetCollectionTab(kv.Key))).ToList();
 
     }
