@@ -1,3 +1,5 @@
+using System.Collections.Concurrent;
+
 namespace Collections;
 
 public class DataProvider
@@ -15,7 +17,7 @@ public class DataProvider
         EquipSlot.Feet,
     };
 
-    public Dictionary<Type, (string name, List<ICollectible> collection)> collections = new();
+    public ConcurrentDictionary<Type, (string name, List<ICollectible> collection)> collections = new();
 
     public DataProvider()
     {

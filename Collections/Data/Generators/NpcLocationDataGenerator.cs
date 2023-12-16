@@ -10,7 +10,7 @@ public class NpcLocationDataGenerator
 
     public NpcLocationDataGenerator()
     {
-        Task.Run(PopulateData);
+        PopulateData();
     }
 
     private void PopulateData()

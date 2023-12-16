@@ -18,19 +18,36 @@ public class DataGenerator
     public DataGenerator()
     {
         Dev.Start();
-        ShopsDataGenerator = new ShopsDataGenerator();
-        NpcLocationDataGenerator = new NpcLocationDataGenerator();
-        InstancesDataGenerator = new InstancesDataGenerator();
-        EventDataGenerator = new EventDataGenerator();
-        MogStationDataGenerator = new MogStationDataGenerator();
-        QuestsDataGenerator = new QuestsDataGenerator();
-        CollectibleKeyDataGenerator = new CollectibleKeyDataGenerator();
-        ContainersDataGenerator = new ContainersDataGenerator();
-        AchievementsDataGenerator = new AchievementsDataGenerator();
-        CraftingDataGenerator = new CraftingDataGenerator();
-        CurrencyDataGenerator = new CurrencyDataGenerator();
-        BlueMageDataGenerator = new BlueMageDataGenerator();
+        Task.Run(AsyncInitializeDataGenerators).Wait();
         Dev.Stop();
     }
-}
 
+    private async Task AsyncInitializeDataGenerators()
+    {
+        var ShopsDataGeneratorTask = Task.Run(() => new ShopsDataGenerator());
+        var NpcLocationDataGeneratorTask = Task.Run(() => new NpcLocationDataGenerator());
+        var InstancesDataGeneratorTask = Task.Run(() => new InstancesDataGenerator());
+        var EventDataGeneratorTask = Task.Run(() => new EventDataGenerator());
+        var MogStationDataGeneratorTask = Task.Run(() => new MogStationDataGenerator());
+        var QuestsDataGeneratorTask = Task.Run(() => new QuestsDataGenerator());
+        var CollectibleKeyDataGeneratorTask = Task.Run(() => new CollectibleKeyDataGenerator());
+        var ContainersDataGeneratorTask = Task.Run(() => new ContainersDataGenerator());
+        var AchievementsDataGeneratorTask = Task.Run(() => new AchievementsDataGenerator());
+        var CraftingDataGeneratorTask = Task.Run(() => new CraftingDataGenerator());
+        var CurrencyDataGeneratorTask = Task.Run(() => new CurrencyDataGenerator());
+        var BlueMageDataGeneratorTask = Task.Run(() => new BlueMageDataGenerator());
+
+        ShopsDataGenerator = await ShopsDataGeneratorTask;
+        NpcLocationDataGenerator = await NpcLocationDataGeneratorTask;
+        InstancesDataGenerator = await InstancesDataGeneratorTask;
+        EventDataGenerator = await EventDataGeneratorTask;
+        MogStationDataGenerator = await MogStationDataGeneratorTask;
+        QuestsDataGenerator = await QuestsDataGeneratorTask;
+        CollectibleKeyDataGenerator = await CollectibleKeyDataGeneratorTask;
+        ContainersDataGenerator = await ContainersDataGeneratorTask;
+        AchievementsDataGenerator = await AchievementsDataGeneratorTask;
+        CraftingDataGenerator = await CraftingDataGeneratorTask;
+        CurrencyDataGenerator = await CurrencyDataGeneratorTask;
+        BlueMageDataGenerator = await BlueMageDataGeneratorTask;
+    }
+}

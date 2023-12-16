@@ -1,10 +1,11 @@
 using System.Collections;
+using System.Collections.Concurrent;
 
 namespace Collections;
 
 public class ExcelCache<T> : IEnumerable<T> where T : ExcelRow
 {
-    private static Dictionary<Dalamud.ClientLanguage, ExcelCache<T>> InternalInstance = new();
+    private static ConcurrentDictionary<Dalamud.ClientLanguage, ExcelCache<T>> InternalInstance = new();
 
     private ExcelSheet<T> excelSheet { get; set; }
     //private readonly ConcurrentDictionary<uint, T> rowCache = new();
