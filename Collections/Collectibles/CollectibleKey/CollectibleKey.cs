@@ -17,6 +17,7 @@ public abstract class CollectibleKey<T> : ICollectibleKey
     public CollectibleKey(T input)
     {
         Input = input;
+        Id = GetId(input);
         Name = GetName(input);
 
         CollectibleSources = GetCollectibleSources(input);
