@@ -22,7 +22,7 @@ public class HairstyleCollectible : Collectible<CharaMakeCustomize>, ICreateable
 
     protected override string GetName()
     {
-        if (CollectibleKey is ItemCollectibleKey)
+        if (CollectibleKey is ItemKey)
         {
             var item = ExcelRow.HintItem.Value;
             return item.Name.ToString().RemovePrefix("Modern Cosmetics - ").RemovePrefix("Modern Aesthetics - "); // TODO only works in English

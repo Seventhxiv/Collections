@@ -28,6 +28,7 @@ public class UniversalisClient
             return;
         }
         itemToMarketplaceData[itemId] = await GetMarketBoardData(itemId).ConfigureAwait(false);
+        Dev.Log("Populated price for: " + itemId);
     }
     public async Task<MarketplaceItemData?> GetMarketBoardData(uint itemId)
     {
@@ -45,6 +46,7 @@ public class UniversalisClient
 
             if (result.StatusCode != HttpStatusCode.OK)
             {
+                Dev.Log("Bad HttpStatusCode: " + result.StatusCode.GetEnumName());
                 return null;
             }
 
@@ -57,8 +59,9 @@ public class UniversalisClient
 
             return item;
         }
-        catch (Exception)
+        catch (Exception e)
         {
+            Dev.Log("Caught exception" + e.ToString());
             return null;
         }
     }

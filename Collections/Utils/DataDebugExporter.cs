@@ -113,12 +113,12 @@ public class DataDebugExporter
         var data = new List<CollectibleSourceData>();
         foreach (var source in sources)
         {
-            var isShop = source is ShopCollectibleSource;
-            ShopCollectibleSource shopSource = null;
+            var isShop = source is ShopSource;
+            ShopSource shopSource = null;
             ENpcResident npc = null;
             if (isShop)
             {
-                shopSource = (ShopCollectibleSource)source;
+                shopSource = (ShopSource)source;
                 npc = shopSource.ENpcResident;
             }
 
@@ -154,12 +154,12 @@ public class DataDebugExporter
             var goodObservedCost = new List<uint>();
             foreach (var source in sources)
             {
-                if (source is not ShopCollectibleSource)
+                if (source is not ShopSource)
                 {
                     continue;
                 }
 
-                var shopSource = (ShopCollectibleSource)source;
+                var shopSource = (ShopSource)source;
 
                 var name = source.GetName();
                 var locatable = shopSource.GetIslocatable();
@@ -180,12 +180,12 @@ public class DataDebugExporter
             {
                 foreach (var source in sources)
                 {
-                    if (source is not ShopCollectibleSource)
+                    if (source is not ShopSource)
                     {
                         continue;
                     }
 
-                    var shopSource = (ShopCollectibleSource)source;
+                    var shopSource = (ShopSource)source;
 
                     var name = source.GetName();
                     var locatable = shopSource.GetIslocatable();

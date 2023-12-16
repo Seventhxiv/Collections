@@ -2,27 +2,27 @@ namespace Collections;
 
 public class CurrencyDataGenerator
 {
-    public Dictionary<uint, CollectibleSourceCategory> ItemIdToSourceCategory = new()
+    public Dictionary<uint, SourceCategory> ItemIdToSourceCategory = new()
     {
-        { 1, CollectibleSourceCategory.Gil }, // Gil
-        { 20, CollectibleSourceCategory.CompanySeals }, // Storm Seal (designated company seals)
-        { 25, CollectibleSourceCategory.PvP }, // Wolf Mark
-        { 10310, CollectibleSourceCategory.Scrips }, // Blue gatherers scrip
-        { 10311, CollectibleSourceCategory.Scrips }, // Red gatherers scrip
-        { 17834, CollectibleSourceCategory.Scrips }, // Yellow gatherers scrip
-        { 25200, CollectibleSourceCategory.Scrips }, // White gatherers scrip
-        { 33914, CollectibleSourceCategory.Scrips }, // Purple gatherers scrip
-        { 10308, CollectibleSourceCategory.Scrips }, // Blue gatherers scrip
-        { 10309, CollectibleSourceCategory.Scrips }, // Red gatherers scrip
-        { 17833, CollectibleSourceCategory.Scrips }, // Yellow gatherers scrip
-        { 25199, CollectibleSourceCategory.Scrips }, // White gatherers scrip
-        { 33913, CollectibleSourceCategory.Scrips }, // Purple gatherers scrip
-        { 10307, CollectibleSourceCategory.HuntSeals }, // Centurio Seal
-        { 27, CollectibleSourceCategory.HuntSeals }, // Allied Seal
-        { 26533, CollectibleSourceCategory.HuntSeals }, // Sack of nuts
-        { 29, CollectibleSourceCategory.MGP }, // MGP
-        { 37549, CollectibleSourceCategory.IslandSanctuary }, // Seafarer's Cowrie
-        { 15422, CollectibleSourceCategory.DeepDungeon }, // Gemorran potsherd
+        { 1, SourceCategory.Gil }, // Gil
+        { 20, SourceCategory.CompanySeals }, // Storm Seal (designated company seals)
+        { 25, SourceCategory.PvP }, // Wolf Mark
+        { 10310, SourceCategory.Scrips }, // Blue gatherers scrip
+        { 10311, SourceCategory.Scrips }, // Red gatherers scrip
+        { 17834, SourceCategory.Scrips }, // Yellow gatherers scrip
+        { 25200, SourceCategory.Scrips }, // White gatherers scrip
+        { 33914, SourceCategory.Scrips }, // Purple gatherers scrip
+        { 10308, SourceCategory.Scrips }, // Blue gatherers scrip
+        { 10309, SourceCategory.Scrips }, // Red gatherers scrip
+        { 17833, SourceCategory.Scrips }, // Yellow gatherers scrip
+        { 25199, SourceCategory.Scrips }, // White gatherers scrip
+        { 33913, SourceCategory.Scrips }, // Purple gatherers scrip
+        { 10307, SourceCategory.HuntSeals }, // Centurio Seal
+        { 27, SourceCategory.HuntSeals }, // Allied Seal
+        { 26533, SourceCategory.HuntSeals }, // Sack of nuts
+        { 29, SourceCategory.MGP }, // MGP
+        { 37549, SourceCategory.IslandSanctuary }, // Seafarer's Cowrie
+        { 15422, SourceCategory.DeepDungeon }, // Gemorran potsherd
     };
 
     public CurrencyDataGenerator()
@@ -36,14 +36,14 @@ public class CurrencyDataGenerator
         var TomestonesItemSheet = ExcelCache<TomestonesItem>.GetSheet();
         foreach (var tomestone in TomestonesItemSheet)
         {
-            ItemIdToSourceCategory[tomestone.Item.Row] = CollectibleSourceCategory.Tomestones;
+            ItemIdToSourceCategory[tomestone.Item.Row] = SourceCategory.Tomestones;
         }
 
         // Add Beast tribe currencies
         var beastTribeSheet = ExcelCache<BeastTribe>.GetSheet();
         foreach (var beastTribe in beastTribeSheet)
         {
-            ItemIdToSourceCategory[beastTribe.CurrencyItem.Row] = CollectibleSourceCategory.BeastTribes;
+            ItemIdToSourceCategory[beastTribe.CurrencyItem.Row] = SourceCategory.BeastTribes;
         }
 
         // Add Gatherer/Crafter Scrips (Added manually - not really necassary, keeping it here for now)

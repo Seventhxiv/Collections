@@ -118,4 +118,14 @@
             <Private>false</Private>
         </Reference>
     </ItemGroup>
+    <ItemGroup>
+      <None Remove="Collectibles\Interfaces\" />
+      <None Remove="Data\Generators\Sources\" />
+      <None Remove="Data\Generators\Keys\" />
+    </ItemGroup>
+    <ItemGroup>
+      <Folder Include="Collectibles\Interfaces\" />
+      <Folder Include="Data\Generators\Sources\" />
+      <Folder Include="Data\Generators\Keys\" />
+    </ItemGroup>
 </Project>

@@ -2,58 +2,73 @@ namespace Collections;
 
 public class CollectibleKeyFactory
 {
+    //public static ICollectibleKey Get(Collectible<ItemAdapter> collectible)
+    //{
+    //    var item = ExcelCache<ItemAdapter>.GetSheet().GetRow(collectible.Id);
+    //    return CollectibleKeyCache<ItemKey, ItemAdapter>.Instance.GetObject((item, true));
+    //}
+
+    //public static ICollectibleKey Get(Collectible<Lumina.Excel.GeneratedSheets.Action> collectible)
+    //{
+    //    if (Services.DataGenerator.KeysDataGenerator.ActionIdToBlueSpell.TryGetValue(collectible.Id, out var monster))
+    //    {
+    //        return new MonsterKey((monster, false));
+    //    }
+    //    return null;
+    //}
+
     public static ICollectibleKey Get<T>(Collectible<T> collectible) where T : ExcelRow
     {
         var type = typeof(T);
-        var collectibleKeyDataGenerator = Services.DataGenerator.CollectibleKeyDataGenerator;
+        var keysDataGenerator = Services.DataGenerator.KeysDataGenerator;
         var id = collectible.Id;
 
         if (type == typeof(ItemAdapter))
         {
             var item = ExcelCache<ItemAdapter>.GetSheet().GetRow(id);
-            return CollectibleKeyCache<ItemCollectibleKey, ItemAdapter>.Instance.GetObject((item, true));
+            return CollectibleKeyCache<ItemKey, ItemAdapter>.Instance.GetObject((item, true));
         }
 
-        if (collectibleKeyDataGenerator.collectibleIdToItem.TryGetValue(type, out var itemDict))
+        if (keysDataGenerator.collectibleIdToItem.TryGetValue(type, out var itemDict))
         {
             if (itemDict.TryGetValue(id, out var item))
             {
-                return CollectibleKeyCache<ItemCollectibleKey, ItemAdapter>.Instance.GetObject((item, true));
+                return CollectibleKeyCache<ItemKey, ItemAdapter>.Instance.GetObject((item, true));
             }
         }
-        if (collectibleKeyDataGenerator.collectibleIdToQuest.TryGetValue(type, out var questDict))
+        if (keysDataGenerator.collectibleIdToQuest.TryGetValue(type, out var questDict))
         {
             if (questDict.TryGetValue(id, out var quest))
             {
-                return CollectibleKeyCache<QuestCollectibleKey, Quest>.Instance.GetObject((quest, true));
+                return CollectibleKeyCache<QuestKey, Quest>.Instance.GetObject((quest, false));
             }
         }
-        if (collectibleKeyDataGenerator.collectibleIdToInstance.TryGetValue(type, out var instanceDict))
+        if (keysDataGenerator.collectibleIdToInstance.TryGetValue(type, out var instanceDict))
         {
             if (instanceDict.TryGetValue(id, out var instance))
             {
-                return CollectibleKeyCache<InstanceCollectibleKey, ContentFinderCondition>.Instance.GetObject((instance, true));
+                return CollectibleKeyCache<InstanceKey, ContentFinderCondition>.Instance.GetObject((instance, true));
             }
         }
-        if (collectibleKeyDataGenerator.collectibleIdToAchievement.TryGetValue(type, out var achievementDict))
+        if (keysDataGenerator.collectibleIdToAchievement.TryGetValue(type, out var achievementDict))
         {
             if (achievementDict.TryGetValue(id, out var achievement))
             {
-                return CollectibleKeyCache<AchievementCollectibleKey, Achievement>.Instance.GetObject((achievement, true));
+                return CollectibleKeyCache<AchievementKey, Achievement>.Instance.GetObject((achievement, true));
             }
         }
-        if (collectibleKeyDataGenerator.collectibleIdToMisc.TryGetValue(type, out var miscDict))
+        if (keysDataGenerator.collectibleIdToMisc.TryGetValue(type, out var miscDict))
         {
             if (miscDict.TryGetValue(id, out var misc))
             {
-                return new MiscCollectibleKey(misc);
+                return new MiscKey((misc, false));
             }
         }
         if (type == typeof(Lumina.Excel.GeneratedSheets.Action))
         {
-            if (Services.DataGenerator.BlueMageDataGenerator.ActionIdToBlueSpell.TryGetValue(id, out var monster))
+            if (Services.DataGenerator.KeysDataGenerator.ActionIdToBlueSpell.TryGetValue(id, out var monster))
             {
-                return new MonsterCollectibleKey(monster);
+                return new MonsterKey((monster, false));
             }
         }
         return null;

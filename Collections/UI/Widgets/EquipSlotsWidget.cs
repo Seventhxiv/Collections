@@ -16,11 +16,11 @@ public class EquipSlotsWidget
     private Dictionary<EquipSlot, bool> hoveredPaletteButton = new();
 
     private EventService EventService { get; init; }
-    private CollectibleTooltipWidget CollectibleTooltipWidget { get; init; }
+    private TooltipWidget CollectibleTooltipWidget { get; init; }
     public EquipSlotsWidget(EventService eventService)
     {
         EventService = eventService;
-        CollectibleTooltipWidget = new CollectibleTooltipWidget(EventService);
+        CollectibleTooltipWidget = new TooltipWidget(EventService);
         LoadEquipSlotIcons();
         InitializePaletteWidgets();
         eventService.Subscribe<GlamourSetChangeEvent, GlamourSetChangeEventArgs>(OnPublish);
