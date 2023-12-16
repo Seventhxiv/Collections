@@ -3,7 +3,7 @@
     <PropertyGroup>
         <Authors></Authors>
         <Company></Company>
-        <Version>1.0.1.3</Version>
+        <Version>1.0.1.4</Version>
         <Description>Collections</Description>
         <Copyright></Copyright>
         <PackageProjectUrl>https://github.com/goatcorp/SamplePlugin</PackageProjectUrl>
@@ -117,15 +117,5 @@
             <HintPath>$(DalamudLibPath)Lumina.Excel.dll</HintPath>
             <Private>false</Private>
         </Reference>
-    </ItemGroup>
-    <ItemGroup>
-      <None Remove="Collectibles\Interfaces\" />
-      <None Remove="Data\Generators\Sources\" />
-      <None Remove="Data\Generators\Keys\" />
-    </ItemGroup>
-    <ItemGroup>
-      <Folder Include="Collectibles\Interfaces\" />
-      <Folder Include="Data\Generators\Sources\" />
-      <Folder Include="Data\Generators\Keys\" />
     </ItemGroup>
 </Project>

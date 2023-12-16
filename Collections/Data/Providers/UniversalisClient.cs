@@ -28,7 +28,6 @@ public class UniversalisClient
             return;
         }
         itemToMarketplaceData[itemId] = await GetMarketBoardData(itemId).ConfigureAwait(false);
-        Dev.Log("Populated price for: " + itemId);
     }
     public async Task<MarketplaceItemData?> GetMarketBoardData(uint itemId)
     {

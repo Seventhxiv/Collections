@@ -14,9 +14,7 @@ public class SourcesDataGenerator
 
     public SourcesDataGenerator()
     {
-        Dev.Start();
         Task.Run(AsyncInitializeDataGenerators).Wait();
-        Dev.Stop();
     }
 
     private async Task AsyncInitializeDataGenerators()

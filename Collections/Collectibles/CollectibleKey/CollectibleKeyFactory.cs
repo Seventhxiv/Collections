@@ -2,21 +2,6 @@ namespace Collections;
 
 public class CollectibleKeyFactory
 {
-    //public static ICollectibleKey Get(Collectible<ItemAdapter> collectible)
-    //{
-    //    var item = ExcelCache<ItemAdapter>.GetSheet().GetRow(collectible.Id);
-    //    return CollectibleKeyCache<ItemKey, ItemAdapter>.Instance.GetObject((item, true));
-    //}
-
-    //public static ICollectibleKey Get(Collectible<Lumina.Excel.GeneratedSheets.Action> collectible)
-    //{
-    //    if (Services.DataGenerator.KeysDataGenerator.ActionIdToBlueSpell.TryGetValue(collectible.Id, out var monster))
-    //    {
-    //        return new MonsterKey((monster, false));
-    //    }
-    //    return null;
-    //}
-
     public static ICollectibleKey Get<T>(Collectible<T> collectible) where T : ExcelRow
     {
         var type = typeof(T);
