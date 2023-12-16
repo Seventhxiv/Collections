@@ -70,7 +70,7 @@ public class DataProvider
             .Where(entry => !entry.Name.ToString().StartsWith("Dated ")) // TODO filter only works in English
             .Select(entry => (ICollectible)CollectibleCache<GlamourCollectible, ItemAdapter>.Instance.GetObject(entry))
             .OrderByDescending(c => c.IsFavorite())
-            .ThenByDescending(c => ((ItemCollectibleKey)c.CollectibleKey).excelRow.LevelEquip)
+            .ThenByDescending(c => ((ItemKey)c.CollectibleKey).Input.Item1.LevelEquip)
             .ThenByDescending(c => c.Name)
             .ToList()
             );

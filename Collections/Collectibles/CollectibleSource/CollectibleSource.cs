@@ -1,17 +1,9 @@
 namespace Collections;
 
-public interface ICollectibleSource
-{
-    public string GetName();
-    public List<CollectibleSourceCategory> GetSourceCategories();
-    public bool GetIslocatable();
-    public void DisplayLocation();
-}
-
 public abstract class CollectibleSource : ICollectibleSource
 {
     public abstract string GetName();
-    public abstract List<CollectibleSourceCategory> GetSourceCategories();
+    public abstract List<SourceCategory> GetSourceCategories();
     public abstract bool GetIslocatable();
     public abstract void DisplayLocation();
 

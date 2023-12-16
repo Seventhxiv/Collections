@@ -10,13 +10,13 @@ public class CollectionWidget
 
     private bool isGlam { get; init; } = false;
     private EventService EventService { get; init; }
-    private CollectibleTooltipWidget CollectibleTooltipWidget { get; init; }
+    private TooltipWidget CollectibleTooltipWidget { get; init; }
     public CollectionWidget(EventService eventService, bool isGlam)
     {
         EventService = eventService;
         this.isGlam = isGlam;
         ResetDynamicScrolling();
-        CollectibleTooltipWidget = new CollectibleTooltipWidget(EventService);
+        CollectibleTooltipWidget = new TooltipWidget(EventService);
     }
 
     private int dynamicScrollingCurrentSize;

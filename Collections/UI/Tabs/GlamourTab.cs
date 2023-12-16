@@ -159,7 +159,7 @@ public class GlamourTab : IDrawable
 
         // (2) Content type filters
         .Where(c => c.CollectibleKey is not null)
-        .Where(c => !contentFilters.Any() || contentFilters.Intersect(c.CollectibleKey.GetSourceCategories()).Any())
+        .Where(c => !contentFilters.Any() || contentFilters.Intersect(c.CollectibleKey.SourceCategories).Any())
 
         // (3) job filters
         .Where(c =>
@@ -170,10 +170,8 @@ public class GlamourTab : IDrawable
                 foreach (var jobFilter in jobFilters)
                 {
                     var jobFilterAbbreviation = jobFilter.Job;
-                    //var itemClassJobAbbreviations = classJobCategoryAdapter.GetClassJobAbbreviation();
                     foreach (var itemClassJobAbbreviation in itemJobs)
                     {
-                        //var itemClassJobAbbreviationString = Enum.GetName(typeof(ClassJobAbbreviations), itemClassJobAbbreviation);
                         if (itemClassJobAbbreviation == jobFilterAbbreviation)
                         {
                             return true;

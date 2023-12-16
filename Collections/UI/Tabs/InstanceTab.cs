@@ -92,16 +92,16 @@ public class InstanceTab : IDrawable
     {
         var instanceId = GetCurrentInstance();
         var inInstance = instanceId != 0;
-        var collectionExists = Services.DataGenerator.InstancesDataGenerator.contentFinderConditionToItems.ContainsKey(instanceId);
+        var collectionExists = Services.DataGenerator.SourcesDataGenerator.InstancesDataGenerator.contentFinderConditionToItems.ContainsKey(instanceId);
         return inInstance && collectionExists;
     }
 
     private List<uint>? CurrentDutyItemIds(uint instanceId)
     {
 
-        if (Services.DataGenerator.InstancesDataGenerator.contentFinderConditionToItems.ContainsKey(instanceId))
+        if (Services.DataGenerator.SourcesDataGenerator.InstancesDataGenerator.contentFinderConditionToItems.ContainsKey(instanceId))
         {
-            return Services.DataGenerator.InstancesDataGenerator.contentFinderConditionToItems[instanceId];
+            return Services.DataGenerator.SourcesDataGenerator.InstancesDataGenerator.contentFinderConditionToItems[instanceId];
         }
         Dev.Log($"Unable to find items obtained by the current duty id: {instanceId}");
         return new List<uint>();

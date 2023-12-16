@@ -1,31 +1,32 @@
 namespace Collections;
 
-// Represents an item that is used to unlock a collectible
-public interface ICollectibleKey
+public abstract class CollectibleKey<T> : ICollectibleKey
 {
-    public uint Id { get; init; }
     public string Name { get; init; }
-    public List<CollectibleSource> CollectibleSources { get; init; }
-    public List<CollectibleSourceCategory> GetSourceCategories();
-    public bool GetIsTradeable();
-    public int? GetMarketBoardPriceLazy();
-}
-
-public abstract class CollectibleKey<T> : ICollectibleKey where T : ExcelRow
-{
-    public abstract string Name { get; init; }
     public uint Id { get; init; }
-    public List<CollectibleSource> CollectibleSources { get; init; } = new();
-    public T excelRow { get; init; }
+    public T Input { get; init; }
+    public List<ICollectibleSource> CollectibleSources { get; init; } = new();
+    public HashSet<SourceCategory> SourceCategories { get; init; }
 
-    public CollectibleKey((T, bool) input)
+    protected abstract string GetName(T input);
+    protected abstract uint GetId(T input);
+    protected abstract List<ICollectibleSource> GetCollectibleSources(T input);
+    protected abstract HashSet<SourceCategory> GetBaseSourceCategories();
+    public abstract bool GetIsTradeable();
+
+    public CollectibleKey(T input)
     {
-        excelRow = input.Item1;
-        Id = excelRow.RowId;
+        Input = input;
+        Name = GetName(input);
+
+        CollectibleSources = GetCollectibleSources(input);
+
+        SourceCategories = GetBaseSourceCategories();
+        SourceCategories.UnionWith(CollectibleSources.SelectMany(e => e.GetSourceCategories()));
     }
 
-    public abstract bool GetIsTradeable();
-    public abstract List<CollectibleSourceCategory> GetSourceCategories();
-    public abstract int? GetMarketBoardPriceLazy();
+    public virtual int? GetMarketBoardPriceLazy()
+    {
+        throw new NotImplementedException();
+    }
 }
-

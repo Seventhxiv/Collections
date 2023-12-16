@@ -16,7 +16,7 @@ public unsafe class PreviewExecutor
 
     public void PreviewWithTryOnRestrictions(GlamourCollectible collectible, uint stainId, bool tryOn)
     {
-        var tryOnOverride = tryOn || collectible.CollectibleKey.GetSourceCategories().Contains(CollectibleSourceCategory.MogStation);
+        var tryOnOverride = tryOn || collectible.CollectibleKey.SourceCategories.Contains(SourceCategory.MogStation);
         if (tryOnOverride)
         {
             TryOn(collectible.ExcelRow.RowId, (byte)stainId);

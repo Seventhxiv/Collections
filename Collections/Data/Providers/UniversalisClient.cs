@@ -45,6 +45,7 @@ public class UniversalisClient
 
             if (result.StatusCode != HttpStatusCode.OK)
             {
+                Dev.Log("Bad HttpStatusCode: " + result.StatusCode.GetEnumName());
                 return null;
             }
 
@@ -57,8 +58,9 @@ public class UniversalisClient
 
             return item;
         }
-        catch (Exception)
+        catch (Exception e)
         {
+            Dev.Log("Caught exception" + e.ToString());
             return null;
         }
     }

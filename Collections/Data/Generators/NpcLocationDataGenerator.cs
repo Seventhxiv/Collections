@@ -15,8 +15,6 @@ public class NpcLocationDataGenerator
 
     private void PopulateData()
     {
-        Dev.Start();
-
         // Build NPC locations from levels
         var levels = ExcelCache<Level>.GetSheet()!;
         foreach (var level in levels)
@@ -118,6 +116,5 @@ public class NpcLocationDataGenerator
 
             npcToLocation[npcId] = new Location(territoryType, (float)X, (float)Y);
         }
-        Dev.Stop();
     }
 }

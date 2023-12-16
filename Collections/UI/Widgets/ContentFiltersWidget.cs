@@ -3,31 +3,31 @@ namespace Collections;
 public class ContentFiltersWidget
 {
 
-    public Dictionary<CollectibleSourceCategory, bool> Filters = new();
+    public Dictionary<SourceCategory, bool> Filters = new();
 
     private Vector2 iconSize = new(25, 25);
     private const int WidgetWidth = 31;
 
-    private Dictionary<CollectibleSourceCategory, IDalamudTextureWrap> icons = new();
-    private Dictionary<CollectibleSourceCategory, int> contentTypesToIconId = new()
+    private Dictionary<SourceCategory, IDalamudTextureWrap> icons = new();
+    private Dictionary<SourceCategory, int> contentTypesToIconId = new()
     {
-            {CollectibleSourceCategory.Gil, 65002},
-            {CollectibleSourceCategory.Scrips, 65028},
-            {CollectibleSourceCategory.MGP, 65025},
-            {CollectibleSourceCategory.PvP, 65014}, // 61806
-            {CollectibleSourceCategory.Duty, InstanceCollectibleSource.defaultIconId},
-            {CollectibleSourceCategory.Quest, QuestCollectibleSource.iconId},
-            {CollectibleSourceCategory.Event, EventCollectibleSource.iconId},
-            {CollectibleSourceCategory.Tomestones, 65086},
-            {CollectibleSourceCategory.DeepDungeon, 61824},
-            {CollectibleSourceCategory.BeastTribes, 65016},
-            {CollectibleSourceCategory.MogStation, MogStationCollectibleSource.iconId},
-            {CollectibleSourceCategory.Achievement, AchievementCollectibleSource.iconId},
-            {CollectibleSourceCategory.CompanySeals, 65005},
-            {CollectibleSourceCategory.IslandSanctuary, 65096},
-            {CollectibleSourceCategory.HuntSeals, 65034},
-            {CollectibleSourceCategory.TreasureHunts, 000115}, //61829
-            {CollectibleSourceCategory.Crafting, 62202},
+            {SourceCategory.Gil, 65002},
+            {SourceCategory.Scrips, 65028},
+            {SourceCategory.MGP, 65025},
+            {SourceCategory.PvP, 65014}, // 61806
+            {SourceCategory.Duty, InstanceSource.defaultIconId},
+            {SourceCategory.Quest, QuestSource.iconId},
+            {SourceCategory.Event, EventSource.iconId},
+            {SourceCategory.Tomestones, 65086},
+            {SourceCategory.DeepDungeon, 61824},
+            {SourceCategory.BeastTribes, 65016},
+            {SourceCategory.MogStation, MogStationSource.iconId},
+            {SourceCategory.Achievement, AchievementSource.iconId},
+            {SourceCategory.CompanySeals, 65005},
+            {SourceCategory.IslandSanctuary, 65096},
+            {SourceCategory.HuntSeals, 65034},
+            {SourceCategory.TreasureHunts, 000115}, //61829
+            {SourceCategory.Crafting, 62202},
     };
 
     private int columns { get; init; }
@@ -71,7 +71,7 @@ public class ContentFiltersWidget
         }
     }
 
-    private void DrawCell(CollectibleSourceCategory collectibleSourceCategory)
+    private void DrawCell(SourceCategory collectibleSourceCategory)
     {
         // Draw button as a group
         UiHelper.GroupWithMinWidth(() =>
@@ -108,7 +108,7 @@ public class ContentFiltersWidget
     {
         if (collection != null)
         {
-            var sourceTypes = collection.Where(c => c.CollectibleKey != null).SelectMany(c => c.CollectibleKey.GetSourceCategories()).ToHashSet();
+            var sourceTypes = collection.Where(c => c.CollectibleKey != null).SelectMany(c => c.CollectibleKey.SourceCategories).ToHashSet();
 
             foreach (var (sourceType, iconId) in contentTypesToIconId)
             {
@@ -120,7 +120,7 @@ public class ContentFiltersWidget
         }
     }
 
-    private void SetFilter(CollectibleSourceCategory sourceType, bool value)
+    private void SetFilter(SourceCategory sourceType, bool value)
     {
         Filters[sourceType] = value;
         EventService.Publish<FilterChangeEvent, FilterChangeEventArgs>(new FilterChangeEventArgs());
