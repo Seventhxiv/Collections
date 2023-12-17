@@ -165,6 +165,11 @@ public class CollectionWidget
         if (ImGui.IsItemHovered())
         {
             ImGui.BeginTooltip();
+
+            ImGui.PushStyleColor(ImGuiCol.Text, ColorsPalette.GREY2);
+            ImGui.Text("Right Click To Interact");
+            ImGui.PopStyleColor();
+
             CollectibleTooltipWidget.DrawItemTooltip(collectible);
             ImGui.EndTooltip();
         }

@@ -209,13 +209,6 @@ public class UiHelper
         //ImGui.SetWindowFontScale(1);
     }
 
-    public static void copyText()
-    {
-        //if (ImGuiNative.igSelectable_Bool(text.Path, 0, ImGuiSelectableFlags.None, Vector2.Zero) != 0)
-        //    ImGuiNative.igSetClipboardText(text.Path);
-    }
-
-
     public static void RectOverLastItem()
     {
         ImGui.GetWindowDrawList().AddRect(ImGui.GetItemRectMin(), ImGui.GetItemRectMax(), 0xFF00FF00, 0.5f);

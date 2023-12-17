@@ -1,8 +1,13 @@
+using System.Linq;
+using System.Reflection.PortableExecutable;
+using System.Security.AccessControl;
+using System.Xml.Linq;
+
 namespace Collections;
 
 public class TooltipWidget
 {
-    private Vector2 iconSize = new(78, 78);
+    private Vector2 iconSize = new(82, 82);
     private Vector2 sourceIconSize = new(20, 20);
 
     private EventService EventService { get; init; }
@@ -42,17 +47,19 @@ public class TooltipWidget
             if (collectibleKey is not null && collectibleKey.GetIsTradeable())
             {
                 var price = collectibleKey.GetMarketBoardPriceLazy();
-                if (price != null)
+                var priceText = price is not null ? ((int)price).ToString("N") : "Fetching Price...";
+                ImGuiComponents.IconButtonWithText(FontAwesomeIcon.SackDollar, $"{priceText}");
+                if (ImGui.IsItemHovered())
                 {
-                    ImGui.Text($"Market Price: {price}");
-                } else
-                {
-                    ImGui.Text("Market Price: Fetching...");
+                    ImGui.SetTooltip("Marketboard price");
                 }
             }
             else
             {
-                ImGui.Text("Untradeable");
+                var buttonBaseColor = *ImGui.GetStyleColorVec4(ImGuiCol.Button);
+                ImGui.PushStyleColor(ImGuiCol.Text, ColorsPalette.GREY2);
+                ImGuiComponents.IconButtonWithText(FontAwesomeIcon.SackXmark, "Untradeable", buttonBaseColor, buttonBaseColor, buttonBaseColor);
+                ImGui.PopStyleColor();
             }
 
             ImGui.TableNextColumn();
@@ -83,12 +90,25 @@ public class TooltipWidget
                 EventService.Publish<FilterChangeEvent, FilterChangeEventArgs>(new FilterChangeEventArgs());
             }
 
-            // Wiki links
+            // Wiki link
             var originalButtonColor = Services.WindowsInitializer.MainWindow.originalButtonColor;
             ImGui.PushStyleColor(ImGuiCol.Button, originalButtonColor);
             if (ImGui.Button("Gamer Escape"))
             {
                 collectible.OpenGamerEscape();
+            }
+
+            // Copy name
+            //ImGui.NextColumn();
+            //var text = "Copy Name";
+            //var posX = ImGui.GetCursorPosX() + ImGui.GetColumnWidth() - ImGui.CalcTextSize(text).X
+            //    - ImGui.GetScrollX() - 2 * ImGui.GetStyle().ItemSpacing.X;
+            //if (posX > ImGui.GetCursorPosX())
+            //    ImGui.SetCursorPosX(posX);
+
+            if (ImGui.Button(" Copy Name "))
+            {
+                ImGui.SetClipboardText(collectible.Name);
             }
             ImGui.PopStyleColor();
 
@@ -193,7 +213,9 @@ public class TooltipWidget
 
                 ImGui.EndTable();
             }
-        } catch (Exception) {
+        }
+        catch (Exception)
+        {
             ImGui.PopStyleColor();
             throw;
         }

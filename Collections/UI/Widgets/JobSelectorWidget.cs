@@ -23,12 +23,12 @@ public class JobSelectorWidget
         ImGui.PushStyleColor(ImGuiCol.Button, Services.WindowsInitializer.MainWindow.originalButtonColor);
         if (ImGui.Button("Enable All"))
         {
-            SetAllState(true);
+            SetAllState(true, true);
         }
         ImGui.SameLine();
         if (ImGui.Button("Disable All"))
         {
-            SetAllState(false);
+            SetAllState(false, true);
         }
         ImGui.SameLine();
         if (ImGui.Button("Current Job"))
@@ -45,18 +45,30 @@ public class JobSelectorWidget
     private List<ClassRole> displayOrder = new List<ClassRole>() { ClassRole.Tank, ClassRole.Healer, ClassRole.Melee, ClassRole.Ranged, ClassRole.Caster };
     private void JobSelector()
     {
-        
+
         ImGui.PushStyleVar(ImGuiStyleVar.ItemSpacing, overrideItemSpacing);
         foreach (var classRole in displayOrder)
         {
-            var classJobs = classRoleToClassJob[classRole];
-            foreach (var classJob in classJobs)
+            var classRoleJobs = classRoleToClassJob[classRole];
+            foreach (var classJob in classRoleJobs)
             {
                 var icon = classJob.GetIconLazy();
                 if (icon != null)
                 {
-                    //if (UiHelper.ImageToggleButton(icon, new Vector2(icon.Width / JobIconScale, icon.Height / JobIconScale), Filters[classJob]))
-                    if (UiHelper.ImageToggleButton(icon, new Vector2(IconSize, IconSize), Filters[classJob]))
+                    // Button
+                    UiHelper.ImageToggleButton(icon, new Vector2(IconSize, IconSize), Filters[classJob]);
+
+                    // Left click - Switch to selection
+                    if (ImGui.IsItemClicked(ImGuiMouseButton.Left))
+                    {
+                        var newState = IsAllActive() ? true : !Filters[classJob];
+                        SetAllState(false, false);
+                        Filters[classJob] = newState;
+                        PublishFilterChangeEvent();
+                    }
+
+                    // Right click - Toggle selection
+                    if (ImGui.IsItemClicked(ImGuiMouseButton.Right))
                     {
                         Filters[classJob] = !Filters[classJob];
                         PublishFilterChangeEvent();
@@ -69,10 +81,11 @@ public class JobSelectorWidget
         ImGui.PopStyleVar();
     }
 
-    private void SetAllState(bool state)
+    private void SetAllState(bool state, bool publishEvent)
     {
         Filters = Filters.ToDictionary(e => e.Key, e => state);
-        PublishFilterChangeEvent();
+        if (publishEvent)
+            PublishFilterChangeEvent();
     }
 
     private void SetCurrentJob()
@@ -80,10 +93,15 @@ public class JobSelectorWidget
         var matchingClassJob = Filters.Where(e => e.Key.RowId == Services.ClientState.LocalPlayer.ClassJob.Id);
         if (matchingClassJob.Any())
         {
-            SetAllState(false);
+            SetAllState(false, false);
             Filters[matchingClassJob.First().Key] = true;
             PublishFilterChangeEvent();
         }
+    }
+
+    private bool IsAllActive()
+    {
+        return !Filters.Where(e => e.Value == false).Any();
     }
 
     private void PublishFilterChangeEvent()

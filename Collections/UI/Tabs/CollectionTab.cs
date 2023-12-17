@@ -4,6 +4,9 @@ public class CollectionTab : IDrawable
 {
     const int ContentFiltersWidth = 17;
 
+    private int collectionSize;
+    private int obtainedCount;
+
     private List<ICollectible> collection { get; init; }
     private ContentFiltersWidget ContentFiltersWidget { get; init; }
     private CollectionWidget CollectionWidget { get; init; }
@@ -12,6 +15,8 @@ public class CollectionTab : IDrawable
     {
         EventService = new EventService();
         this.collection = collection;
+        collectionSize = collection.Count();
+
         ContentFiltersWidget = new ContentFiltersWidget(EventService, 1, collection);
         CollectionWidget = new CollectionWidget(EventService, false);
 
@@ -22,6 +27,8 @@ public class CollectionTab : IDrawable
     public virtual void Draw()
     {
         var textBaseWidth = ImGui.CalcTextSize("A").X;
+
+        ImGui.ProgressBar((float)obtainedCount / collectionSize, new(UiHelper.GetLengthToRightOfWindow() - UiHelper.UnitWidth() * 2, UiHelper.UnitHeight() * 1f), $"{obtainedCount}/{collectionSize}");
 
         // Filters
         ImGui.BeginGroup();
@@ -72,6 +79,7 @@ public class CollectionTab : IDrawable
             {
                 collectible.UpdateObtainedState();
             }
+            obtainedCount = collection.Count(e => e.GetIsObtained());
         });
     }
 
