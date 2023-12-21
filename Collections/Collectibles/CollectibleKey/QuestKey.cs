@@ -31,9 +31,9 @@ public class QuestKey : CollectibleKey<(Quest, bool)>, ICreateable<QuestKey, (Qu
         return new HashSet<SourceCategory>() { SourceCategory.Quest };
     }
 
-    public override bool GetIsTradeable()
+    public override Tradeability GetIsTradeable()
     {
-        return false;
+        return Tradeability.Untradeable;
     }
 }
 

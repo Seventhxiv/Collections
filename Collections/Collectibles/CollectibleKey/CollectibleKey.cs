@@ -12,7 +12,7 @@ public abstract class CollectibleKey<T> : ICollectibleKey
     protected abstract uint GetId(T input);
     protected abstract List<ICollectibleSource> GetCollectibleSources(T input);
     protected abstract HashSet<SourceCategory> GetBaseSourceCategories();
-    public abstract bool GetIsTradeable();
+    public abstract Tradeability GetIsTradeable();
 
     public CollectibleKey(T input)
     {

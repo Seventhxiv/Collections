@@ -1,14 +1,9 @@
-using System.Linq;
-using System.Reflection.PortableExecutable;
-using System.Security.AccessControl;
-using System.Xml.Linq;
-
 namespace Collections;
 
 public class TooltipWidget
 {
     private Vector2 iconSize = new(82, 82);
-    private Vector2 sourceIconSize = new(20, 20);
+    private Vector2 sourceIconSize = new(23, 23);
 
     private EventService EventService { get; init; }
     public TooltipWidget(EventService eventService)
@@ -20,7 +15,7 @@ public class TooltipWidget
     {
         var icon = collectible.GetIconLazy();
         var collectibleKey = collectible.CollectibleKey;
-
+        UiHelper.GroupWithMinWidth(() => { }, UiHelper.UnitWidth() * 52);
         // Icon
         if (icon != null)
         {
@@ -40,26 +35,13 @@ public class TooltipWidget
             // Item name
             ImGui.Text($"{collectible.Name.ToTitleCase()}");
 
-            // Description
-            ImGui.Text(collectible.PrimaryDescription);
+            // Hints
+            DrawHints(collectible);
 
             // Marketplace price / Untradeable
-            if (collectibleKey is not null && collectibleKey.GetIsTradeable())
+            if (collectibleKey is not null)
             {
-                var price = collectibleKey.GetMarketBoardPriceLazy();
-                var priceText = price is not null ? ((int)price).ToString("N") : "Fetching Price...";
-                ImGuiComponents.IconButtonWithText(FontAwesomeIcon.SackDollar, $"{priceText}");
-                if (ImGui.IsItemHovered())
-                {
-                    ImGui.SetTooltip("Marketboard price");
-                }
-            }
-            else
-            {
-                var buttonBaseColor = *ImGui.GetStyleColorVec4(ImGuiCol.Button);
-                ImGui.PushStyleColor(ImGuiCol.Text, ColorsPalette.GREY2);
-                ImGuiComponents.IconButtonWithText(FontAwesomeIcon.SackXmark, "Untradeable", buttonBaseColor, buttonBaseColor, buttonBaseColor);
-                ImGui.PopStyleColor();
+                DrawTradeableHint(collectibleKey);
             }
 
             ImGui.TableNextColumn();
@@ -99,13 +81,6 @@ public class TooltipWidget
             }
 
             // Copy name
-            //ImGui.NextColumn();
-            //var text = "Copy Name";
-            //var posX = ImGui.GetCursorPosX() + ImGui.GetColumnWidth() - ImGui.CalcTextSize(text).X
-            //    - ImGui.GetScrollX() - 2 * ImGui.GetStyle().ItemSpacing.X;
-            //if (posX > ImGui.GetCursorPosX())
-            //    ImGui.SetCursorPosX(posX);
-
             if (ImGui.Button(" Copy Name "))
             {
                 ImGui.SetClipboardText(collectible.Name);
@@ -116,9 +91,21 @@ public class TooltipWidget
         }
 
         // Secondary Description
-        if (collectible.SecondaryDescription is not null && collectible.SecondaryDescription != string.Empty)
+        if (collectible.Description != string.Empty)
         {
-            ImGui.TextUnformatted(collectible.SecondaryDescription);
+            // if (ImGui.BeginTable("description-table", 1, ImGuiTableFlags.SizingStretchSame))
+            // {
+            //     ImGui.TableSetupColumn("description-column", ImGuiTableColumnFlags.WidthStretch, 50);
+            //     ImGui.TableNextRow();
+            //     ImGui.TableNextColumn();
+
+            ImGui.PushTextWrapPos(UiHelper.UnitWidth() * 50);//UiHelper.GetLengthToRightOfWindow());
+            ImGui.PushStyleColor(ImGuiCol.Text, ColorsPalette.GREY2);
+            ImGui.TextUnformatted(collectible.Description);
+            ImGui.PopStyleColor();
+            ImGui.PopTextWrapPos();
+            // ImGui.EndTable();
+            // }
         }
 
         if (collectibleKey == null)
@@ -189,7 +176,9 @@ public class TooltipWidget
                             ImGui.Image(icon.ImGuiHandle, sourceIconSize);
                             ImGui.SameLine();
                         }
+                        ImGui.PushTextWrapPos(UiHelper.UnitWidth() * 50);
                         ImGui.Text($"{source.GetName()}");
+                        ImGui.PopTextWrapPos();
 
                     }
                     ImGui.EndGroup();
@@ -221,5 +210,53 @@ public class TooltipWidget
         }
 
         ImGui.PopStyleColor();
+    }
+
+    public void DrawHints(ICollectible collectible)
+    {
+        if (collectible is null)
+        {
+            ImGui.Text(" ");
+        }
+
+        if (collectible.PrimaryHint.Description != string.Empty)
+            DrawHintModule(collectible.PrimaryHint);
+
+        if (collectible.SecondaryHint.Description != string.Empty)
+            DrawHintModule(collectible.SecondaryHint);
+    }
+
+    public void DrawHintModule(HintModule hintmodule)
+    {
+        if (hintmodule.Icon is not null)
+        {
+            UiHelper.DisabledIconButton((FontAwesomeIcon)hintmodule.Icon, hintmodule.Description);
+        }
+        else
+        {
+            ImGui.Text(hintmodule.Description);
+        }
+    }
+
+    public unsafe void DrawTradeableHint(ICollectibleKey collectibleKey)
+    {
+        var tradeability = collectibleKey.GetIsTradeable();
+        if (tradeability == Tradeability.Tradeable)
+        {
+            var price = collectibleKey.GetMarketBoardPriceLazy();
+            var priceText = price is not null ? ((int)price).ToString("N0") : "Fetching Price...";
+            UiHelper.DisabledIconButton(FontAwesomeIcon.SackDollar, $"{priceText}");
+            if (ImGui.IsItemHovered())
+            {
+                ImGui.SetTooltip("Marketboard price");
+            }
+        }
+        else if (tradeability == Tradeability.UntradeableSingle)
+        {
+            var buttonBaseColor = *ImGui.GetStyleColorVec4(ImGuiCol.Button);
+            ImGui.PushStyleColor(ImGuiCol.Text, ColorsPalette.GREY2);
+            ImGuiComponents.IconButtonWithText(FontAwesomeIcon.SackXmark, "Untradeable", buttonBaseColor, buttonBaseColor, buttonBaseColor);
+            ImGui.PopStyleColor();
+        }
     }
 }

@@ -31,9 +31,9 @@ public class AchievementKey : CollectibleKey<(Achievement, bool)>, ICreateable<A
         return new HashSet<SourceCategory>() { SourceCategory.Achievement };
     }
 
-    public override bool GetIsTradeable()
+    public override Tradeability GetIsTradeable()
     {
-        return false;
+        return Tradeability.Untradeable;
     }
 }
 

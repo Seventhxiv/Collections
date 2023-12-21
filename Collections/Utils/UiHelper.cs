@@ -57,7 +57,7 @@ public class UiHelper
         var origPos = ImGui.GetCursorPos();
         ImGui.InvisibleButton("ignore", new Vector2(minWidth, 1));
         ImGui.SetCursorPos(origPos);
-        
+
         draw();
         //var drawnWidth = ImGui.GetCursorPosX() - originalPosX;
         //if (minWidth > drawnWidth)
@@ -115,6 +115,12 @@ public class UiHelper
         }
 
         return originalState != state;
+    }
+
+    public static unsafe void DisabledIconButton(FontAwesomeIcon fontAwesomeIcon, string text)
+    {
+        var buttonColor = *ImGui.GetStyleColorVec4(ImGuiCol.Button);
+        ImGuiComponents.IconButtonWithText(fontAwesomeIcon, text, null, buttonColor, buttonColor);
     }
 
     public static void IconButtonWithOffset(int id, FontAwesomeIcon fontAwesomeIcon, int Xoffset, int Yoffset, ref bool state, float scale)

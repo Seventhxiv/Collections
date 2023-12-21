@@ -6,6 +6,6 @@ public interface ICollectibleKey
     public uint Id { get; init; } // Debug purposes
     public List<ICollectibleSource> CollectibleSources { get; init; }
     public HashSet<SourceCategory> SourceCategories { get; init; }
-    public bool GetIsTradeable();
+    public Tradeability GetIsTradeable();
     public int? GetMarketBoardPriceLazy();
 }

@@ -30,14 +30,19 @@ public class BlueMageCollectible : Collectible<Lumina.Excel.GeneratedSheets.Acti
         return ExcelRow.RowId;
     }
 
-    protected override string GetPrimaryDescription()
-    {
-        return $"Cast: {ExcelRow.Cast100ms / 100f}s\nRecast: {ExcelRow.Recast100ms / 100f}s";
-    }
-
-    protected override string GetSecondaryDescription()
+    protected override string GetDescription()
     {
         return ExcelCache<ActionTransient>.GetSheet().GetRow(ExcelRow.RowId).Description.ToString();
+    }
+
+    protected override HintModule GetPrimaryHint()
+    {
+        return new HintModule($"Cast: {ExcelRow.Cast100ms / 100f}s", null);
+    }
+
+    protected override HintModule GetSecondaryHint()
+    {
+        return new HintModule($"Recast: {ExcelRow.Recast100ms / 100f}s", null);
     }
 
     public override unsafe void UpdateObtainedState()

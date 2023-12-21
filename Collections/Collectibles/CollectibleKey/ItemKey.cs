@@ -1,5 +1,3 @@
-using Lumina.Excel;
-
 namespace Collections;
 
 public class ItemKey : CollectibleKey<(ItemAdapter, bool)>, ICreateable<ItemKey, (ItemAdapter, bool)>
@@ -96,9 +94,9 @@ public class ItemKey : CollectibleKey<(ItemAdapter, bool)>, ICreateable<ItemKey,
         return iconHandler.GetIconLazy();
     }
 
-    public override bool GetIsTradeable()
+    public override Tradeability GetIsTradeable()
     {
-        return !Input.Item1.IsUntradable;
+        return !Input.Item1.IsUntradable ? Tradeability.Tradeable : Tradeability.UntradeableSingle;
     }
 
     private int? marketBoardPrice = null;

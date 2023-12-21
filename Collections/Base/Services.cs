@@ -70,6 +70,7 @@ public class Services
         Dev.Stop();
 
         //DataDebugExporter.ExportCollectionsData();
+        // DataDebugExporter.LogDataReport();
     }
 
     public static void Dispose()

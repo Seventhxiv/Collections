@@ -31,9 +31,9 @@ public class InstanceKey : CollectibleKey<(ContentFinderCondition, bool)>, ICrea
         return new HashSet<SourceCategory>() { SourceCategory.Duty };
     }
 
-    public override bool GetIsTradeable()
+    public override Tradeability GetIsTradeable()
     {
-        return false;
+        return Tradeability.Untradeable;
     }
 }
 

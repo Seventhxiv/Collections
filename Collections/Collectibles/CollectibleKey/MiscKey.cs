@@ -31,9 +31,9 @@ public class MiscKey : CollectibleKey<(string, bool)>, ICreateable<MiscKey, (str
         return new HashSet<SourceCategory>();
     }
 
-    public override bool GetIsTradeable()
+    public override Tradeability GetIsTradeable()
     {
-        return false;
+        return Tradeability.Untradeable;
     }
 }
 

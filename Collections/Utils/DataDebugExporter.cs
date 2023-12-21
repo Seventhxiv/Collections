@@ -2,6 +2,24 @@ namespace Collections;
 
 public class DataDebugExporter
 {
+    public static void LogDataReport()
+    {
+        var collections = Services.DataProvider.collections;
+        foreach (var (type, (name, orderKey, collection)) in collections)
+        {
+            PrintCollectionReport(collection, name);
+        }
+    }
+
+    private static void PrintCollectionReport(List<ICollectible> collection, string name)
+    {
+        var size = collection.Count;
+        var keysLocated = collection.Where(c => c.CollectibleKey is not null).Count();
+        var sourcesLocated = collection.Where(c => c.CollectibleKey is not null && c.CollectibleKey.CollectibleSources.Any()).Count();
+        var sourcesCount = collection.Where(c => c.CollectibleKey is not null).Select(c => c.CollectibleKey.CollectibleSources.Count()).Sum();
+        Dev.Log($"{name}: Keys Missing: {size - keysLocated}/{size}, Sources Missing: {size - sourcesLocated}/{size}, Avg Sources: {(float)sourcesCount / size}");
+    }
+
     public static void ExportCollectionsData(List<Type> collectionFilters = null)
     {
         var collections = Services.DataProvider.collections;
@@ -194,18 +212,18 @@ public class DataDebugExporter
                     var validNpc = npcResident is not null;
                     var npcName = npcResident is not null ? npcResident.Singular.ToString() : "";
                     var shopId = shopSource.ShopId;
-                        var dataObj = new ShopData()
-                        {
-                            itemId = collectible.CollectibleKey.Id,
-                            itemName = collectible.CollectibleKey.Name,
-                            npcId = NpcId,
-                            npcName = npcName,
-                            validNpc = validNpc,
-                            locatableNpc = locatable,
-                            shopId = shopId,
-                            costDescription = name,
-                        };
-                        data.Add(dataObj);
+                    var dataObj = new ShopData()
+                    {
+                        itemId = collectible.CollectibleKey.Id,
+                        itemName = collectible.CollectibleKey.Name,
+                        npcId = NpcId,
+                        npcName = npcName,
+                        validNpc = validNpc,
+                        locatableNpc = locatable,
+                        shopId = shopId,
+                        costDescription = name,
+                    };
+                    data.Add(dataObj);
                 }
             }
         }

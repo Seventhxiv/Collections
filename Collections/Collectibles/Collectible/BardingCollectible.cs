@@ -30,14 +30,19 @@ public class BardingCollectible : Collectible<BuddyEquip>, ICreateable<BardingCo
         return ExcelRow.RowId;
     }
 
-    protected override string GetPrimaryDescription()
+    protected override string GetDescription()
     {
         return "";
     }
 
-    protected override string GetSecondaryDescription()
+    protected override HintModule GetPrimaryHint()
     {
-        return "";
+        return new HintModule("", null);
+    }
+
+    protected override HintModule GetSecondaryHint()
+    {
+        return new HintModule("", null);
     }
 
     public override unsafe void UpdateObtainedState()

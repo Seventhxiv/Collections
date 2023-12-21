@@ -28,14 +28,19 @@ public class GlamourCollectible : Collectible<ItemAdapter>, ICreateable<GlamourC
         return ExcelRow.RowId;
     }
 
-    protected override string GetPrimaryDescription()
-    {
-        return $"Lv. {ExcelRow.LevelEquip}\n{ExcelRow.ClassJobCategory.Value.Name}";
-    }
-
-    protected override string GetSecondaryDescription()
+    protected override string GetDescription()
     {
         return "";
+    }
+
+    protected override HintModule GetPrimaryHint()
+    {
+        return new HintModule($"Lv. {ExcelRow.LevelEquip}", null);
+    }
+
+    protected override HintModule GetSecondaryHint()
+    {
+        return new HintModule($"{ExcelRow.ClassJobCategory.Value.Name}", null);
     }
 
     public override void UpdateObtainedState()

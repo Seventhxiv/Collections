@@ -9,7 +9,6 @@ public class Draw3
     private (ImGuiCol col, Vector4 color)? color { get; set; }
     private Vector2? offset { get; set; }
     private Vector2? originalPos { get; set; }
-
     //public Draw3(string key)
     //{
     //    cache[key] = this;
@@ -67,8 +66,6 @@ public class Draw3
         //}
     }
 }
-
-
 
 public class Draw2
 {
@@ -183,7 +180,7 @@ public class Draw
 
         //if (sameLine)
         //{
-            ImGui.SameLine();
+        ImGui.SameLine();
         //}
 
         var offsetTyped = (Vector2)offset;
@@ -214,7 +211,7 @@ public class Draw
     {
         //if (offset is not null)
         //{
-            ImGui.SetCursorPos((Vector2)previousPos);
+        ImGui.SetCursorPos((Vector2)previousPos);
         //}
 
         ImGui.PopStyleColor(styleStack.Count);

@@ -31,9 +31,9 @@ public class MonsterKey : CollectibleKey<(Monster, bool)>, ICreateable<MonsterKe
         return new HashSet<SourceCategory>();
     }
 
-    public override bool GetIsTradeable()
+    public override Tradeability GetIsTradeable()
     {
-        return false;
+        return Tradeability.Untradeable;
     }
 }
 

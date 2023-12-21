@@ -347,7 +347,7 @@ public class GlamourTreeWidget
         AddGlamourSet(hint);
 
         // New glamour set added in first directory (0) on the last slot (Count-1)
-        SetSelectedGlamourSet(0, glamourTree.Directories[0].GlamourSets.Count-1, false);
+        SetSelectedGlamourSet(0, glamourTree.Directories[0].GlamourSets.Count - 1, false);
 
         var itemSheet = ExcelCache<ItemAdapter>.GetSheet()!;
         var container = InventoryManager.Instance()->GetInventoryContainer(InventoryType.Examine);

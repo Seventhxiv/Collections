@@ -31,14 +31,19 @@ public class MountCollectible : Collectible<Mount>, ICreateable<MountCollectible
         return ExcelRow.RowId;
     }
 
-    protected override string GetPrimaryDescription()
+    protected override string GetDescription()
     {
-        return "";
+        return ExcelCache<MountTransient>.GetSheet().GetRow(ExcelRow.RowId).Description.ToString();
     }
 
-    protected override string GetSecondaryDescription()
+    protected override HintModule GetPrimaryHint()
     {
-        return "";
+        return new HintModule((ExcelRow.ExtraSeats + 1).ToString(), FontAwesomeIcon.PeopleGroup);
+    }
+
+    protected override HintModule GetSecondaryHint()
+    {
+        return new HintModule("", null);
     }
 
     public override unsafe void UpdateObtainedState()
