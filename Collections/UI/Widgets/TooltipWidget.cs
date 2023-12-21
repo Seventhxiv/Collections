@@ -93,19 +93,11 @@ public class TooltipWidget
         // Secondary Description
         if (collectible.Description != string.Empty)
         {
-            // if (ImGui.BeginTable("description-table", 1, ImGuiTableFlags.SizingStretchSame))
-            // {
-            //     ImGui.TableSetupColumn("description-column", ImGuiTableColumnFlags.WidthStretch, 50);
-            //     ImGui.TableNextRow();
-            //     ImGui.TableNextColumn();
-
             ImGui.PushTextWrapPos(UiHelper.UnitWidth() * 50);//UiHelper.GetLengthToRightOfWindow());
             ImGui.PushStyleColor(ImGuiCol.Text, ColorsPalette.GREY2);
             ImGui.TextUnformatted(collectible.Description);
             ImGui.PopStyleColor();
             ImGui.PopTextWrapPos();
-            // ImGui.EndTable();
-            // }
         }
 
         if (collectibleKey == null)

@@ -170,7 +170,6 @@ public class CollectionWidget
             ImGui.Text("Right Click To Interact");
             ImGui.PopStyleColor();
 
-            // ImGui.SetNextWindowSize(new(100, 100), ImGuiCond.Always);
             CollectibleTooltipWidget.DrawItemTooltip(collectible);
             ImGui.EndTooltip();
         }
@@ -178,7 +177,6 @@ public class CollectionWidget
         // Details on click
         if (ImGui.BeginPopupContextItem($"click-glam-item##{collectible.Name}", ImGuiPopupFlags.MouseButtonRight))
         {
-            // ImGui.SetNextWindowSize(new(100, 100), ImGuiCond.Always);
             CollectibleTooltipWidget.DrawItemTooltip(collectible);
             ImGui.EndPopup();
         }
