@@ -153,11 +153,14 @@ public class TooltipWidget
                                 ImGui.Image(icon.ImGuiHandle, new Vector2(icon.Width / 3, icon.Height / 3));
                                 ImGui.SameLine();
                             }
+
+                            ImGui.AlignTextToFramePadding();
                             ImGui.Text(costItem.collectibleKey.Name + " x" + costItem.amount);
                             ImGui.SameLine();
                         }
                         var npcName = shopSource.ENpcResident != null ? shopSource.ENpcResident.Singular.ToString() : "Unknown NPC";
                         var locationName = shopSource.GetLocationEntry() != null ? shopSource.GetLocationEntry().TerritoryType.PlaceName.Value.Name.ToString() : "Unknown Location";
+                        ImGui.AlignTextToFramePadding();
                         ImGui.Text("at " + npcName + ", " + locationName);
                     }
                     else
@@ -169,10 +172,18 @@ public class TooltipWidget
                             ImGui.SameLine();
                         }
                         ImGui.PushTextWrapPos(UiHelper.UnitWidth() * 50);
+                        ImGui.AlignTextToFramePadding();
                         ImGui.Text($"{source.GetName()}");
                         ImGui.PopTextWrapPos();
 
                     }
+
+                    if (source.GetIslocatable())
+                    {
+                        ImGui.SameLine();
+                        ImGuiComponents.IconButton(FontAwesomeIcon.Link);
+                    }
+
                     ImGui.EndGroup();
 
                     if (source.GetIslocatable())

@@ -1,5 +1,5 @@
 ActionId,MobDescription,LocationDescription,DutyId,TerritoryId,X,Y
-11385,Default,,966,474,,
+11385,Default,,,,,
 11402,Gobmachine G-VI,Brayflox's Longstop (Hard),20,,,
 11390,Ultros,The Dragon's Neck,81,,,
 11389,Cornu - Rank A Elite Mark,Outer La Noscea,,486,,
@@ -12,16 +12,16 @@ ActionId,MobDescription,LocationDescription,DutyId,TerritoryId,X,Y
 11404,Coincounter (2nd Boss),The Aurum Vale,5,,,
 11391,Clay Golem,North Shroud,,324,19,29
 11393,Angry Sow in Picking Up the Piercers - Level 1 Levequest,Central Shroud,,1015,,
-11406,Whalaqee White Wind Totem - Learn 10 Blue Magic Spells,,966,474,,
+11406,Whalaqee White Wind Totem - Learn 10 Blue Magic Spells,,,,,
 11414,Manor Sentry,Haukke Manor,6,1040,,
 11400,Marberry - Rank A Elite Mark,Upper La Noscea,,466,,
 11418,Trickster Imp,Central Shroud,,1015,27,24
 11395,Chigoe,Central Shroud,,1015,25,20
 11392,Treant Sapling,North Shroud,,324,27,28
 11396,Goblin Fisher & Goblin Gambler,Middle La Noscea,,285,23,21
-11411,Learn 5 Blue Magic Spells,,966,474,,
+11411,Learn 5 Blue Magic Spells,,,,,
 11408,Glide Bomb Level 12,Western Thanalan,,1049,27,16
-11409,Learn 20 Blue Magic Spells,,966,474,,
+11409,Learn 20 Blue Magic Spells,,,,,
 11403,Qiqirn Gullroaster in Survivor Rats Level 6 - FATE,Central Thanalan,,314,18,20
 11423,Apkallu,Eastern La Noscea,,867,27,35
 11383,Typhon,The Dragon's Neck,81,,,
@@ -29,7 +29,7 @@ ActionId,MobDescription,LocationDescription,DutyId,TerritoryId,X,Y
 11399,Denizen of the Dark in Necrologos: The Liminal Ones - Level 45 Levequest,Mor Dhona,,672,29,12
 11388,Stroper,Central Shroud,,1015,13,21
 11424,Cuca Fera (2nd Boss),The Stone Vigil (Hard),25,,,
-11417,Learn 10 Blue Magic Spells,,966,474,,
+11417,Learn 10 Blue Magic Spells,,,,,
 11412,Cane Toad in You Call that a Toad - Level 2 FATE,Lower La Noscea,,495,24,22
 11410,Giggling Gigantoad,Western Thanalan,,1049,15,7
 11419,Chimera (Last Boss),Cutter's Cry,12,1020,,
@@ -77,7 +77,7 @@ ActionId,MobDescription,LocationDescription,DutyId,TerritoryId,X,Y
 18314,The Manipulator,Alexander - The Burden of the Father,115,,,
 18314,The Manipulator,Alexander - The Burden of the Father (Savage),119,,,
 18315,Sabotender Guardia,The Sunken Temple of Qarn (Hard),26,,,
-18316,Learn 50 Blue Magic Spells,,966,474,,
+18316,Learn 50 Blue Magic Spells,,,,,
 18317,Clear 30 Stages,The Masked Carnivale,,,,
 18318,Wamoura,The Lost City of Amdapor,22,722,,
 18319,Cloud Wyvern,The Churning Mists,,715,24,29
@@ -95,19 +95,19 @@ ActionId,MobDescription,LocationDescription,DutyId,TerritoryId,X,Y
 23416,Lakshmi,Emanation,263,720,,
 23270,Phantom Train,Sigmascape V1.0,286,752,,
 23271,Tokkapchi (Final Boss),Saint Mocianne's Arboretum (Hard),584,,,
-23272,Reach Blue Mage level 70,,966,474,,
+23272,Reach Blue Mage level 70,,,,,
 23273,Genbu,Hells' Lid,284,742,,
 23275,Ivon Coeurlfist,The Temple of the Fist,236,663,,
 23276,Master Coeurl,Upper La Noscea,,466,,
 23277,Kongamato,The Peaks,,1019,11,25
 23278,Alte Roite,Deltascape V1.0,252,695,,
 23279,Omega,Alphascape V3.0,589,,,
-23280,Learn 100 Blue Magic Spells,,966,474,,
+23280,Learn 100 Blue Magic Spells,,,,,
 23281,Salt Dhruva,The Lochs,,687,22,22
 23282,Kelpie,The Drowned City of Skalla,279,1172,,
 23283,Sai Taisui,The Swallow's Compass,536,1017,,
 23284,Courser Chocobo,The Dravanian Forelands,,1023,37.5,23.7
-23285,Learn 100 Blue Magic Spells,,966,474,,
+23285,Learn 100 Blue Magic Spells,,,,,
 23286,Omega (Hands in Normal),Alphascape V3.0,589,,,
 23287,Qitian Dasheng (Final Boss),The Swallow's Compass,536,1017,,
 23288,Suzaku,Hells' Kier,596,811,,
@@ -116,7 +116,7 @@ ActionId,MobDescription,LocationDescription,DutyId,TerritoryId,X,Y
 34564,Greater Armadillo,Malikah's Well,656,836,,
 34565,Long-tailed Armadillo,Amh Araeng,,872,,
 34566,Slippery Armadillo,Amh Araeng,,872,33.9,11.9
-34567,Reach Blue Mage level 80,,966,474,,
+34567,Reach Blue Mage level 80,,,,,
 34568,Spectral Berserker,The Heroes' Gauntlet,737,916,,
 34569,Mudman,Matoya's Relict,746,933,,
 34570,Seeker Of Solitude,The Grand Cosmos,692,884,,
@@ -124,7 +124,7 @@ ActionId,MobDescription,LocationDescription,DutyId,TerritoryId,X,Y
 34572,Titania,The Dancing Plague,657,873,,
 34573,Eden Prime,Eden's Gate: Resurrection,653,,,
 34574,Forgiven Obscenity,Mt. Gulg,659,822,,
-34575,Learn 120 Blue Magic Spells,,966,474,,
+34575,Learn 120 Blue Magic Spells,,,,,
 34576,Innocence,The Crown of the Immaculate,666,880,,
 34577,Eden's Promise,Eden's Promise: Eternity,758,,,
 34578,"Aenc Thon, Lord of the Lingering Gaze",Dohn Mheg,649,821,,
