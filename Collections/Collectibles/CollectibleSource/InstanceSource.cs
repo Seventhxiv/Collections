@@ -56,25 +56,18 @@ public class InstanceSource : CollectibleSource
         DutyFinderOpener.OpenRegularDuty(ContentFinderCondition.RowId);
     }
 
-    public static int defaultIconId = 060414; //60550;
-    private int? iconId = null;
+    public static int defaultIconId = 060414;
     protected override int GetIconId()
     {
-        if (iconId != null)
-        {
-            return (int)iconId;
-        }
-
         var contentType = ContentFinderCondition.ContentType.Value;
         var contentIconId = contentType.Icon;
         if (contentIconId == 0)
         {
-            iconId = defaultIconId; // Default
+            return defaultIconId;
         }
         else
         {
-            iconId = (int)contentIconId;
+            return (int)contentIconId;
         }
-        return (int)iconId;
     }
 }

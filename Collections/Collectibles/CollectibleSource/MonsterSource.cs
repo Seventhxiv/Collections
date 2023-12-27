@@ -14,7 +14,7 @@ public class MonsterSource : CollectibleSource
     {
         var name = monster.name;
         if (monster.LocationDescription is not null && monster.LocationDescription != string.Empty)
-            name  +=  " - " + monster.LocationDescription;
+            name += " - " + monster.LocationDescription;
         return name;
     }
 
@@ -35,15 +35,26 @@ public class MonsterSource : CollectibleSource
         if (locationEntry is not null)
         {
             MapFlagPlacer.PlaceFromMapCoords(locationEntry.TerritoryType, locationEntry.Xorigin, locationEntry.Yorigin);
-        } else if (monster.dutyId is not null && monster.dutyId != 0)
+        }
+        else if (monster.dutyId is not null && monster.dutyId != 0)
         {
             DutyFinderOpener.OpenRegularDuty((uint)monster.dutyId);
         }
     }
 
+    public static int defaultIconId = 63003;
     protected override int GetIconId()
     {
-        return 068003;
+        if (monster.dutyId is not null)
+        {
+            var contentFinderCondition = ExcelCache<ContentFinderCondition>.GetSheet().GetRow((uint)monster.dutyId);
+            var contentType = contentFinderCondition.ContentType.Value;
+            if (contentType is not null)
+            {
+                return (int)contentType.Icon;
+            }
+        }
+        return defaultIconId;
     }
 
     private bool locationChecked = false;
