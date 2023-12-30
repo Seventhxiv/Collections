@@ -61,4 +61,9 @@ public class MountCollectible : Collectible<Mount>, ICreateable<MountCollectible
         if (isObtained)
             ActionManager.Instance()->UseAction(ActionType.Mount, ExcelRow.RowId);
     }
+
+    public override void OpenGamerEscape()
+    {
+        WikiOpener.OpenGamerEscape(GetDisplayName() + "_(Mount)");
+    }
 }

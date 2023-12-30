@@ -33,7 +33,7 @@ public class TooltipWidget
             ImGui.TableNextColumn();
 
             // Item name
-            ImGui.Text($"{collectible.Name.ToTitleCase()}");
+            ImGui.Text($"{collectible.GetDisplayName()}");
 
             // Hints
             DrawHints(collectible);

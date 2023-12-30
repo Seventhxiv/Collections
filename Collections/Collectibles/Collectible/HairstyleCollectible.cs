@@ -69,4 +69,12 @@ public class HairstyleCollectible : Collectible<CharaMakeCustomize>, ICreateable
     {
         // Do nothing
     }
+
+    public override void OpenGamerEscape()
+    {
+        if (CollectibleKey is not null)
+        {
+            WikiOpener.OpenGamerEscape(CollectibleKey.Name);
+        }
+    }
 }

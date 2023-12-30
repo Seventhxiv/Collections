@@ -17,4 +17,5 @@ public interface ICollectible
     public void UpdateObtainedState();
     public IDalamudTextureWrap GetIconLazy();
     public void Interact();
+    public string GetDisplayName();
 }

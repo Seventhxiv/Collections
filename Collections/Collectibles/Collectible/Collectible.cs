@@ -42,7 +42,7 @@ public abstract class Collectible<T> : ICollectible where T : ExcelRow
 
     public virtual void OpenGamerEscape()
     {
-        WikiOpener.OpenGamerEscape(Name);
+        WikiOpener.OpenGamerEscape(GetDisplayName());
     }
 
     protected bool isObtained = false;
@@ -116,5 +116,12 @@ public abstract class Collectible<T> : ICollectible where T : ExcelRow
     public IDalamudTextureWrap GetIconLazy()
     {
         return IconHandler.GetIconLazy();
+    }
+
+    public virtual string GetDisplayName()
+    {
+        return Name
+                .UpperCaseAfterSpaces()
+                .LowerCaseWords(new List<string>() { "Of", "Up" });
     }
 }

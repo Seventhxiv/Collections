@@ -61,4 +61,11 @@ public class MinionCollectible : Collectible<Companion>, ICreateable<MinionColle
         if (isObtained)
             ActionManager.Instance()->UseAction(ActionType.Companion, ExcelRow.RowId);
     }
+
+    public override string GetDisplayName()
+    {
+        return Name
+                .UpperCaseAfterSpaces()
+                .LowerCaseWords(new List<string>() { "Of", "Up" });
+    }
 }

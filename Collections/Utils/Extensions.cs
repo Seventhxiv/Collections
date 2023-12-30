@@ -1,4 +1,4 @@
-using System.Globalization;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace Collections;
@@ -33,9 +33,43 @@ public static class Extensions
         return Regex.Replace(s, "([a-z]{2})_?([A-Z])", "$1 $2");
     }
 
-    public static string ToTitleCase(this string s)
+    public static string UpperCaseAfterSpaces(this string s)
     {
-        return CultureInfo.CurrentCulture.TextInfo.ToTitleCase(s.ToLower());
+        var stringBuilder = new StringBuilder(s);
+        for (var i = 0; i < stringBuilder.Length - 1; i++)
+        {
+            if (i == 0)
+            {
+                stringBuilder[0] = char.ToUpper(stringBuilder[0]);
+            }
+            else if (stringBuilder[i] == ' ')
+            {
+                stringBuilder[i + 1] = char.ToUpper(stringBuilder[i + 1]);
+            }
+        }
+        return stringBuilder.ToString();
+    }
+
+    public static string LowerCaseWords(this string s, List<String> words)
+    {
+        foreach (var word in words)
+        {
+            s = s.Replace(" " + word + " ", " " + word.ToLower() + " ");
+        }
+        return s;
+    }
+
+    public static string LowerCaseAfter(this string s, List<Char> chars)
+    {
+        var stringBuilder = new StringBuilder(s);
+        for (var i = 0; i < stringBuilder.Length - 1; i++)
+        {
+            if (chars.Contains(stringBuilder[i]))
+            {
+                stringBuilder[i + 1] = char.ToLower(stringBuilder[i + 1]);
+            }
+        }
+        return stringBuilder.ToString();
     }
 
     public static string RemoveSuffix(this string s, string suffix)

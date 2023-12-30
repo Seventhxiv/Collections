@@ -64,6 +64,6 @@ public class TripleTriadCollectible : Collectible<TripleTriadCard>, ICreateable<
 
     public override void OpenGamerEscape()
     {
-        WikiOpener.OpenGamerEscape(Name + "_(Triple_Triad_Card)");
+        WikiOpener.OpenGamerEscape(GetDisplayName() + "_(Triple_Triad_Card)");
     }
 }
