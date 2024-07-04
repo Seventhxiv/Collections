@@ -1,3 +1,4 @@
+using Dalamud.Interface.Textures;
 using System.IO;
 
 namespace Collections;
@@ -83,7 +84,7 @@ public class EquipSlotsWidget
 
             // Draw icon
             if (icon is null)
-                icon = equipSlotIcons[equipSlot];
+                icon = equipSlotIcons[equipSlot].GetWrapOrEmpty();
 
             // Draw equip slot buttons
             if (ImGui.ImageButton(icon.ImGuiHandle, new Vector2(48, 50)))
@@ -158,14 +159,15 @@ public class EquipSlotsWidget
         EventService.Publish<FilterChangeEvent, FilterChangeEventArgs>(new FilterChangeEventArgs());
     }
 
-    private Dictionary<EquipSlot, IDalamudTextureWrap> equipSlotIcons = new();
+    private Dictionary<EquipSlot, ISharedImmediateTexture> equipSlotIcons = new();
     private void LoadEquipSlotIcons()
     {
         foreach (var equipSlot in Services.DataProvider.SupportedEquipSlots)
         {
             var equipSlotName = Enum.GetName(typeof(EquipSlot), equipSlot);
             var iconPath = Path.Combine(Services.PluginInterface.AssemblyLocation.Directory?.FullName!, $"Data\\Resources\\{equipSlotName}.png");
-            var icon = Services.PluginInterface.UiBuilder.LoadImage(iconPath);
+            var icon = Services.TextureProvider.GetFromFile(iconPath);
+
             equipSlotIcons[equipSlot] = icon;
         }
     }

@@ -358,8 +358,8 @@ public class GlamourTreeWidget
             var invSlot = container->GetInventorySlot(i);
             if (invSlot is not null)
             {
-                var itemId = invSlot->GlamourID != 0 ? invSlot->GlamourID : invSlot->ItemID;
-                var stainId = invSlot->Stain;
+                var itemId = invSlot->GlamourId != 0 ? invSlot->GlamourId : invSlot->ItemId;
+                var stainId = invSlot->Stains[0];
                 var item = itemSheet.GetRow(itemId);
                 if (Services.DataProvider.SupportedEquipSlots.Contains(item.EquipSlot))
                 {

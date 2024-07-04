@@ -46,12 +46,12 @@ public class LodestoneClient
     public (string, string)? GetCurrentTargetNameAndWorld()
     {
         var target = Services.TargetManager.SoftTarget ?? Services.TargetManager.Target;
-        if (target is not PlayerCharacter)
+        if (target is not IPlayerCharacter)
         {
             return null;
         }
 
-        var playerTarget = target as PlayerCharacter;
+        var playerTarget = target as IPlayerCharacter;
 
         return (playerTarget.Name.ToString(), playerTarget.HomeWorld.GameData.Name.ToString());
     }

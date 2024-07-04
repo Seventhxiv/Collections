@@ -1,4 +1,3 @@
-using Dalamud.Utility;
 using Lumina.Data.Files;
 
 namespace Collections;
@@ -36,12 +35,9 @@ public class IconHandler
     public static IDalamudTextureWrap getIcon(int iconId, bool hq = false)
     {
         var iconPath = getIconPath(iconId, hq);
+        var icon = Services.TextureProvider.GetFromFile(iconPath);
         var tex = Services.DataManager.GetFile<TexFile>(iconPath)!;
-        return Services.PluginInterface.UiBuilder.LoadImageRaw(
-           tex.GetRgbaImageData(), tex.Header.Width, tex.Header.Height, 4);
-
-        // Can technically be replaced with official API since v9:
-        //return Services.TextureProvider.GetIcon((uint)iconId, Dalamud.Plugin.Services.ITextureProvider.IconFlags.HiRes);
+        return Services.TextureProvider.CreateFromTexFile(tex);
     }
 
     private static string getIconPath(int iconId, bool hq)
