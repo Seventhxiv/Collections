@@ -89,7 +89,7 @@ public class ItemKey : CollectibleKey<(ItemAdapter, bool)>, ICreateable<ItemKey,
         return sourceCategories;
     }
 
-    public IDalamudTextureWrap GetIconLazy()
+    public ISharedImmediateTexture GetIconLazy()
     {
         return iconHandler.GetIconLazy();
     }

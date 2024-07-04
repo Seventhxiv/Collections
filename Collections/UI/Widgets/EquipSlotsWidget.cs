@@ -72,7 +72,7 @@ public class EquipSlotsWidget
             ImGui.SetItemAllowOverlap();
 
             // Load collectible if set
-            IDalamudTextureWrap icon = null;
+            ISharedImmediateTexture icon = null;
             GlamourCollectible collectible = null;
 
             var glamourItem = currentGlamourSet.GetItem(equipSlot);
@@ -84,10 +84,10 @@ public class EquipSlotsWidget
 
             // Draw icon
             if (icon is null)
-                icon = equipSlotIcons[equipSlot].GetWrapOrEmpty();
+                icon = equipSlotIcons[equipSlot];
 
             // Draw equip slot buttons
-            if (ImGui.ImageButton(icon.ImGuiHandle, new Vector2(48, 50)))
+            if (ImGui.ImageButton(icon.GetWrapOrEmpty().ImGuiHandle, new Vector2(48, 50)))
             {
                 SetEquipSlot(equipSlot);
             }

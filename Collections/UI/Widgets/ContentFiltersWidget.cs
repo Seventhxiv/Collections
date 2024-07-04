@@ -8,7 +8,7 @@ public class ContentFiltersWidget
     private Vector2 iconSize = new(25, 25);
     private const int WidgetWidth = 31;
 
-    private Dictionary<SourceCategory, IDalamudTextureWrap> icons = new();
+    private Dictionary<SourceCategory, ISharedImmediateTexture> icons = new();
     private Dictionary<SourceCategory, int> contentTypesToIconId = new()
     {
             {SourceCategory.Gil, 65002},
@@ -76,7 +76,7 @@ public class ContentFiltersWidget
         // Draw button as a group
         UiHelper.GroupWithMinWidth(() =>
         {
-            ImGui.Image(icons[collectibleSourceCategory].ImGuiHandle, iconSize);
+            ImGui.Image(icons[collectibleSourceCategory].GetWrapOrEmpty().ImGuiHandle, iconSize);
             ImGui.SameLine();
             ImGui.Text(collectibleSourceCategory.GetEnumName().ToSentence().TrimStart(' '));
             //ImGui.Text(hint1);

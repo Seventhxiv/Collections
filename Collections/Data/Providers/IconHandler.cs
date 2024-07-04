@@ -1,3 +1,4 @@
+using Dalamud.Interface.Textures;
 using Lumina.Data.Files;
 
 namespace Collections;
@@ -10,9 +11,9 @@ public class IconHandler
         this.iconId = iconId;
     }
 
-    private IDalamudTextureWrap iconInternal;
+    private ISharedImmediateTexture iconInternal;
     private bool iconScheduled = false;
-    public IDalamudTextureWrap GetIconLazy()
+    public ISharedImmediateTexture GetIconLazy()
     {
         if (iconInternal != null)
         {
@@ -28,16 +29,14 @@ public class IconHandler
 
         return null;
     }
-    public IDalamudTextureWrap GetIcon()
+    public ISharedImmediateTexture GetIcon()
     {
         return getIcon(iconId, false);
     }
-    public static IDalamudTextureWrap getIcon(int iconId, bool hq = false)
+    public static ISharedImmediateTexture getIcon(int iconId, bool hq = false)
     {
-        var iconPath = getIconPath(iconId, hq);
-        var icon = Services.TextureProvider.GetFromFile(iconPath);
-        var tex = Services.DataManager.GetFile<TexFile>(iconPath)!;
-        return Services.TextureProvider.CreateFromTexFile(tex);
+        var lookup = new GameIconLookup(iconId: (uint)iconId, itemHq: hq);
+        return Services.TextureProvider.GetFromGameIcon(lookup);
     }
 
     private static string getIconPath(int iconId, bool hq)

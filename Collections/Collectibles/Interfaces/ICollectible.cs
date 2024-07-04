@@ -15,7 +15,7 @@ public interface ICollectible
     public void OpenGamerEscape();
     public bool GetIsObtained();
     public void UpdateObtainedState();
-    public IDalamudTextureWrap GetIconLazy();
+    public ISharedImmediateTexture GetIconLazy();
     public void Interact();
     public string GetDisplayName();
 }

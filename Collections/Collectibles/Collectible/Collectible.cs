@@ -113,7 +113,7 @@ public abstract class Collectible<T> : ICollectible where T : ExcelRow
         Services.Configuration.Save();
     }
 
-    public IDalamudTextureWrap GetIconLazy()
+    public ISharedImmediateTexture GetIconLazy()
     {
         return IconHandler.GetIconLazy();
     }

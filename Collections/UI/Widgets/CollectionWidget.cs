@@ -152,7 +152,7 @@ public class CollectionWidget
 
         var tint = collectible.GetIsObtained() ? defaultTint : ColorsPalette.GREY2;
 
-        if (ImGui.ImageButton(icon.ImGuiHandle, new Vector2(iconSize, iconSize), default, new Vector2(1f, 1f), -1, default, tint))
+        if (ImGui.ImageButton(icon.GetWrapOrEmpty().ImGuiHandle, new Vector2(iconSize, iconSize), default, new Vector2(1f, 1f), -1, default, tint))
         {
             collectible.Interact();
             if (isGlam)

@@ -6,5 +6,5 @@ public interface ICollectibleSource
     public List<SourceCategory> GetSourceCategories();
     public bool GetIslocatable();
     public void DisplayLocation();
-    public IDalamudTextureWrap GetIconLazy();
+    public ISharedImmediateTexture GetIconLazy();
 }

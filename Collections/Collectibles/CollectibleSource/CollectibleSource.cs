@@ -14,7 +14,7 @@ public abstract class CollectibleSource : ICollectibleSource
     {
     }
 
-    public IDalamudTextureWrap GetIconLazy()
+    public ISharedImmediateTexture GetIconLazy()
     {
         if (IconHandler == null)
         {
