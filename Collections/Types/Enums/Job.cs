@@ -15,6 +15,7 @@ public enum Job
     RPR,
     MNK,
     SAM,
+    VPR,
     BRD,
     MCH,
     DNC,
@@ -22,4 +23,5 @@ public enum Job
     SMN,
     RDM,
     BLU,
+    PCT,
 }
