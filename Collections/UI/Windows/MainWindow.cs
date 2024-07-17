@@ -1,5 +1,4 @@
 using Dalamud.Interface.Windowing;
-using Dalamud.Plugin.Services;
 
 namespace Collections;
 

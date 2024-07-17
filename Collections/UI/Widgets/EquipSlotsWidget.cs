@@ -1,3 +1,4 @@
+using Dalamud.Interface.Textures;
 using System.IO;
 
 namespace Collections;
@@ -71,7 +72,7 @@ public class EquipSlotsWidget
             ImGui.SetItemAllowOverlap();
 
             // Load collectible if set
-            IDalamudTextureWrap icon = null;
+            ISharedImmediateTexture icon = null;
             GlamourCollectible collectible = null;
 
             var glamourItem = currentGlamourSet.GetItem(equipSlot);
@@ -86,7 +87,7 @@ public class EquipSlotsWidget
                 icon = equipSlotIcons[equipSlot];
 
             // Draw equip slot buttons
-            if (ImGui.ImageButton(icon.ImGuiHandle, new Vector2(48, 50)))
+            if (ImGui.ImageButton(icon.GetWrapOrEmpty().ImGuiHandle, new Vector2(48, 50)))
             {
                 SetEquipSlot(equipSlot);
             }
@@ -158,14 +159,15 @@ public class EquipSlotsWidget
         EventService.Publish<FilterChangeEvent, FilterChangeEventArgs>(new FilterChangeEventArgs());
     }
 
-    private Dictionary<EquipSlot, IDalamudTextureWrap> equipSlotIcons = new();
+    private Dictionary<EquipSlot, ISharedImmediateTexture> equipSlotIcons = new();
     private void LoadEquipSlotIcons()
     {
         foreach (var equipSlot in Services.DataProvider.SupportedEquipSlots)
         {
             var equipSlotName = Enum.GetName(typeof(EquipSlot), equipSlot);
             var iconPath = Path.Combine(Services.PluginInterface.AssemblyLocation.Directory?.FullName!, $"Data\\Resources\\{equipSlotName}.png");
-            var icon = Services.PluginInterface.UiBuilder.LoadImage(iconPath);
+            var icon = Services.TextureProvider.GetFromFile(iconPath);
+
             equipSlotIcons[equipSlot] = icon;
         }
     }

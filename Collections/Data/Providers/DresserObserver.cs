@@ -1,4 +1,3 @@
-using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Client.Game.UI;
 
@@ -65,12 +64,11 @@ public unsafe class DresserObserver
     private void LoadDresserContents()
     {
         lastLoadTime = DateTime.Now;
-        var mirageManagerItemIds = new Span<uint>(MirageManager->PrismBoxItemIds, DRESSER_ITEM_LIMIT);
 
         var initialItemCount = DresserItemIds.Count;
         DresserItemIds.Clear();
 
-        foreach (var itemId in mirageManagerItemIds)
+        foreach (var itemId in MirageManager->PrismBoxItemIds)
         {
             if (itemId == 0)
                 continue;

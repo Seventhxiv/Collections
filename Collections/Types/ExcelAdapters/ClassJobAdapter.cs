@@ -47,7 +47,7 @@ public class ClassJobAdapter : ClassJob
         }
     }
 
-    public IDalamudTextureWrap GetIconLazy()
+    public ISharedImmediateTexture GetIconLazy()
     {
         iconHandler ??= new IconHandler(IconId);
         return iconHandler.GetIconLazy();

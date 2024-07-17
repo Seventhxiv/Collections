@@ -7,7 +7,7 @@ public sealed class Plugin : IDalamudPlugin
     public string Name => "Collections";
     public string NameSpace => "Collections";
 
-    public Plugin(DalamudPluginInterface pluginInterface)
+    public Plugin(IDalamudPluginInterface pluginInterface)
     {
         pluginInterface.Create<Services>(this);
     }

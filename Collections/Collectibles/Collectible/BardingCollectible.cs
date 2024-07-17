@@ -47,7 +47,7 @@ public class BardingCollectible : Collectible<BuddyEquip>, ICreateable<BardingCo
 
     public override unsafe void UpdateObtainedState()
     {
-        isObtained = UIState.Instance()->Buddy.IsBuddyEquipUnlocked(ExcelRow.RowId);
+        isObtained = UIState.Instance()->Buddy.CompanionInfo.IsBuddyEquipUnlocked(ExcelRow.RowId);
     }
 
     protected override int GetIconId()

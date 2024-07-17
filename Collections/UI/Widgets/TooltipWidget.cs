@@ -19,7 +19,7 @@ public class TooltipWidget
         // Icon
         if (icon != null)
         {
-            ImGui.Image(icon.ImGuiHandle, iconSize);
+            ImGui.Image(icon.GetWrapOrEmpty().ImGuiHandle, iconSize);
             ImGui.SameLine();
         }
 
@@ -113,7 +113,7 @@ public class TooltipWidget
     private unsafe void DrawSources(ICollectibleKey CollectibleKey)
     {
         var unlockSources = CollectibleKey.CollectibleSources;
-        IDalamudTextureWrap icon;
+        ISharedImmediateTexture icon;
 
         // Disable hovering over header
         ImGui.PushStyleColor(ImGuiCol.HeaderHovered, *ImGui.GetStyleColorVec4(ImGuiCol.TableHeaderBg));
@@ -150,7 +150,7 @@ public class TooltipWidget
                             icon = costItem.collectibleKey.GetIconLazy();
                             if (icon != null)
                             {
-                                ImGui.Image(icon.ImGuiHandle, new Vector2(icon.Width / 3, icon.Height / 3));
+                                ImGui.Image(icon.GetWrapOrEmpty().ImGuiHandle, new Vector2(icon.GetWrapOrEmpty().Width / 3, icon.GetWrapOrEmpty().Height / 3));
                                 ImGui.SameLine();
                             }
 
@@ -168,7 +168,7 @@ public class TooltipWidget
                         icon = source.GetIconLazy();
                         if (icon != null)
                         {
-                            ImGui.Image(icon.ImGuiHandle, sourceIconSize);
+                            ImGui.Image(icon.GetWrapOrEmpty().ImGuiHandle, sourceIconSize);
                             ImGui.SameLine();
                         }
                         ImGui.PushTextWrapPos(UiHelper.UnitWidth() * 50);

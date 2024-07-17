@@ -10,7 +10,9 @@ global using System.Threading.Tasks;
 global using Lumina.Data;
 global using Lumina.Excel;
 global using Lumina.Excel.GeneratedSheets;
-global using Dalamud.Interface.Internal;
+global using Dalamud.Interface.Textures;
+global using Dalamud.Game;
+global using Dalamud.Plugin.Services;
 global using Dalamud.Interface;
 global using Dalamud.Interface.Components;
 

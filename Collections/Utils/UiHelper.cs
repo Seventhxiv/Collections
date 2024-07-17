@@ -185,14 +185,14 @@ public class UiHelper
         }
     }
 
-    public static bool ImageToggleButton(IDalamudTextureWrap icon, Vector2 size, bool state)
+    public static bool ImageToggleButton(ISharedImmediateTexture icon, Vector2 size, bool state)
     {
         var tintColor = new Vector4(1f, 1f, 1f, 1f);
         if (!state)
         {
             tintColor = new Vector4(0.5f, 0.5f, 0.5f, 0.85f);
         }
-        return ImGui.ImageButton(icon.ImGuiHandle, size, Vector2.Zero, Vector2.One, 1, Vector4.Zero, tintColor);
+        return ImGui.ImageButton(icon.GetWrapOrEmpty().ImGuiHandle, size, Vector2.Zero, Vector2.One, 1, Vector4.Zero, tintColor);
     }
 
 

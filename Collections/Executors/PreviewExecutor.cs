@@ -29,7 +29,8 @@ public unsafe class PreviewExecutor
 
     private static void TryOn(uint item, byte stain = 0)
     {
-        AgentTryon.TryOn(0xFF, item, stain, item, 0);
+        // Will need to implement second dye layer
+        AgentTryon.TryOn(0xFF, item, stain, 0, item, false);
     }
 
     private void Preview(ItemAdapter item, byte stainId = 0, bool storePreviewHistory = true)
@@ -69,9 +70,9 @@ public unsafe class PreviewExecutor
         for (var i = 0; i < 13; i++)
         {
             var invSlot = container->GetInventorySlot(i);
-            var item = itemSheet.GetRow(invSlot->GlamourID != 0 ? invSlot->GlamourID : invSlot->ItemID);
+            var item = itemSheet.GetRow(invSlot->GlamourId != 0 ? invSlot->GlamourId : invSlot->ItemId);
             if (previewHistory.Contains(item.EquipSlot))
-                Preview(item, invSlot->Stain, false);
+                Preview(item, invSlot->Stains[0], false);
         }
         previewHistory.Clear();
     }
@@ -84,7 +85,7 @@ public unsafe class PreviewExecutor
             {
                 Id = 0,
                 Type = 0,
-                Stain = 0,
+                Stain0 = 0,
                 Variant = 0,
             };
             PreviewWeapon(equipSlot, weaponModelId);
@@ -94,7 +95,7 @@ public unsafe class PreviewExecutor
             var equipmentModelId = new EquipmentModelId()
             {
                 Id = 0,
-                Stain = 0,
+                Stain0 = 0,
                 Variant = 0,
             };
             PreviewEquipment(equipSlot, equipmentModelId);
@@ -130,7 +131,7 @@ public unsafe class PreviewExecutor
         return new EquipmentModelId()
         {
             Id = (ushort)item.ModelMain,
-            Stain = stainId,
+            Stain0 = stainId,
             Variant = (byte)(item.ModelMain >> 16),
         };
     }
@@ -141,7 +142,7 @@ public unsafe class PreviewExecutor
         {
             Id = (ushort)item.ModelMain,
             Type = (byte)(item.ModelMain >> 16),
-            Stain = stainId,
+            Stain0 = stainId,
             Variant = (byte)(item.ModelMain >> 32),
         };
     }

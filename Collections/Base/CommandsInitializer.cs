@@ -1,5 +1,4 @@
 using Dalamud.Game.Command;
-using Dalamud.Plugin.Services;
 
 namespace Collections;
 
