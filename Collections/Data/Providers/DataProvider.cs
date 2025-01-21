@@ -22,8 +22,8 @@ public class DataProvider
     public DataProvider()
     {
         Dev.Start();
-        Dev.Stop();
         PopulateData();
+        Dev.Stop();
     }
 
     public List<ICollectible> GetCollection<T>()
@@ -43,15 +43,11 @@ public class DataProvider
 
     private void PopulateData()
     {
-        Dev.Start();
-
         // Class jobs
         SupportedClassJobs = ExcelCache<ClassJobAdapter>.GetSheet().AsParallel().Where(entry => ClassJobAdapter.ClassJobConfig.ContainsKey(entry.RowId)).ToList();
 
         // Stains
         SupportedStains = ExcelCache<StainAdapter>.GetSheet().Where(s => s.Color != 0).ToList();
-
-        Dev.Stop();
 
         // Collections
         InitializeGlamourCollection();
@@ -67,11 +63,10 @@ public class DataProvider
 
     private void InitializeGlamourCollection()
     {
-        Dev.Start();
         collections[typeof(GlamourCollectible)] = (
             GlamourCollectible.CollectionName,
             0,
-            ExcelCache<ItemAdapter>.GetSheet()
+            ExcelCache<ItemAdapter>.GetSheet().AsParallel()
             .Where(entry => entry.LevelEquip >= 1)
             .Where(entry => SupportedEquipSlots.Contains(entry.EquipSlot))
             .Where(entry => !entry.Name.ToString().StartsWith("Dated ")) // TODO filter only works in English
@@ -81,12 +76,10 @@ public class DataProvider
             .ThenByDescending(c => c.Name)
             .ToList()
             );
-        Dev.Stop();
     }
 
     private void InitializeMountCollection()
     {
-        Dev.Start();
         collections[typeof(MountCollectible)] = (
             MountCollectible.CollectionName,
             1,
@@ -97,7 +90,6 @@ public class DataProvider
             .ThenByDescending(c => c.Name)
             .ToList()
             );
-        Dev.Stop();
     }
 
     private void InitializeMinionCollection()
