@@ -90,7 +90,7 @@ public class JobSelectorWidget
 
     private void SetCurrentJob()
     {
-        var matchingClassJob = Filters.Where(e => e.Key.RowId == Services.ClientState.LocalPlayer.ClassJob.Id);
+        var matchingClassJob = Filters.Where(e => e.Key.RowId == Services.ClientState.LocalPlayer.ClassJob.RowId);
         if (matchingClassJob.Any())
         {
             SetAllState(false, false);

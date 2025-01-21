@@ -53,7 +53,7 @@ public class LodestoneClient
 
         var playerTarget = target as IPlayerCharacter;
 
-        return (playerTarget.Name.ToString(), playerTarget.HomeWorld.GameData.Name.ToString());
+        return (playerTarget.Name.ToString(), playerTarget.HomeWorld.Value.Name.ToString());
     }
 
     private async Task<CollectionData> GetCollectionData(string charName, string server)

@@ -76,9 +76,9 @@ public class GlamourItem
 
     public StainAdapter GetStain()
     {
-        return ExcelCache<StainAdapter>.GetSheet().GetRow(StainId);
+        return (StainAdapter)ExcelCache<StainAdapter>.GetSheet().GetRow(StainId)!;
     }
-    
+
 
     public EquipSlot GetEquipSlot()
     {

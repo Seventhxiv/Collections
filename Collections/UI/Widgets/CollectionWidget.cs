@@ -154,9 +154,16 @@ public class CollectionWidget
 
         if (ImGui.ImageButton(icon.GetWrapOrEmpty().ImGuiHandle, new Vector2(iconSize, iconSize), default, new Vector2(1f, 1f), -1, default, tint))
         {
+
+        }
+
+        if (ImGui.IsItemClicked())
+        {
+            Dev.Log($"Interacting with {collectible.Name}");
             collectible.Interact();
             if (isGlam)
             {
+                Dev.Log("Publishing GlamourItemChangeEvent");
                 EventService.Publish<GlamourItemChangeEvent, GlamourItemChangeEventArgs>(new GlamourItemChangeEventArgs((GlamourCollectible)collectible));
             }
         }

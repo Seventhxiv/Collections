@@ -1,3 +1,5 @@
+using FFXIVClientStructs.FFXIV.Component.Excel;
+
 namespace Collections;
 
 public class GlamourCollectible : Collectible<ItemAdapter>, ICreateable<GlamourCollectible, ItemAdapter>
@@ -20,7 +22,7 @@ public class GlamourCollectible : Collectible<ItemAdapter>, ICreateable<GlamourC
 
     protected override string GetName()
     {
-        return ExcelRow.Name;
+        return ExcelRow.Name.ToString();
     }
 
     protected override uint GetId()

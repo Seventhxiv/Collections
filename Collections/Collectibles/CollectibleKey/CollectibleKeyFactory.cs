@@ -2,7 +2,7 @@ namespace Collections;
 
 public class CollectibleKeyFactory
 {
-    public static ICollectibleKey Get<T>(Collectible<T> collectible) where T : ExcelRow
+    public static ICollectibleKey Get<T>(Collectible<T> collectible) where T : struct, IExcelRow<T>
     {
         var type = typeof(T);
         var keysDataGenerator = Services.DataGenerator.KeysDataGenerator;
@@ -10,7 +10,7 @@ public class CollectibleKeyFactory
 
         if (type == typeof(ItemAdapter))
         {
-            var item = ExcelCache<ItemAdapter>.GetSheet().GetRow(id);
+            var item = (ItemAdapter)ExcelCache<ItemAdapter>.GetSheet().GetRow(id)!;
             return CollectibleKeyCache<ItemKey, ItemAdapter>.Instance.GetObject((item, true));
         }
 
@@ -45,11 +45,11 @@ public class CollectibleKeyFactory
         if (keysDataGenerator.collectibleIdToMisc.TryGetValue(type, out var miscDict))
         {
             if (miscDict.TryGetValue(id, out var misc))
-            {
+        {
                 return new MiscKey((misc, false));
             }
         }
-        if (type == typeof(Lumina.Excel.GeneratedSheets.Action))
+        if (type == typeof(Lumina.Excel.Sheets.Action))
         {
             if (Services.DataGenerator.KeysDataGenerator.ActionIdToBlueSpell.TryGetValue(id, out var monster))
             {

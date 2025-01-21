@@ -36,14 +36,14 @@ public class CurrencyDataGenerator
         var TomestonesItemSheet = ExcelCache<TomestonesItem>.GetSheet();
         foreach (var tomestone in TomestonesItemSheet)
         {
-            ItemIdToSourceCategory[tomestone.Item.Row] = SourceCategory.Tomestones;
+            ItemIdToSourceCategory[tomestone.Item.RowId] = SourceCategory.Tomestones;
         }
 
         // Add Beast tribe currencies
         var beastTribeSheet = ExcelCache<BeastTribe>.GetSheet();
         foreach (var beastTribe in beastTribeSheet)
         {
-            ItemIdToSourceCategory[beastTribe.CurrencyItem.Row] = SourceCategory.BeastTribes;
+            ItemIdToSourceCategory[beastTribe.CurrencyItem.RowId] = SourceCategory.BeastTribes;
         }
 
         // Add Gatherer/Crafter Scrips (Added manually - not really necassary, keeping it here for now)

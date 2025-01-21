@@ -1,4 +1,5 @@
 using LuminaSupplemental.Excel.Model;
+using LuminaSupplemental.Excel.Services;
 
 namespace Collections;
 
@@ -20,7 +21,7 @@ public class InstancesDataGenerator : BaseDataGenerator<ContentFinderCondition>
 
     private void setDungeonBossChestList()
     {
-        var dungeonBossChestList = CsvLoader.LoadResource<DungeonBossChest>(CsvLoader.DungeonBossChestResourceName, out var failedLines);
+        var dungeonBossChestList = CsvLoader.LoadResource<DungeonBossChest>(CsvLoader.DungeonBossChestResourceName, out var failedLines, out var exceptions);
         foreach (var entry in dungeonBossChestList)
         {
             AddItemInstancePair(entry.ItemId, entry.ContentFinderConditionId);
@@ -29,7 +30,7 @@ public class InstancesDataGenerator : BaseDataGenerator<ContentFinderCondition>
 
     private void setDungeonBossDropList()
     {
-        var dungeonBossDropList = CsvLoader.LoadResource<DungeonBossDrop>(CsvLoader.DungeonBossDropResourceName, out var failedLines);
+        var dungeonBossDropList = CsvLoader.LoadResource<DungeonBossDrop>(CsvLoader.DungeonBossDropResourceName, out var failedLines, out var exceptions);
         foreach (var entry in dungeonBossDropList)
         {
             AddItemInstancePair(entry.ItemId, entry.ContentFinderConditionId);
@@ -38,8 +39,8 @@ public class InstancesDataGenerator : BaseDataGenerator<ContentFinderCondition>
 
     private void setDungeonChestList()
     {
-        var dungeonChestItemList = CsvLoader.LoadResource<DungeonChestItem>(CsvLoader.DungeonChestItemResourceName, out var failedLines);
-        var dungeonChestList = CsvLoader.LoadResource<DungeonChest>(CsvLoader.DungeonChestResourceName, out var failedLines2);
+        var dungeonChestItemList = CsvLoader.LoadResource<DungeonChestItem>(CsvLoader.DungeonChestItemResourceName, out var failedLines, out var exceptions);
+        var dungeonChestList = CsvLoader.LoadResource<DungeonChest>(CsvLoader.DungeonChestResourceName, out var failedLines2, out var exceptions2);
         foreach (var dungeonChestItem in dungeonChestItemList)
         {
             var dungeonChest = dungeonChestList.Where(row => row.RowId == dungeonChestItem.ChestId).Single();
@@ -49,7 +50,7 @@ public class InstancesDataGenerator : BaseDataGenerator<ContentFinderCondition>
 
     private void setDungeonDropList()
     {
-        var dungeonDropList = CsvLoader.LoadResource<DungeonDrop>(CsvLoader.DungeonDropItemResourceName, out var failedLines);
+        var dungeonDropList = CsvLoader.LoadResource<DungeonDrop>(CsvLoader.DungeonDropItemResourceName, out var failedLines, out var exceptions);
         foreach (var entry in dungeonDropList)
         {
             AddItemInstancePair(entry.ItemId, entry.ContentFinderConditionId);
@@ -73,7 +74,7 @@ public class InstancesDataGenerator : BaseDataGenerator<ContentFinderCondition>
     {
         var contentFinderCondition = contentFinderConditionList.GetRow(contentFinderConditionId);
 
-        AddEntry(itemId, contentFinderCondition);
+        AddEntry(itemId, contentFinderCondition.Value);
 
         if (!contentFinderConditionToItems.ContainsKey(contentFinderConditionId))
         {

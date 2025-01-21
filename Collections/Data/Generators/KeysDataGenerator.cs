@@ -30,8 +30,8 @@ public class KeysDataGenerator
     {
         foreach (var item in ExcelCache<ItemAdapter>.GetSheet())
         {
-            var type = item.ItemAction.Value?.Type;
-            var collectibleData = item.ItemAction.Value?.Data;
+            var type = item.ItemAction.Value.Type;
+            var collectibleData = item.ItemAction.Value.Data;
             if (type == MountItemActionType)
             {
                 AddCollectibleKeyEntry(collectibleIdToItem, typeof(Mount), collectibleData[0], item);
@@ -62,7 +62,7 @@ public class KeysDataGenerator
         foreach (var quest in ExcelCache<Quest>.GetSheet())
         {
             var emote = quest.EmoteReward.Value;
-            if (emote is not null && emote.RowId != 0)
+            if (emote.RowId != 0)
             {
                 AddCollectibleKeyEntry(collectibleIdToQuest, typeof(Emote), emote.UnlockLink, quest);
             }
@@ -72,7 +72,7 @@ public class KeysDataGenerator
         {
             if (emote.UnlockLink > ExcelCache<Quest>.GetSheet().First().RowId && emote.UnlockLink < ExcelCache<Quest>.GetSheet().Last().RowId)
             {
-                var quest = ExcelCache<Quest>.GetSheet().GetRow(emote.UnlockLink);
+                var quest = (Quest)ExcelCache<Quest>.GetSheet().GetRow(emote.UnlockLink)!;
                 AddCollectibleKeyEntry(collectibleIdToQuest, typeof(Emote), emote.UnlockLink, quest);
             }
         }
@@ -81,7 +81,7 @@ public class KeysDataGenerator
         {
             foreach (var (collectibleId, questId) in dict)
             {
-                var quest = ExcelCache<Quest>.GetSheet().GetRow(questId);
+                var quest = (Quest)ExcelCache<Quest>.GetSheet().GetRow(questId)!;
                 AddCollectibleKeyEntry(collectibleIdToQuest, type, collectibleId, quest);
             }
         }
@@ -93,7 +93,7 @@ public class KeysDataGenerator
         {
             foreach (var (collectibleId, instanceId) in dict)
             {
-                var instance = ExcelCache<ContentFinderCondition>.GetSheet().GetRow(instanceId);
+                var instance = (ContentFinderCondition)ExcelCache<ContentFinderCondition>.GetSheet().GetRow(instanceId)!;
                 AddCollectibleKeyEntry(collectibleIdToInstance, type, collectibleId, instance);
             }
         }
@@ -105,7 +105,7 @@ public class KeysDataGenerator
         {
             foreach (var (collectibleId, achievementId) in dict)
             {
-                var achievement = ExcelCache<Achievement>.GetSheet().GetRow(achievementId);
+                var achievement = (Achievement)ExcelCache<Achievement>.GetSheet().GetRow(achievementId)!;
                 AddCollectibleKeyEntry(collectibleIdToAchievement, type, collectibleId, achievement);
             }
         }
@@ -128,7 +128,8 @@ public class KeysDataGenerator
         var data = CSVHandler.Load<BlueSpell>(BlueSpellsFileName);
         ActionIdToBlueSpell = data
             .GroupBy(entry => entry.ActionId)
-            .ToDictionary(kv => kv.Key, kv => {
+            .ToDictionary(kv => kv.Key, kv =>
+            {
                 var blueSpell = kv.First();
                 return new Monster()
                 {

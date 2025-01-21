@@ -22,7 +22,7 @@ public class EmoteCollectible : Collectible<Emote>, ICreateable<EmoteCollectible
 
     protected override string GetName()
     {
-        return ExcelRow.Name;
+        return ExcelRow.Name.ToString();
     }
 
     protected override uint GetId()

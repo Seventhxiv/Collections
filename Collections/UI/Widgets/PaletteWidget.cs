@@ -10,7 +10,7 @@ public class PaletteWidget
     private int stainMaxButtonsPerRow = 9;
 
     private static readonly Dictionary<int, List<StainAdapter>> StainsByShade = Services.DataProvider.SupportedStains.GroupBy(s => (int)s.Shade).ToDictionary(s => s.Key, s => s.ToList());
-    private static readonly StainAdapter EmptyStain = ExcelCache<StainAdapter>.GetSheet().GetRow(0);
+    private static readonly StainAdapter EmptyStain = (StainAdapter)ExcelCache<StainAdapter>.GetSheet().GetRow(0)!;
 
     private EquipSlot EquipSlot { get; init; }
     private EventService EventService { get; init; }
@@ -46,16 +46,16 @@ public class PaletteWidget
                 var color = stain.RGBcolor;
                 var colorVec = new Vector4(color.R / 255f, color.G / 255f, color.B / 255f, 1f);
 
-                if (ActiveStain == stain)
+                if (ActiveStain.RowId == stain.RowId)
                 {
                     var origPos = ImGui.GetCursorPos();
                     ImGui.SetCursorPos(new Vector2(origPos.X + stainButtonRectOffset.X, origPos.Y + stainButtonRectOffset.Y));
-                    ImGui.ColorButton(stain.Name, ColorsPalette.YELLOW, ImGuiColorEditFlags.NoTooltip, stainButtonRectSize);
+                    ImGui.ColorButton(stain.Name.ToString(), ColorsPalette.YELLOW, ImGuiColorEditFlags.NoTooltip, stainButtonRectSize);
                     ImGui.SetCursorPos(origPos);
                 }
 
                 // Draw button
-                if (ImGui.ColorButton(stain.Name, colorVec, ImGuiColorEditFlags.NoSidePreview | ImGuiColorEditFlags.NoSmallPreview | ImGuiColorEditFlags.NoTooltip, stainButtonSize))
+                if (ImGui.ColorButton(stain.Name.ToString(), colorVec, ImGuiColorEditFlags.NoSidePreview | ImGuiColorEditFlags.NoSmallPreview | ImGuiColorEditFlags.NoTooltip, stainButtonSize))
                 {
                     ActiveStain = stain;
                     pickedColor = new Vector3(ActiveStain.RGBcolor.R / 255f, ActiveStain.RGBcolor.G / 255f, ActiveStain.RGBcolor.B / 255f);
@@ -71,7 +71,7 @@ public class PaletteWidget
                 if (ImGui.IsItemHovered())
                 {
                     ImGui.BeginTooltip();
-                    ImGui.Text(stain.Name);
+                    ImGui.Text(stain.Name.ToString());
                     ImGui.EndTooltip();
                 }
 
@@ -103,7 +103,7 @@ public class PaletteWidget
 
             var newStain = StainColorConverter.FindClosestStain(pickedColor);
 
-            if (newStain is not null && ActiveStain != newStain)
+            if (ActiveStain.RowId != newStain.RowId)
             {
                 ActiveStain = newStain;
                 EventService.Publish<DyeChangeEvent, DyeChangeEventArgs>(new DyeChangeEventArgs(EquipSlot));

@@ -14,7 +14,7 @@ public class StainColorConverter
     {
         var selectedColor = Vector3ToRGBColor(color);
         var minDistance = double.MaxValue;
-        StainAdapter closestStain = null;
+        StainAdapter? closestStain = null;
 
         foreach (var stain in Services.DataProvider.SupportedStains)
         {
@@ -27,7 +27,7 @@ public class StainColorConverter
             }
         }
 
-        return closestStain;
+        return (StainAdapter)closestStain!;
     }
 
     // Convert a HEX color string to an RGBColor

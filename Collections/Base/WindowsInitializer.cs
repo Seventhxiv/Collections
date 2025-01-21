@@ -17,6 +17,7 @@ public class WindowsInitializer
 
         // Attach draw functions
         Services.PluginInterface.UiBuilder.Draw += DrawUI;
+        Services.PluginInterface.UiBuilder.OpenMainUi += DrawConfigUI;
         Services.PluginInterface.UiBuilder.OpenConfigUi += DrawConfigUI;
     }
 

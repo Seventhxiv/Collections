@@ -2,15 +2,15 @@ using FFXIVClientStructs.FFXIV.Client.Game.UI;
 
 namespace Collections;
 
-public class BlueMageCollectible : Collectible<Lumina.Excel.GeneratedSheets.Action>, ICreateable<BlueMageCollectible, Lumina.Excel.GeneratedSheets.Action>
+public class BlueMageCollectible : Collectible<Lumina.Excel.Sheets.Action>, ICreateable<BlueMageCollectible, Lumina.Excel.Sheets.Action>
 {
     public new static string CollectionName => "Blue Mage";
 
-    public BlueMageCollectible(Lumina.Excel.GeneratedSheets.Action excelRow) : base(excelRow)
+    public BlueMageCollectible(Lumina.Excel.Sheets.Action excelRow) : base(excelRow)
     {
     }
 
-    public static BlueMageCollectible Create(Lumina.Excel.GeneratedSheets.Action excelRow)
+    public static BlueMageCollectible Create(Lumina.Excel.Sheets.Action excelRow)
     {
         return new(excelRow);
     }
@@ -22,7 +22,7 @@ public class BlueMageCollectible : Collectible<Lumina.Excel.GeneratedSheets.Acti
 
     protected override string GetName()
     {
-        return ExcelRow.Name;
+        return ExcelRow.Name.ToString();
     }
 
     protected override uint GetId()
@@ -32,7 +32,7 @@ public class BlueMageCollectible : Collectible<Lumina.Excel.GeneratedSheets.Acti
 
     protected override string GetDescription()
     {
-        return ExcelCache<ActionTransient>.GetSheet().GetRow(ExcelRow.RowId).Description.ToString();
+        return ExcelCache<ActionTransient>.GetSheet().GetRow(ExcelRow.RowId)?.Description.ToString() ?? "Could not find description";
     }
 
     protected override HintModule GetPrimaryHint()
@@ -47,7 +47,7 @@ public class BlueMageCollectible : Collectible<Lumina.Excel.GeneratedSheets.Acti
 
     public override unsafe void UpdateObtainedState()
     {
-        isObtained = UIState.Instance()->IsUnlockLinkUnlocked(ExcelRow.UnlockLink);
+        isObtained = UIState.Instance()->IsUnlockLinkUnlocked(ExcelRow.UnlockLink.RowId);
     }
 
     protected override int GetIconId()

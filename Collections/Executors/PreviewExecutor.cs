@@ -71,8 +71,8 @@ public unsafe class PreviewExecutor
         {
             var invSlot = container->GetInventorySlot(i);
             var item = itemSheet.GetRow(invSlot->GlamourId != 0 ? invSlot->GlamourId : invSlot->ItemId);
-            if (previewHistory.Contains(item.EquipSlot))
-                Preview(item, invSlot->Stains[0], false);
+            if (previewHistory.Contains(item.Value.EquipSlot))
+                Preview(item.Value, invSlot->Stains[0], false);
         }
         previewHistory.Clear();
     }

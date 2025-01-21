@@ -13,7 +13,7 @@ public class InstanceKey : CollectibleKey<(ContentFinderCondition, bool)>, ICrea
 
     protected override string GetName((ContentFinderCondition, bool) input)
     {
-        return input.Item1.Name;
+        return input.Item1.Name.ToString();
     }
 
     protected override uint GetId((ContentFinderCondition, bool) input)

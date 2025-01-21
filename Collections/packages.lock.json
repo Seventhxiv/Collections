@@ -4,21 +4,43 @@
     "net8.0-windows7.0": {
       "CSVFile": {
         "type": "Direct",
-        "requested": "[3.1.2, )",
-        "resolved": "3.1.2",
-        "contentHash": "ZEDWKlTuVPewTuqA9T34MbjArgyuqIXqG1HWJ5qdHCEaBYHVFPzr6IrmM2LhxlN9t95ba8+cPu837z693XArdQ=="
+        "requested": "[3.1.0, )",
+        "resolved": "3.1.0",
+        "contentHash": "yz/FptkwDL0bxhaxoyrFPI5SyxUUfuZtbH1E2yLiHHFZFFrSXNnWJHfXSt5Anvy1gWpHCLpC520Bxy6G/Opp1g=="
       },
       "CsvHelper": {
         "type": "Direct",
-        "requested": "[33.0.1, )",
-        "resolved": "33.0.1",
-        "contentHash": "fev4lynklAU2A9GVMLtwarkwaanjSYB4wUqO2nOJX5hnzObORzUqVLe+bDYCUyIIRQM4o5Bsq3CcyJR89iMmEQ=="
+        "requested": "[30.0.1, )",
+        "resolved": "30.0.1",
+        "contentHash": "rcZtgbWR+As4G3Vpgx0AMNmShGuQLFjkHAPIIflzrfkJCx8/AOd4m96ZRmiU1Wi39qS5UVjV0P8qdgqOo5Cwyg=="
       },
       "DalamudPackager": {
         "type": "Direct",
-        "requested": "[2.1.13, )",
-        "resolved": "2.1.13",
-        "contentHash": "rMN1omGe8536f4xLMvx9NwfvpAc9YFFfeXJ1t4P4PE6Gu8WCIoFliR1sh07hM+bfODmesk/dvMbji7vNI+B/pQ=="
+        "requested": "[11.0.0, )",
+        "resolved": "11.0.0",
+        "contentHash": "bjT7XUlhIJSmsE/O76b7weUX+evvGQctbQB8aKXt94o+oPWxHpCepxAGMs7Thow3AzCyqWs7cOpp9/2wcgRRQA=="
+      },
+      "DotNet.ReproducibleBuilds": {
+        "type": "Direct",
+        "requested": "[1.1.1, )",
+        "resolved": "1.1.1",
+        "contentHash": "+H2t/t34h6mhEoUvHi8yGXyuZ2GjSovcGYehJrS2MDm2XgmPfZL2Sdxg+uL2lKgZ4M6tTwKHIlxOob2bgh0NRQ==",
+        "dependencies": {
+          "Microsoft.SourceLink.AzureRepos.Git": "1.1.1",
+          "Microsoft.SourceLink.Bitbucket.Git": "1.1.1",
+          "Microsoft.SourceLink.GitHub": "1.1.1",
+          "Microsoft.SourceLink.GitLab": "1.1.1"
+        }
+      },
+      "LuminaSupplemental.Excel": {
+        "type": "Direct",
+        "requested": "[2.1.8, )",
+        "resolved": "2.1.8",
+        "contentHash": "erJ2gwQvLU83jucUXa/aM+mJcFMdyDmpb328DFs5cO1VL2S+pgCx3m52+bFtULgkDVZnGCcR2EFYSQj9TlocIg==",
+        "dependencies": {
+          "CSVFile": "3.1.0",
+          "CsvHelper": "30.0.1"
+        }
       },
       "System.Net.Http": {
         "type": "Direct",
@@ -54,6 +76,11 @@
           "runtime.native.System.Security.Cryptography.OpenSsl": "4.3.2"
         }
       },
+      "Microsoft.Build.Tasks.Git": {
+        "type": "Transitive",
+        "resolved": "1.1.1",
+        "contentHash": "AT3HlgTjsqHnWpBHSNeR0KxbLZD7bztlZVj7I8vgeYG9SYqbeFGh0TM/KVtC6fg53nrWHl3VfZFvb5BiQFcY6Q=="
+      },
       "Microsoft.NETCore.Platforms": {
         "type": "Transitive",
         "resolved": "1.1.1",
@@ -63,6 +90,47 @@
         "type": "Transitive",
         "resolved": "1.1.0",
         "contentHash": "aOZA3BWfz9RXjpzt0sRJJMjAscAUm3Hoa4UWAfceV9UTYxgwZ1lZt5nO2myFf+/jetYQo4uTP7zS8sJY67BBxg=="
+      },
+      "Microsoft.SourceLink.AzureRepos.Git": {
+        "type": "Transitive",
+        "resolved": "1.1.1",
+        "contentHash": "qB5urvw9LO2bG3eVAkuL+2ughxz2rR7aYgm2iyrB8Rlk9cp2ndvGRCvehk3rNIhRuNtQaeKwctOl1KvWiklv5w==",
+        "dependencies": {
+          "Microsoft.Build.Tasks.Git": "1.1.1",
+          "Microsoft.SourceLink.Common": "1.1.1"
+        }
+      },
+      "Microsoft.SourceLink.Bitbucket.Git": {
+        "type": "Transitive",
+        "resolved": "1.1.1",
+        "contentHash": "cDzxXwlyWpLWaH0em4Idj0H3AmVo3L/6xRXKssYemx+7W52iNskj/SQ4FOmfCb8YQt39otTDNMveCZzYtMoucQ==",
+        "dependencies": {
+          "Microsoft.Build.Tasks.Git": "1.1.1",
+          "Microsoft.SourceLink.Common": "1.1.1"
+        }
+      },
+      "Microsoft.SourceLink.Common": {
+        "type": "Transitive",
+        "resolved": "1.1.1",
+        "contentHash": "WMcGpWKrmJmzrNeuaEb23bEMnbtR/vLmvZtkAP5qWu7vQsY59GqfRJd65sFpBszbd2k/bQ8cs8eWawQKAabkVg=="
+      },
+      "Microsoft.SourceLink.GitHub": {
+        "type": "Transitive",
+        "resolved": "1.1.1",
+        "contentHash": "IaJGnOv/M7UQjRJks7B6p7pbPnOwisYGOIzqCz5ilGFTApZ3ktOR+6zJ12ZRPInulBmdAf1SrGdDG2MU8g6XTw==",
+        "dependencies": {
+          "Microsoft.Build.Tasks.Git": "1.1.1",
+          "Microsoft.SourceLink.Common": "1.1.1"
+        }
+      },
+      "Microsoft.SourceLink.GitLab": {
+        "type": "Transitive",
+        "resolved": "1.1.1",
+        "contentHash": "tvsg47DDLqqedlPeYVE2lmiTpND8F0hkrealQ5hYltSmvruy/Gr5nHAKSsjyw5L3NeM/HLMI5ORv7on/M4qyZw==",
+        "dependencies": {
+          "Microsoft.Build.Tasks.Git": "1.1.1",
+          "Microsoft.SourceLink.Common": "1.1.1"
+        }
       },
       "runtime.debian.8-x64.runtime.native.System.Security.Cryptography.OpenSsl": {
         "type": "Transitive",
@@ -571,13 +639,6 @@
           "Microsoft.NETCore.Platforms": "1.1.0",
           "Microsoft.NETCore.Targets": "1.1.0",
           "System.Runtime": "4.3.0"
-        }
-      },
-      "luminasupplemental.excel": {
-        "type": "Project",
-        "dependencies": {
-          "CSVFile": "[3.1.0, )",
-          "CsvHelper": "[30.0.1, )"
         }
       }
     }

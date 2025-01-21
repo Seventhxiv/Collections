@@ -158,7 +158,7 @@ public class TooltipWidget
                             ImGui.Text(costItem.collectibleKey.Name + " x" + costItem.amount);
                             ImGui.SameLine();
                         }
-                        var npcName = shopSource.ENpcResident != null ? shopSource.ENpcResident.Singular.ToString() : "Unknown NPC";
+                        var npcName = shopSource.ENpcResident != null ? shopSource.ENpcResident.Value.Singular.ToString() : "Unknown NPC";
                         var locationName = shopSource.GetLocationEntry() != null ? shopSource.GetLocationEntry().TerritoryType.PlaceName.Value.Name.ToString() : "Unknown Location";
                         ImGui.AlignTextToFramePadding();
                         ImGui.Text("at " + npcName + ", " + locationName);

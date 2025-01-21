@@ -3,7 +3,7 @@ using System.Collections.Concurrent;
 
 namespace Collections;
 
-public class ExcelCache<T> : IEnumerable<T> where T : ExcelRow
+public class ExcelCache<T> : IEnumerable<T> where T : struct, IExcelRow<T>
 {
     private static ConcurrentDictionary<Dalamud.Game.ClientLanguage, ExcelCache<T>> InternalInstance = new();
 
@@ -38,7 +38,14 @@ public class ExcelCache<T> : IEnumerable<T> where T : ExcelRow
 
     public T? GetRow(uint id)
     {
-        return excelSheet.GetRow(id);
+        try
+        {
+            return excelSheet.GetRow(id);
+        }
+        catch (ArgumentOutOfRangeException)
+        {
+            return null;
+        }
         //if (rowCache.TryGetValue(id, out var value))
         //{
         //    return value;
@@ -48,17 +55,17 @@ public class ExcelCache<T> : IEnumerable<T> where T : ExcelRow
         //return rowCache[id] = result;
     }
 
-    public T? GetRow(uint row, uint subRow)
-    {
-        return excelSheet.GetRow(row, subRow);
-        //var targetRow = new Tuple<uint, uint>(row, subRow);
+    // public T? GetRow(uint row, uint subRow)
+    // {
+    //     return excelSheet.GetRow(row, subRow);
+    //     //var targetRow = new Tuple<uint, uint>(row, subRow);
 
-        //if (subRowCache.TryGetValue(targetRow, out var value))
-        //{
-        //    return value;
-        //}
-        //if (excelSheet.GetRow(row, subRow) is not { } result) return null;
+    //     //if (subRowCache.TryGetValue(targetRow, out var value))
+    //     //{
+    //     //    return value;
+    //     //}
+    //     //if (excelSheet.GetRow(row, subRow) is not { } result) return null;
 
-        //return subRowCache[targetRow] = result;
-    }
+    //     //return subRowCache[targetRow] = result;
+    // }
 }

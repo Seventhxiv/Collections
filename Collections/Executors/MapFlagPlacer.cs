@@ -11,21 +11,21 @@ public static class MapFlagPlacer
 
     public static unsafe void Place(TerritoryType territory, float xCord, float yCord)
     {
-        PlaceFromInternalCoords(territory.RowId, territory.Map.Row, xCord, yCord);
+        PlaceFromInternalCoords(territory.RowId, territory.Map.RowId, xCord, yCord);
     }
 
     public static unsafe void PlaceFromMapCoords(TerritoryType territory, float xCord, float yCord)
     {
-        var sizeFactor = (territory.Map.Value?.SizeFactor ?? 100f) / 100f;
+        var sizeFactor = territory.Map.Value.SizeFactor / 100f;
         var x = MapCordToInternal(xCord * 100, sizeFactor);
         var y = MapCordToInternal(yCord * 100, sizeFactor);
-        PlaceFromInternalCoords(territory.RowId, territory.Map.Row, x, y);
+        PlaceFromInternalCoords(territory.RowId, territory.Map.RowId, x, y);
     }
 
     private static unsafe void PlaceFromInternalCoords(uint territoryId, uint mapId, float xCord, float yCord)
     {
         var territory = ExcelCache<TerritoryType>.GetSheet().GetRow(territoryId);
-        var sizeFactor = (territory.Map.Value?.SizeFactor ?? 100f) / 100f;
+        var sizeFactor = (territory?.Map.Value.SizeFactor ?? 100f) / 100f;
         var x = MapCordToInternal(xCord, sizeFactor);
         var y = MapCordToInternal(yCord, sizeFactor);
 

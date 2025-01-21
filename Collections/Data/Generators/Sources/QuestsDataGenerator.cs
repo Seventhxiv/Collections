@@ -11,8 +11,17 @@ public class QuestsDataGenerator : BaseDataGenerator<Quest>
         var questSheet = ExcelCache<Quest>.GetSheet();
         foreach (var quest in questSheet)
         {
-            var items = quest.ItemReward.ToList();
-            items.AddRange(quest.OptionalItemReward.Select(entry => entry.Row).ToList());
+            var rewards = quest.Reward;
+            var items = new List<uint>();
+
+            foreach (var reward in rewards)
+            {
+                if (reward.GetType() == typeof(Item))
+                {
+                    items.Add(reward.RowId);
+                }
+            }
+            items.AddRange(quest.OptionalItemReward.Select(entry => entry.RowId).ToList());
             foreach (var itemId in items)
             {
                 if (itemId == 0)
@@ -20,7 +29,7 @@ public class QuestsDataGenerator : BaseDataGenerator<Quest>
                 AddEntry(itemId, quest);
             }
 
-            var emoteId = quest.EmoteReward.Row;
+            var emoteId = quest.EmoteReward.RowId;
             if (emoteId != 0)
             {
                 EmoteToQuest[emoteId] = quest;
@@ -34,7 +43,11 @@ public class QuestsDataGenerator : BaseDataGenerator<Quest>
             if (entry.SourceId == 0)
                 continue;
 
-            AddEntry(entry.ItemId, questSheet.GetRow(entry.SourceId));
+            var quest = questSheet.GetRow(entry.SourceId);
+            if (quest != null)
+            {
+                AddEntry(entry.ItemId, quest.Value);
+            }
         }
     }
 }

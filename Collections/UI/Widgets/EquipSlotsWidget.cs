@@ -137,7 +137,7 @@ public class EquipSlotsWidget
                 // Details on hover
                 ImGui.BeginTooltip();
                 var stainName = paletteWidgets[equipSlot].ActiveStain.RowId == 0 ? "No Dye Selected" : paletteWidgets[equipSlot].ActiveStain.Name;
-                ImGui.Text(stainName);
+                ImGui.Text(stainName.ToString());
                 ImGui.EndTooltip();
 
                 // Reset on right click
@@ -146,7 +146,8 @@ public class EquipSlotsWidget
                     paletteWidgets[equipSlot].ResetStain();
                     EventService.Publish<DyeChangeEvent, DyeChangeEventArgs>(new DyeChangeEventArgs(equipSlot));
                 }
-            } else
+            }
+            else
             {
                 hoveredPaletteButton[equipSlot] = false;
             }

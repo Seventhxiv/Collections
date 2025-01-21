@@ -12,7 +12,7 @@ public class InstanceSource : CollectibleSource
 
     public override string GetName()
     {
-        return ContentFinderCondition.Name;
+        return ContentFinderCondition.Name.ToString();
     }
 
     private List<SourceCategory> sourceType;

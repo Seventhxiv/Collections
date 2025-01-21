@@ -1,4 +1,5 @@
 using LuminaSupplemental.Excel.Model;
+using LuminaSupplemental.Excel.Services;
 
 namespace Collections;
 
@@ -8,7 +9,7 @@ public class MogStationDataGenerator : BaseDataGenerator<uint>
     protected override void InitializeData()
     {
         // Based on LuminaSupplemental
-        var StoreItemList = CsvLoader.LoadResource<StoreItem>(CsvLoader.StoreItemResourceName, out var failedLines);
+        var StoreItemList = CsvLoader.LoadResource<StoreItem>(CsvLoader.StoreItemResourceName, out var failedLines, out var exceptions);
         foreach (var entry in StoreItemList)
         {
             AddEntry(entry.ItemId, 0);
@@ -22,12 +23,15 @@ public class MogStationDataGenerator : BaseDataGenerator<uint>
         }
 
         // FittingShopCategoryItem sheet
-        var FittingShopCategoryItemSheet = ExcelCache<FittingShopCategoryItem>.GetSheet()!;
+        var FittingShopCategoryItemSheet = ExcelSubRowCache<FittingShopCategoryItem>.GetSheet()!;
 
         foreach (var FittingShopCategoryItem in FittingShopCategoryItemSheet)
         {
-            var itemId = Convert.ToUInt32(FittingShopCategoryItem.Unknown0);
-            AddEntry(itemId, 0);
+            foreach (var subRow in FittingShopCategoryItem)
+            {
+                var itemId = Convert.ToUInt32(subRow.Unknown0);
+                AddEntry(itemId, 0);
+            }
         }
 
         // FittingShopItemSet sheet
@@ -44,7 +48,7 @@ public class MogStationDataGenerator : BaseDataGenerator<uint>
         }
 
         // Override items that shouldn't be considered mog station
-        foreach(var itemId in DataOverrides.IgnoreMogStationId)
+        foreach (var itemId in DataOverrides.IgnoreMogStationId)
         {
             RemoveEntry(itemId, 0);
         }

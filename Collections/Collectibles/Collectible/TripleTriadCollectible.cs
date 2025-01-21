@@ -23,7 +23,7 @@ public class TripleTriadCollectible : Collectible<TripleTriadCard>, ICreateable<
 
     protected override string GetName()
     {
-        return ExcelRow.Name;
+        return ExcelRow.Name.ToString();
     }
 
     protected override uint GetId()

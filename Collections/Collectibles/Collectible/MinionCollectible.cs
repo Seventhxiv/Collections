@@ -23,7 +23,7 @@ public class MinionCollectible : Collectible<Companion>, ICreateable<MinionColle
 
     protected override string GetName()
     {
-        return ExcelRow.Singular;
+        return ExcelRow.Singular.ToString();
     }
 
     protected override uint GetId()
@@ -33,7 +33,7 @@ public class MinionCollectible : Collectible<Companion>, ICreateable<MinionColle
 
     protected override string GetDescription()
     {
-        return ExcelCache<CompanionTransient>.GetSheet().GetRow(ExcelRow.RowId).Description.ToString();
+        return ExcelCache<CompanionTransient>.GetSheet().GetRow(ExcelRow.RowId)?.Description.ToString() ?? "";
     }
 
     protected override HintModule GetPrimaryHint()

@@ -9,7 +9,7 @@ public class AchievementsDataGenerator : BaseDataGenerator<Achievement>
         var achievementSheet = ExcelCache<Achievement>.GetSheet();
         foreach (var achievement in achievementSheet)
         {
-            AddEntry(achievement.Item.Row, achievement);
+            AddEntry(achievement.Item.RowId, achievement);
         }
 
         // Based on resource data
@@ -19,7 +19,11 @@ public class AchievementsDataGenerator : BaseDataGenerator<Achievement>
             if (entry.SourceId == 0)
                 continue;
 
-            AddEntry(entry.ItemId, achievementSheet.GetRow(entry.SourceId));
+            var achievement = achievementSheet.GetRow(entry.SourceId);
+            if (achievement != null)
+            {
+                AddEntry(entry.ItemId, (Achievement)achievement);
+            }
         }
     }
 }

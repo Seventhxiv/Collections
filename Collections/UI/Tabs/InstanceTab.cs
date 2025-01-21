@@ -83,7 +83,7 @@ public class InstanceTab : IDrawable
     private static uint GetCurrentInstance()
     {
         var territoryType = ExcelCache<TerritoryType>.GetSheet().GetRow(Services.ClientState.TerritoryType);
-        return territoryType.ContentFinderCondition.Row;
+        return territoryType.Value.ContentFinderCondition.RowId;
     }
 
     private static bool InValidInstance()

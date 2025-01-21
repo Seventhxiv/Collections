@@ -9,7 +9,9 @@ global using System.Threading.Tasks;
 // Dalamud
 global using Lumina.Data;
 global using Lumina.Excel;
-global using Lumina.Excel.GeneratedSheets;
+global using Lumina.Excel.Sheets;
+global using Lumina.Text.ReadOnly;
+// global using FFXIVClientStructs.FFXIV.Component.Excel;
 global using Dalamud.Interface.Textures;
 global using Dalamud.Game;
 global using Dalamud.Plugin.Services;

@@ -6,13 +6,14 @@ public class ContainerSource : CollectibleSource
     private ICollectibleKey CollectibleKey { get; init; }
     public ContainerSource(uint containerId)
     {
-        container = ExcelCache<ItemAdapter>.GetSheet().GetRow(containerId);
+        container = ExcelCache<ItemAdapter>.GetSheet().GetRow(containerId).Value;
         CollectibleKey = CollectibleKeyCache<ItemKey, ItemAdapter>.Instance.GetObject((container, true));
     }
 
+
     public override string GetName()
     {
-        return container.Name;
+        return container.Name.ToString();
     }
 
     private List<SourceCategory> sourceType;

@@ -48,11 +48,8 @@ public class MonsterSource : CollectibleSource
         if (monster.dutyId is not null)
         {
             var contentFinderCondition = ExcelCache<ContentFinderCondition>.GetSheet().GetRow((uint)monster.dutyId);
-            var contentType = contentFinderCondition.ContentType.Value;
-            if (contentType is not null)
-            {
-                return (int)contentType.Icon;
-            }
+            var contentType = contentFinderCondition.Value.ContentType.Value;
+            return (int)contentType.Icon;
         }
         return defaultIconId;
     }

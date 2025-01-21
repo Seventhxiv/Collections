@@ -13,7 +13,7 @@ public class QuestKey : CollectibleKey<(Quest, bool)>, ICreateable<QuestKey, (Qu
 
     protected override string GetName((Quest, bool) input)
     {
-        return input.Item1.Name;
+        return input.Item1.Name.ToString();
     }
 
     protected override uint GetId((Quest, bool) input)

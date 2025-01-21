@@ -11,7 +11,7 @@ public class AchievementSource : CollectibleSource
 
     public override string GetName()
     {
-        return Achievement.Name + ": " + Achievement.Description;
+        return Achievement.Name.ToString() + ": " + Achievement.Description.ToString();
     }
 
     private List<SourceCategory> sourceType;

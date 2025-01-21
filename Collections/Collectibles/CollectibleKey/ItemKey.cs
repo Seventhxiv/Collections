@@ -16,7 +16,7 @@ public class ItemKey : CollectibleKey<(ItemAdapter, bool)>, ICreateable<ItemKey,
 
     protected override string GetName((ItemAdapter, bool) input)
     {
-        return input.Item1.Name;
+        return input.Item1.Name.ToString();
     }
 
     protected override uint GetId((ItemAdapter, bool) input)
@@ -38,41 +38,58 @@ public class ItemKey : CollectibleKey<(ItemAdapter, bool)>, ICreateable<ItemKey,
                 collectibleSources.AddRange(shopEntries.Select(shopEntry => new ShopSource(shopEntry)));
             }
         }
-        if (dataGenerator.InstancesDataGenerator.data.TryGetValue(excelRow.RowId, out var duty))
+
+        try
         {
-            collectibleSources.AddRange(duty.Select(instance => new InstanceSource(instance)));
-        }
-        if (dataGenerator.EventDataGenerator.data.TryGetValue(excelRow.RowId, out var events))
-        {
-            collectibleSources.AddRange(events.Select(eventName => new EventSource(eventName)));
-        }
-        if (dataGenerator.MogStationDataGenerator.data.ContainsKey(excelRow.RowId))
-        {
-            collectibleSources.Add(new MogStationSource());
-        }
-        if (dataGenerator.ContainersDataGenerator.data.TryGetValue(excelRow.RowId, out var containers))
-        {
-            collectibleSources.AddRange(containers.Select(itemId => new ContainerSource(itemId)));
-        }
-        if (dataGenerator.AchievementsDataGenerator.data.TryGetValue(excelRow.RowId, out var achievements))
-        {
-            collectibleSources.AddRange(achievements.Select(entry => new AchievementSource(entry)));
-        }
-        if (dataGenerator.QuestsDataGenerator.data.TryGetValue(excelRow.RowId, out var quests))
-        {
-            collectibleSources.AddRange(quests.Select(entry => new QuestSource(entry)));
-        }
-        if (dataGenerator.CraftingDataGenerator.data.TryGetValue(excelRow.RowId, out var recipes))
-        {
-            collectibleSources.AddRange(recipes.Select(entry => new CraftingSource(entry)));
-        }
-        if (Services.DataGenerator.KeysDataGenerator.ItemIdToTripleTriadId.TryGetValue(excelRow.RowId, out var tripleTriadId))
-        {
-            if (dataGenerator.TripleTriadNpcDataGenerator.data.TryGetValue(tripleTriadId, out var npcs))
+            if (dataGenerator.InstancesDataGenerator.data.TryGetValue(excelRow.RowId, out var duty))
             {
-                collectibleSources.AddRange(npcs.Select(entry => new NpcSource(entry)));
+                collectibleSources.AddRange(duty.Select(instance => new InstanceSource(instance)));
+            }
+
+            if (dataGenerator.EventDataGenerator.data.TryGetValue(excelRow.RowId, out var events))
+            {
+                collectibleSources.AddRange(events.Select(eventName => new EventSource(eventName)));
+            }
+
+            if (dataGenerator.MogStationDataGenerator.data.ContainsKey(excelRow.RowId))
+            {
+                collectibleSources.Add(new MogStationSource());
+            }
+
+            // this causes crash :/
+            // if (dataGenerator.ContainersDataGenerator.data.TryGetValue(excelRow.RowId, out var containers))
+            // {
+            //     collectibleSources.AddRange(containers.Select(itemId => new ContainerSource(itemId)));
+            // }
+
+            if (dataGenerator.AchievementsDataGenerator.data.TryGetValue(excelRow.RowId, out var achievements))
+            {
+                collectibleSources.AddRange(achievements.Select(entry => new AchievementSource(entry)));
+            }
+
+            if (dataGenerator.QuestsDataGenerator.data.TryGetValue(excelRow.RowId, out var quests))
+            {
+                collectibleSources.AddRange(quests.Select(entry => new QuestSource(entry)));
+            }
+
+            if (dataGenerator.CraftingDataGenerator.data.TryGetValue(excelRow.RowId, out var recipes))
+            {
+                collectibleSources.AddRange(recipes.Select(entry => new CraftingSource(entry)));
+            }
+
+            if (Services.DataGenerator.KeysDataGenerator.ItemIdToTripleTriadId.TryGetValue(excelRow.RowId, out var tripleTriadId))
+            {
+                if (dataGenerator.TripleTriadNpcDataGenerator.data.TryGetValue(tripleTriadId, out var npcs))
+                {
+                    collectibleSources.AddRange(npcs.Select(entry => new NpcSource(entry)));
+                }
             }
         }
+        catch (Exception e)
+        {
+            Dev.Log(e.ToString());
+        }
+
         return collectibleSources;
     }
 

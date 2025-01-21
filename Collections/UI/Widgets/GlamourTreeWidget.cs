@@ -361,9 +361,9 @@ public class GlamourTreeWidget
                 var itemId = invSlot->GlamourId != 0 ? invSlot->GlamourId : invSlot->ItemId;
                 var stainId = invSlot->Stains[0];
                 var item = itemSheet.GetRow(itemId);
-                if (Services.DataProvider.SupportedEquipSlots.Contains(item.EquipSlot))
+                if (Services.DataProvider.SupportedEquipSlots.Contains(item.Value.EquipSlot))
                 {
-                    currentGlamourSet.SetItem(item, stainId);
+                    currentGlamourSet.SetItem(item.Value, stainId);
                 }
             }
         }

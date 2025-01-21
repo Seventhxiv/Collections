@@ -22,7 +22,7 @@ public class BardingCollectible : Collectible<BuddyEquip>, ICreateable<BardingCo
 
     protected override string GetName()
     {
-        return ExcelRow.Name;
+        return ExcelRow.Name.ToString();
     }
 
     protected override uint GetId()

@@ -10,7 +10,7 @@ public class QuestSource : CollectibleSource
 
     public override string GetName()
     {
-        return Quest.Name;
+        return Quest.Name.ToString();
     }
 
     private List<SourceCategory> sourceType = new List<SourceCategory>() { SourceCategory.Quest };

@@ -3,7 +3,7 @@ namespace Collections;
 public class ShopSource : CollectibleSource
 {
     public List<(ItemKey collectibleKey, int amount)> costItems = new();
-    public ENpcResident ENpcResident { get; init; }
+    public ENpcResident? ENpcResident { get; init; }
     public uint ShopId { get; init; }
     public ShopSource(Shop shopEntry)
     {
@@ -32,7 +32,7 @@ public class ShopSource : CollectibleSource
         // NPC name
         if (ENpcResident != null)
         {
-            name += ENpcResident.Singular.ToString();
+            name += ENpcResident.Value.Singular.ToString();
         }
         else
         {
@@ -71,7 +71,7 @@ public class ShopSource : CollectibleSource
         if (ENpcResident != null)
         {
             var beastTribeNpcIds = new List<uint>() { 1016650, 1016804, 1016838 };
-            if (beastTribeNpcIds.Contains(ENpcResident.RowId))
+            if (beastTribeNpcIds.Contains(ENpcResident.Value.RowId))
             {
                 sourceCategories.Add(SourceCategory.BeastTribes);
             }
@@ -110,9 +110,9 @@ public class ShopSource : CollectibleSource
             return null;
         }
 
-        if (Services.DataGenerator.NpcLocationDataGenerator.npcToLocation.ContainsKey(ENpcResident.RowId))
+        if (Services.DataGenerator.NpcLocationDataGenerator.npcToLocation.ContainsKey(ENpcResident.Value.RowId))
         {
-            locationEntry = Services.DataGenerator.NpcLocationDataGenerator.npcToLocation[ENpcResident.RowId];
+            locationEntry = Services.DataGenerator.NpcLocationDataGenerator.npcToLocation[ENpcResident.Value.RowId];
         }
 
         return locationEntry;

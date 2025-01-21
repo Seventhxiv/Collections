@@ -38,7 +38,8 @@ public unsafe class DresserObserver
 
                 firstTimeLoaded = false;
             }
-        } else
+        }
+        else
         {
             firstTimeLoaded = true;
         }
@@ -81,7 +82,8 @@ public unsafe class DresserObserver
         {
             Dev.Log($"New Dresser load state detected, reloading every {RELOAD_THRESHOLD_IN_SECONDS} seconds");
             Dev.Log($"Dresser contents count: {initialItemCount} -> {DresserItemIds.Count}");
-        } else
+        }
+        else
         {
             Dev.Log($"Refreshing Dresser contents count: {initialItemCount} -> {DresserItemIds.Count}");
         }
@@ -96,7 +98,7 @@ public unsafe class DresserObserver
         var initialItemCount = ArmoireItemIds.Count;
         ArmoireItemIds.Clear();
 
-        var cabinetSheet = ExcelCache<Lumina.Excel.GeneratedSheets.Cabinet>.GetSheet();
+        var cabinetSheet = ExcelCache<Lumina.Excel.Sheets.Cabinet>.GetSheet();
         foreach (var cabinet in cabinetSheet)
         {
             if (Cabinet.IsItemInCabinet((int)cabinet.RowId))
@@ -126,7 +128,7 @@ public unsafe class DresserObserver
     }
 
     private void SaveDresserContentsInConfiguration()
-    { 
+    {
         Services.Configuration.DresserItemIds = DresserItemIds;
         Services.Configuration.Save();
     }

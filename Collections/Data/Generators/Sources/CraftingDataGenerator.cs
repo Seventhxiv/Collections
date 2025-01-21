@@ -7,7 +7,7 @@ public class CraftingDataGenerator : BaseDataGenerator<uint>
         var recipes = ExcelCache<Recipe>.GetSheet();
         foreach (var recipe in recipes)
         {
-            var itemId = recipe.ItemResult.Row;
+            var itemId = recipe.ItemResult.RowId;
             AddEntry(itemId, recipe.RowId);
         }
     }

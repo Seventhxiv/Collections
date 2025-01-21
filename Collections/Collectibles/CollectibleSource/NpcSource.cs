@@ -3,7 +3,7 @@ namespace Collections;
 
 public class NpcSource : CollectibleSource
 {
-    private ENpcResident eNpcResident { get; init; }
+    private ENpcResident? eNpcResident { get; init; }
     public NpcSource(ENpcResident npc)
     {
         eNpcResident = npc;
@@ -11,7 +11,7 @@ public class NpcSource : CollectibleSource
 
     public override string GetName()
     {
-        return eNpcResident.Singular;
+        return eNpcResident.Value.Singular.ToString();
     }
 
     private List<SourceCategory> sourceType = new();
@@ -50,9 +50,9 @@ public class NpcSource : CollectibleSource
             return null;
         }
 
-        if (Services.DataGenerator.NpcLocationDataGenerator.npcToLocation.ContainsKey(eNpcResident.RowId))
+        if (Services.DataGenerator.NpcLocationDataGenerator.npcToLocation.ContainsKey(eNpcResident.Value.RowId))
         {
-            locationEntry = Services.DataGenerator.NpcLocationDataGenerator.npcToLocation[eNpcResident.RowId];
+            locationEntry = Services.DataGenerator.NpcLocationDataGenerator.npcToLocation[eNpcResident.Value.RowId];
         }
 
         return locationEntry;
