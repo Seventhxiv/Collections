@@ -25,6 +25,10 @@ public abstract class BaseDataGenerator<T>
         if (data.TryGetValue(id, out var sources))
         {
             sources.Remove(source);
+            if (sources.Count == 0)
+            {
+                data.Remove(id);
+            }
         }
     }
 }

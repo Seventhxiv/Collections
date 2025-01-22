@@ -1,27 +1,27 @@
 namespace Collections;
 
-public class InstanceKey : CollectibleKey<(ContentFinderCondition, bool)>, ICreateable<InstanceKey, (ContentFinderCondition, bool)>
+public class InstanceKey : CollectibleKey<(ContentFinderCondition, int)>, ICreateable<InstanceKey, (ContentFinderCondition, int)>
 {
-    public InstanceKey((ContentFinderCondition, bool) input) : base(input)
+    public InstanceKey((ContentFinderCondition, int) input) : base(input)
     {
     }
 
-    public static InstanceKey Create((ContentFinderCondition, bool) input)
+    public static InstanceKey Create((ContentFinderCondition, int) input)
     {
         return new(input);
     }
 
-    protected override string GetName((ContentFinderCondition, bool) input)
+    protected override string GetName((ContentFinderCondition, int) input)
     {
         return input.Item1.Name.ToString();
     }
 
-    protected override uint GetId((ContentFinderCondition, bool) input)
+    protected override uint GetId((ContentFinderCondition, int) input)
     {
         return input.Item1.RowId;
     }
 
-    protected override List<ICollectibleSource> GetCollectibleSources((ContentFinderCondition, bool) input)
+    protected override List<ICollectibleSource> GetCollectibleSources((ContentFinderCondition, int) input)
     {
         return new List<ICollectibleSource>() { new InstanceSource(input.Item1) };
     }

@@ -8,8 +8,8 @@ public class ExcelSubRowCache<T> : IEnumerable<SubrowCollection<T>> where T : st
     private static ConcurrentDictionary<Dalamud.Game.ClientLanguage, ExcelSubRowCache<T>> InternalInstance = new();
 
     private SubrowExcelSheet<T> excelSheet { get; set; }
-    //private readonly ConcurrentDictionary<uint, T> rowCache = new();
-    //private readonly ConcurrentDictionary<Tuple<uint, uint>, T> subRowCache = new();
+    private readonly ConcurrentDictionary<uint, SubrowCollection<T>> rowCache = new();
+    private readonly ConcurrentDictionary<Tuple<uint, uint>, T> subRowCache = new();
 
     private ExcelSubRowCache(Dalamud.Game.ClientLanguage language)
     {
@@ -38,27 +38,30 @@ public class ExcelSubRowCache<T> : IEnumerable<SubrowCollection<T>> where T : st
 
     public SubrowCollection<T> GetRow(uint id)
     {
-        return excelSheet.GetRow(id);
-        //if (rowCache.TryGetValue(id, out var value))
-        //{
-        //    return value;
-        //}
-        //if (excelSheet.GetRow(id) is not { } result) return null;
+        // return excelSheet.GetRow(id);
 
-        //return rowCache[id] = result;
+        if (rowCache.TryGetValue(id, out var value))
+        {
+            return value;
+        }
+        // if (excelSheet.GetRow(id) is not { } result) return null;
+
+        return rowCache[id] = excelSheet.GetRow(id);
     }
 
     public T? GetRow(uint row, uint subRow)
     {
-        return excelSheet.GetSubrow(row, (ushort)subRow);
-        //var targetRow = new Tuple<uint, uint>(row, subRow);
 
-        //if (subRowCache.TryGetValue(targetRow, out var value))
-        //{
-        //    return value;
-        //}
-        //if (excelSheet.GetRow(row, subRow) is not { } result) return null;
+        // return excelSheet.GetSubrow(row, (ushort)subRow);
 
-        //return subRowCache[targetRow] = result;
+        var targetRow = new Tuple<uint, uint>(row, subRow);
+
+        if (subRowCache.TryGetValue(targetRow, out var value))
+        {
+            return value;
+        }
+        // if (excelSheet.GetRow(id) is not { } result) return null;
+
+        return subRowCache[targetRow] = excelSheet.GetSubrow(row, (ushort)subRow);
     }
 }

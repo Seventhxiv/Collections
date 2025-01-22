@@ -8,8 +8,8 @@ public class ExcelCache<T> : IEnumerable<T> where T : struct, IExcelRow<T>
     private static ConcurrentDictionary<Dalamud.Game.ClientLanguage, ExcelCache<T>> InternalInstance = new();
 
     private ExcelSheet<T> excelSheet { get; set; }
-    //private readonly ConcurrentDictionary<uint, T> rowCache = new();
-    //private readonly ConcurrentDictionary<Tuple<uint, uint>, T> subRowCache = new();
+    private readonly ConcurrentDictionary<uint, T> rowCache = new();
+    // private readonly ConcurrentDictionary<Tuple<uint, uint>, T> subRowCache = new();
 
     private ExcelCache(Dalamud.Game.ClientLanguage language)
     {
@@ -40,19 +40,20 @@ public class ExcelCache<T> : IEnumerable<T> where T : struct, IExcelRow<T>
     {
         try
         {
-            return excelSheet.GetRow(id);
+            // return excelSheet.GetRow(id);
+
+            if (rowCache.TryGetValue(id, out var value))
+            {
+                return value;
+            }
+            // if (excelSheet.GetRow(id) is not { } result) return null;
+
+            return rowCache[id] = excelSheet.GetRow(id);
         }
         catch (ArgumentOutOfRangeException)
         {
             return null;
         }
-        //if (rowCache.TryGetValue(id, out var value))
-        //{
-        //    return value;
-        //}
-        //if (excelSheet.GetRow(id) is not { } result) return null;
-
-        //return rowCache[id] = result;
     }
 
     // public T? GetRow(uint row, uint subRow)

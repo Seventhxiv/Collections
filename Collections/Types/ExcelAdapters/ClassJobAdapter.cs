@@ -18,6 +18,7 @@ public struct ClassJobAdapter(ExcelPage page, uint offset, uint row) : IExcelRow
             IconId = ClassJobConfig[row].iconId;
             Job = ClassJobConfig[row].job;
             ClassRole = ClassJobConfig[row].classRole;
+            iconHandler = new IconHandler(IconId);
         }
     }
 
@@ -57,7 +58,7 @@ public struct ClassJobAdapter(ExcelPage page, uint offset, uint row) : IExcelRow
     };
 
     private IconHandler? iconHandler { get; set; }
-    public ISharedImmediateTexture GetIconLazy()
+    public ISharedImmediateTexture? GetIconLazy()
     {
         iconHandler ??= new IconHandler(IconId);
         return iconHandler.GetIconLazy();

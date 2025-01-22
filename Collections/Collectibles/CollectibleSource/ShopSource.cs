@@ -5,7 +5,7 @@ public class ShopSource : CollectibleSource
     public List<(ItemKey collectibleKey, int amount)> costItems = new();
     public ENpcResident? ENpcResident { get; init; }
     public uint ShopId { get; init; }
-    public ShopSource(Shop shopEntry)
+    public ShopSource(Shop shopEntry, int initDepth)
     {
         ShopId = shopEntry.ShopId;
         if (shopEntry.ENpcResidentId != null)
@@ -15,7 +15,7 @@ public class ShopSource : CollectibleSource
         foreach (var cost in shopEntry.Cost)
         {
             // Recursively create collectibleKey (only allow 1 degree) to allow for the currency to determine the source category
-            costItems.Add((CollectibleKeyCache<ItemKey, ItemAdapter>.Instance.GetObject((cost.Item, false)), cost.Amount));
+            costItems.Add((CollectibleKeyCache<ItemKey, ItemAdapter>.Instance.GetObject((cost.Item, initDepth)), cost.Amount));
         }
     }
 

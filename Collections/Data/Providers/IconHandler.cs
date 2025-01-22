@@ -1,6 +1,3 @@
-using Dalamud.Interface.Textures;
-using Lumina.Data.Files;
-
 namespace Collections;
 
 public class IconHandler
@@ -11,9 +8,9 @@ public class IconHandler
         this.iconId = iconId;
     }
 
-    private ISharedImmediateTexture iconInternal;
+    private ISharedImmediateTexture? iconInternal = null;
     private bool iconScheduled = false;
-    public ISharedImmediateTexture GetIconLazy()
+    public ISharedImmediateTexture? GetIconLazy()
     {
         if (iconInternal != null)
         {

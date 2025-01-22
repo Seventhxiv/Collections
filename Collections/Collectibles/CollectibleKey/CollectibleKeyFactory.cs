@@ -11,41 +11,41 @@ public class CollectibleKeyFactory
         if (type == typeof(ItemAdapter))
         {
             var item = (ItemAdapter)ExcelCache<ItemAdapter>.GetSheet().GetRow(id)!;
-            return CollectibleKeyCache<ItemKey, ItemAdapter>.Instance.GetObject((item, true));
+            return CollectibleKeyCache<ItemKey, ItemAdapter>.Instance.GetObject((item, 0));
         }
 
         if (keysDataGenerator.collectibleIdToItem.TryGetValue(type, out var itemDict))
         {
             if (itemDict.TryGetValue(id, out var item))
             {
-                return CollectibleKeyCache<ItemKey, ItemAdapter>.Instance.GetObject((item, true));
+                return CollectibleKeyCache<ItemKey, ItemAdapter>.Instance.GetObject((item, 0));
             }
         }
         if (keysDataGenerator.collectibleIdToQuest.TryGetValue(type, out var questDict))
         {
             if (questDict.TryGetValue(id, out var quest))
             {
-                return CollectibleKeyCache<QuestKey, Quest>.Instance.GetObject((quest, false));
+                return CollectibleKeyCache<QuestKey, Quest>.Instance.GetObject((quest, 0));
             }
         }
         if (keysDataGenerator.collectibleIdToInstance.TryGetValue(type, out var instanceDict))
         {
             if (instanceDict.TryGetValue(id, out var instance))
             {
-                return CollectibleKeyCache<InstanceKey, ContentFinderCondition>.Instance.GetObject((instance, true));
+                return CollectibleKeyCache<InstanceKey, ContentFinderCondition>.Instance.GetObject((instance, 0));
             }
         }
         if (keysDataGenerator.collectibleIdToAchievement.TryGetValue(type, out var achievementDict))
         {
             if (achievementDict.TryGetValue(id, out var achievement))
             {
-                return CollectibleKeyCache<AchievementKey, Achievement>.Instance.GetObject((achievement, true));
+                return CollectibleKeyCache<AchievementKey, Achievement>.Instance.GetObject((achievement, 0));
             }
         }
         if (keysDataGenerator.collectibleIdToMisc.TryGetValue(type, out var miscDict))
         {
             if (miscDict.TryGetValue(id, out var misc))
-        {
+            {
                 return new MiscKey((misc, false));
             }
         }

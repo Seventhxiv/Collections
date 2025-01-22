@@ -12,7 +12,8 @@ public class Dev
         {
             var callingFile = StripDirectoryPath(file);
             logMessage = callingFile + "->" + caller;
-        } else
+        }
+        else
         {
             var frame = new StackFrame(frames, true);
             var callingFile = StripDirectoryPath(frame.GetFileName());

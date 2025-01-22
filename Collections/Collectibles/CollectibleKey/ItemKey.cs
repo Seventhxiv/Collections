@@ -1,41 +1,47 @@
 namespace Collections;
 
-public class ItemKey : CollectibleKey<(ItemAdapter, bool)>, ICreateable<ItemKey, (ItemAdapter, bool)>
+public class ItemKey : CollectibleKey<(ItemAdapter, int)>, ICreateable<ItemKey, (ItemAdapter, int)>
 {
     private IconHandler iconHandler { get; init; }
 
-    public ItemKey((ItemAdapter, bool) input) : base(input)
+    public ItemKey((ItemAdapter, int) input) : base(input)
     {
         iconHandler = new IconHandler(input.Item1.Icon);
     }
 
-    public static ItemKey Create((ItemAdapter, bool) input)
+    public static ItemKey Create((ItemAdapter, int) input)
     {
         return new(input);
     }
 
-    protected override string GetName((ItemAdapter, bool) input)
+    protected override string GetName((ItemAdapter, int) input)
     {
         return input.Item1.Name.ToString();
     }
 
-    protected override uint GetId((ItemAdapter, bool) input)
+    protected override uint GetId((ItemAdapter, int) input)
     {
         return input.Item1.RowId;
     }
 
-    protected override List<ICollectibleSource> GetCollectibleSources((ItemAdapter, bool) input)
+    protected override List<ICollectibleSource> GetCollectibleSources((ItemAdapter, int) input)
     {
         var excelRow = input.Item1;
         var collectibleSources = new List<ICollectibleSource>();
         var dataGenerator = Services.DataGenerator.SourcesDataGenerator;
 
+        // Stop recursion depth at 10 at most
+        if (input.Item2 >= 10)
+        {
+            return collectibleSources;
+        }
+
         // For currencies dont bother looking at another level of shops
-        if (input.Item2)
+        if (input.Item2 == 0)
         {
             if (dataGenerator.ShopsDataGenerator.data.TryGetValue(excelRow.RowId, out var shopEntries))
             {
-                collectibleSources.AddRange(shopEntries.Select(shopEntry => new ShopSource(shopEntry)));
+                collectibleSources.AddRange(shopEntries.Select(shopEntry => new ShopSource(shopEntry, input.Item2 + 1)));
             }
         }
 
@@ -54,11 +60,10 @@ public class ItemKey : CollectibleKey<(ItemAdapter, bool)>, ICreateable<ItemKey,
             collectibleSources.Add(new MogStationSource());
         }
 
-        // this causes crash :/
-        // if (dataGenerator.ContainersDataGenerator.data.TryGetValue(excelRow.RowId, out var containers))
-        // {
-        //     collectibleSources.AddRange(containers.Select(itemId => new ContainerSource(itemId)));
-        // }
+        if (dataGenerator.ContainersDataGenerator.data.TryGetValue(excelRow.RowId, out var containers))
+        {
+            collectibleSources.AddRange(containers.Select(itemId => new ContainerSource(itemId, input.Item2 + 1)));
+        }
 
         if (dataGenerator.AchievementsDataGenerator.data.TryGetValue(excelRow.RowId, out var achievements))
         {

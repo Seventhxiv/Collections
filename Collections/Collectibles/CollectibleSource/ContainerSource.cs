@@ -4,10 +4,10 @@ public class ContainerSource : CollectibleSource
 {
     private ItemAdapter container { get; init; }
     private ICollectibleKey CollectibleKey { get; init; }
-    public ContainerSource(uint containerId)
+    public ContainerSource(uint containerId, int initDepth)
     {
         container = ExcelCache<ItemAdapter>.GetSheet().GetRow(containerId).Value;
-        CollectibleKey = CollectibleKeyCache<ItemKey, ItemAdapter>.Instance.GetObject((container, true));
+        CollectibleKey = CollectibleKeyCache<ItemKey, ItemAdapter>.Instance.GetObject((container, initDepth));
     }
 
 

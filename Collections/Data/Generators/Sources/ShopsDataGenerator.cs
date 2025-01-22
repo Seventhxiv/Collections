@@ -6,7 +6,7 @@ public class ShopsDataGenerator : BaseDataGenerator<Shop>
 
     private ExcelCache<ItemAdapter> ItemSheet { get; set; }
     private ExcelCache<ENpcBase> ENpcBaseSheet { get; set; }
-    private ExcelCache<SpecialShop> SpecialShopEntitySheet { get; set; }
+    private ExcelCache<SpecialShopAdapter> SpecialShopEntitySheet { get; set; }
     private ExcelCache<CustomTalk> CustomTalkSheet { get; set; }
     private ExcelSubRowCache<CustomTalkNestHandlers> CustomTalkNestHandlersSheet { get; set; }
     private ExcelCache<InclusionShop> InclusionShopSheet { get; set; }
@@ -19,7 +19,7 @@ public class ShopsDataGenerator : BaseDataGenerator<Shop>
         //Dev.Start();
         ItemSheet = ExcelCache<ItemAdapter>.GetSheet();
         ENpcBaseSheet = ExcelCache<ENpcBase>.GetSheet();
-        SpecialShopEntitySheet = ExcelCache<SpecialShop>.GetSheet();
+        SpecialShopEntitySheet = ExcelCache<SpecialShopAdapter>.GetSheet();
         CustomTalkSheet = ExcelCache<CustomTalk>.GetSheet();
         CustomTalkNestHandlersSheet = ExcelSubRowCache<CustomTalkNestHandlers>.GetSheet();
         InclusionShopSheet = ExcelCache<InclusionShop>.GetSheet();

@@ -1,27 +1,27 @@
 namespace Collections;
 
-public class QuestKey : CollectibleKey<(Quest, bool)>, ICreateable<QuestKey, (Quest, bool)>
+public class QuestKey : CollectibleKey<(Quest, int)>, ICreateable<QuestKey, (Quest, int)>
 {
-    public QuestKey((Quest, bool) input) : base(input)
+    public QuestKey((Quest, int) input) : base(input)
     {
     }
 
-    public static QuestKey Create((Quest, bool) input)
+    public static QuestKey Create((Quest, int) input)
     {
         return new(input);
     }
 
-    protected override string GetName((Quest, bool) input)
+    protected override string GetName((Quest, int) input)
     {
         return input.Item1.Name.ToString();
     }
 
-    protected override uint GetId((Quest, bool) input)
+    protected override uint GetId((Quest, int) input)
     {
         return input.Item1.RowId;
     }
 
-    protected override List<ICollectibleSource> GetCollectibleSources((Quest, bool) input)
+    protected override List<ICollectibleSource> GetCollectibleSources((Quest, int) input)
     {
         return new List<ICollectibleSource>() { new QuestSource(input.Item1) };
     }
