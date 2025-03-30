@@ -1,8 +1,8 @@
-<Project Sdk="Dalamud.NET.Sdk/11.0.0">
+<Project Sdk="Dalamud.NET.Sdk/12.0.0">
     <PropertyGroup>
-        <Version>1.0.2.2</Version>
+        <Version>1.0.2.3</Version>
         <Description>Collections</Description>
-        <TargetFramework>net8.0-windows</TargetFramework>
+        <TargetFramework>net9.0-windows</TargetFramework>
         <Platforms>x64</Platforms>
         <LangVersion>latest</LangVersion>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>

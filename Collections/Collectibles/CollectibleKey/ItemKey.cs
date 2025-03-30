@@ -1,3 +1,5 @@
+using System.Linq.Expressions;
+
 namespace Collections;
 
 public class ItemKey : CollectibleKey<(ItemAdapter, int)>, ICreateable<ItemKey, (ItemAdapter, int)>
@@ -114,6 +116,7 @@ public class ItemKey : CollectibleKey<(ItemAdapter, int)>, ICreateable<ItemKey, 
         return !Input.Item1.IsUntradable ? Tradeability.Tradeable : Tradeability.UntradeableSingle;
     }
 
+    private World? homeWorld = null;
     private int? marketBoardPrice = null;
     private bool marketBoardPriceScheduled = false;
     public override int? GetMarketBoardPriceLazy()
@@ -126,9 +129,14 @@ public class ItemKey : CollectibleKey<(ItemAdapter, int)>, ICreateable<ItemKey, 
         if (!marketBoardPriceScheduled)
         {
             marketBoardPriceScheduled = true;
+            var world = Services.ClientState.LocalPlayer?.CurrentWorld.Value;
+            if (world != null)
+            {
+                homeWorld = (World)world;
+            }
             Task.Run(async () =>
             {
-                await Services.UniversalisClient.populateMarketBoardData(Input.Item1.RowId);
+                await Services.UniversalisClient.populateMarketBoardData(Input.Item1.RowId, homeWorld);
                 var price = Services.UniversalisClient.itemToMarketplaceData[Input.Item1.RowId].minPriceWorld;
                 if (price != null)
                 {

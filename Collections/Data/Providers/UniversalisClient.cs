@@ -15,27 +15,20 @@ public class UniversalisClient
         Timeout = TimeSpan.FromMilliseconds(10000)
     };
 
-    private World? homeWorld = null;
-
     public void Dispose()
     {
         httpClient.Dispose();
     }
-    public async Task populateMarketBoardData(uint itemId)
+    public async Task populateMarketBoardData(uint itemId, World? homeWorld)
     {
         if (itemToMarketplaceData.ContainsKey(itemId))
         {
             return;
         }
-        itemToMarketplaceData[itemId] = await GetMarketBoardData(itemId).ConfigureAwait(false);
+        itemToMarketplaceData[itemId] = await GetMarketBoardData(itemId, homeWorld).ConfigureAwait(false);
     }
-    public async Task<MarketplaceItemData?> GetMarketBoardData(uint itemId)
+    public async Task<MarketplaceItemData?> GetMarketBoardData(uint itemId, World? homeWorld)
     {
-        var world = Services.ClientState.LocalPlayer?.CurrentWorld.Value;
-        if (world != null)
-        {
-            homeWorld = (World)world;
-        }
         var worldData = await GetMarketBoardDataInternal(itemId, homeWorld.Value.Name.ToString());
         var DCData = await GetMarketBoardDataInternal(itemId, homeWorld.Value.DataCenter.Value.Name.ToString());
         return ParseMarketplaceItemData(worldData, DCData);

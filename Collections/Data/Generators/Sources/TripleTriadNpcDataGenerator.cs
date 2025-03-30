@@ -6,7 +6,7 @@ public class TripleTriadNpcDataGenerator : BaseDataGenerator<ENpcResident>
     {
         foreach (var tripleTriadCardResident in ExcelCache<TripleTriadCardResident>.GetSheet())
         {
-            if (tripleTriadCardResident.AcquisitionType == 6 || tripleTriadCardResident.AcquisitionType == 10)
+            if (tripleTriadCardResident.AcquisitionType.RowId == 6 || tripleTriadCardResident.AcquisitionType.RowId == 10)
             {
                 if (tripleTriadCardResident.Acquisition.RowId != 0)
                 {

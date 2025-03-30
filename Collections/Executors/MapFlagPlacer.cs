@@ -31,7 +31,7 @@ public static class MapFlagPlacer
 
         Dev.Log($"TerritoryId: {territoryId} at ({xCord},{yCord}) coords, sizeFactor: {sizeFactor}, adjusted coords ({x},{y})");
         var agentMap = AgentMap.Instance();
-        agentMap->IsFlagMarkerSet = 0;
+        agentMap->IsFlagMarkerSet = false;
 
         agentMap->SetFlagMapMarker(territoryId, mapId, xCord, yCord, FlagIconId);
         agentMap->OpenMap(mapId, territoryId);

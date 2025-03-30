@@ -36,7 +36,7 @@ public class HairstyleCollectible : Collectible<CharaMakeCustomize>, ICreateable
 
     protected override uint GetId()
     {
-        return ExcelRow.Data;
+        return ExcelRow.UnlockLink;
     }
 
 
@@ -57,7 +57,7 @@ public class HairstyleCollectible : Collectible<CharaMakeCustomize>, ICreateable
 
     public override unsafe void UpdateObtainedState()
     {
-        isObtained = UIState.Instance()->IsUnlockLinkUnlocked(ExcelRow.Data);
+        isObtained = UIState.Instance()->IsUnlockLinkUnlocked(ExcelRow.UnlockLink);
     }
 
     protected override int GetIconId()
