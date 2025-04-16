@@ -18,11 +18,12 @@ public class InstanceTab : IDrawable
     public void OnDutyStarted(object sender, ushort arg)
     {
         Dev.Log("Received DutyStarted event");
+        hideObtainedCollectables = Services.Configuration.AutoHideObtainedFromInstanceTab;
+        collectiblesLoadedInstanceId = 0; // Makes sure we always load at the start of an instance
         if (Services.Configuration.AutoOpenInstanceTab)
         {
             Services.WindowsInitializer.MainWindow.OpenTab("Instance");
         }
-        hideObtainedCollectables = Services.Configuration.AutoHideObtainedFromInstanceTab;
     }
 
     public void Draw()
@@ -41,7 +42,9 @@ public class InstanceTab : IDrawable
             LoadCollectibles();
         }
         // Let user hide or show obtained instance collectables
-        ImGui.Checkbox("Hide Obtained", ref hideObtainedCollectables);
+        if(ImGui.Checkbox("Hide Obtained", ref hideObtainedCollectables)) {
+            LoadCollectibles();
+        };
 
         // Draw collections
         DrawCollections();
@@ -79,10 +82,17 @@ public class InstanceTab : IDrawable
         foreach (var (name, collection) in collections)
         {
             collections[name] = collection
-                .Where(
-                    c => c.CollectibleKey is not null
-                    && currentDutyItemIds.Contains(c.CollectibleKey.Id)
-                    && (!hideObtainedCollectables || !c.GetIsObtained()))
+                .Where((c) =>
+                    {
+                        if (!(c.CollectibleKey is not null && currentDutyItemIds.Contains(c.CollectibleKey.Id)))
+                        {
+                            return false;
+                        }
+                        // Only update items that are part of this instance
+                        c.UpdateObtainedState();
+                        return !hideObtainedCollectables || !c.GetIsObtained();
+                    }
+                )
                 .ToList();
         }
     }

@@ -14,6 +14,7 @@ public class SettingsTab : IDrawable
     //};
 
     private bool autoOpenInstanceTab;
+    private bool autoHideObtainedFromInstanceTab;
     public void Draw()
     {
         if (ImGui.Checkbox("Auto open Instance tab when entering an instance", ref autoOpenInstanceTab))
@@ -23,7 +24,7 @@ public class SettingsTab : IDrawable
         }
         if (ImGui.Checkbox("Auto hide obtained items from Instance tab", ref autoHideObtainedFromInstanceTab))
         {
-            Services.Configuration.HideObtainedFromInstanceTab = hideObtainedFromInstanceTab;
+            Services.Configuration.AutoHideObtainedFromInstanceTab = autoHideObtainedFromInstanceTab;
             Services.Configuration.Save();
         }
     }
