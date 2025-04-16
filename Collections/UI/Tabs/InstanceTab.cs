@@ -4,6 +4,7 @@ public class InstanceTab : IDrawable
 {
     private Dictionary<string, List<ICollectible>> collections = new();
     private uint collectiblesLoadedInstanceId = 0;
+    private bool hideObtainedCollectables = false;
 
     private EventService EventService { get; init; }
     private CollectionWidget CollectionWidget { get; init; }
@@ -21,6 +22,7 @@ public class InstanceTab : IDrawable
         {
             Services.WindowsInitializer.MainWindow.OpenTab("Instance");
         }
+        hideObtainedCollectables = Services.Configuration.AutoHideObtainedFromInstanceTab;
     }
 
     public void Draw()
@@ -38,6 +40,8 @@ public class InstanceTab : IDrawable
         {
             LoadCollectibles();
         }
+        // Let user hide or show obtained instance collectables
+        ImGui.Checkbox("Hide Obtained", ref hideObtainedCollectables);
 
         // Draw collections
         DrawCollections();
@@ -75,7 +79,10 @@ public class InstanceTab : IDrawable
         foreach (var (name, collection) in collections)
         {
             collections[name] = collection
-                .Where(c => c.CollectibleKey is not null && currentDutyItemIds.Contains(c.CollectibleKey.Id))
+                .Where(
+                    c => c.CollectibleKey is not null
+                    && currentDutyItemIds.Contains(c.CollectibleKey.Id)
+                    && (!hideObtainedCollectables || !c.GetIsObtained()))
                 .ToList();
         }
     }
