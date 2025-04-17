@@ -60,6 +60,8 @@ public class DataProvider
         InitializeBardingCollection();
         InitializeOrchestrionRollCollection();
         InitializeOutfitsCollection();
+        InitializeFramerKitCollection();
+        InitializeFashionAccessoriesCollection();
     }
 
     private void InitializeGlamourCollection()
@@ -180,7 +182,6 @@ public class DataProvider
 
     private void InitializeOrchestrionRollCollection()
     {
-        Dev.Log("Trying to parse lumina sheet for mounts...");
         collections[typeof(OrchestrionCollectible)] = (
             OrchestrionCollectible.CollectionName,
             8,
@@ -195,10 +196,32 @@ public class DataProvider
     private void InitializeOutfitsCollection()
     {
         collections[typeof(OutfitsCollectible)] =
-        (OutfitsCollectible.CollectionName, 9, ExcelCache<ItemAdapter>.GetSheet()
+        (OutfitsCollectible.CollectionName, 9, ExcelCache<ItemAdapter>.GetSheet().AsParallel()
         .Where(entry => entry.LevelEquip >= 1)
         .Where(entry => entry.ItemUICategory.Value.Name == "Outfits")
         .Select(entry => (ICollectible)CollectibleCache<OutfitsCollectible, ItemAdapter>.Instance.GetObject(entry))
+        .OrderByDescending(c => c.IsFavorite())
+        .ThenByDescending(c => c.Name)
+        .ToList());
+    }
+
+    private void InitializeFramerKitCollection()
+    {
+        collections[typeof(FramerKitCollectible)] =
+        (FramerKitCollectible.CollectionName, 10, ExcelCache<ItemAdapter>.GetSheet().AsParallel()
+        .Where(entry => entry.Unknown4 == 44000 && entry.ItemUICategory.Value.Name != "Soul Crystal") // All framer kits have 44000 here, plus soul of the astro?
+        .Select(entry => (ICollectible)CollectibleCache<FramerKitCollectible, ItemAdapter>.Instance.GetObject(entry))
+        .OrderByDescending(c => c.IsFavorite())
+        .ThenByDescending(c => c.Name)
+        .ToList());
+    }
+
+    private void InitializeFashionAccessoriesCollection()
+    {
+        collections[typeof(FashionAccessoriesCollectible)] =
+        (FashionAccessoriesCollectible.CollectionName, 11, ExcelCache<ItemAdapter>.GetSheet().AsParallel()
+        .Where(entry => FashionAccessoriesCollectible.IsGlasses(entry) || FashionAccessoriesCollectible.IsFashionAccessory(entry) && !DataOverrides.IgnoreFashionAccessoryId.Contains(entry.RowId))
+        .Select(entry => (ICollectible)CollectibleCache<FashionAccessoriesCollectible, ItemAdapter>.Instance.GetObject(entry))
         .OrderByDescending(c => c.IsFavorite())
         .ThenByDescending(c => c.Name)
         .ToList());

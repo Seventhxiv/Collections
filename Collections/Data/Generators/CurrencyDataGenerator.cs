@@ -7,6 +7,8 @@ public class CurrencyDataGenerator
         { 1, SourceCategory.Gil }, // Gil
         { 20, SourceCategory.CompanySeals }, // Storm Seal (designated company seals)
         { 25, SourceCategory.PvP }, // Wolf Mark
+        { 21067, SourceCategory.PvP }, // Wolf Collar
+        { 36656, SourceCategory.PvP }, // Trophy Crystals
         { 10310, SourceCategory.Scrips }, // Blue gatherers scrip
         { 10311, SourceCategory.Scrips }, // Red gatherers scrip
         { 17834, SourceCategory.Scrips }, // Yellow gatherers scrip
@@ -23,6 +25,8 @@ public class CurrencyDataGenerator
         { 29, SourceCategory.MGP }, // MGP
         { 37549, SourceCategory.IslandSanctuary }, // Seafarer's Cowrie
         { 15422, SourceCategory.DeepDungeon }, // Gemorran potsherd
+        { 23164, SourceCategory.DeepDungeon }, // Empyrean potsherd
+        { 38942, SourceCategory.DeepDungeon }, // Orthos Tomestone
     };
 
     public CurrencyDataGenerator()

@@ -71,6 +71,14 @@ public class DataOverrides
         74,
     };
 
+    public static readonly List<uint> IgnoreFashionAccessoryId = new()
+    {
+        36345, // False Oval Spectacles
+        37486, // False Shaded Spectacles
+        37487, // False Classic Spectacles
+        40364, // Rose-Colored Spectacles
+    };
+
     public static readonly List<uint> IgnoreMogStationId = new()
     {
         12995, // Silver chocobo feather
