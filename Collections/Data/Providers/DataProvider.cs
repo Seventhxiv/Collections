@@ -51,7 +51,6 @@ public class DataProvider
 
         // Collections
         InitializeGlamourCollection();
-
         InitializeMountCollection();
         InitializeMinionCollection();
         InitializeEmoteCollection();
@@ -59,6 +58,8 @@ public class DataProvider
         InitializeTripleTriadCollection();
         InitializeBlueMageCollection();
         InitializeBardingCollection();
+        InitializeOrchestrionRollCollection();
+        InitializeOutfitsCollection();
     }
 
     private void InitializeGlamourCollection()
@@ -92,6 +93,7 @@ public class DataProvider
             );
     }
 
+    
     private void InitializeMinionCollection()
     {
         collections[typeof(MinionCollectible)] = (
@@ -143,7 +145,7 @@ public class DataProvider
             .Where(entry => entry.Name != "" && entry.Name != "0")
             .Select(entry => (ICollectible)CollectibleCache<TripleTriadCollectible, TripleTriadCard>.Instance.GetObject(entry))
             .OrderByDescending(c => c.IsFavorite())
-            .ThenByDescending(c => c.Name)
+            .ThenByDescending(c => c.Id)
             .ToList()
             );
     }
@@ -174,5 +176,31 @@ public class DataProvider
             .ThenByDescending(c => c.Name)
             .ToList()
             );
+    }
+
+    private void InitializeOrchestrionRollCollection()
+    {
+        Dev.Log("Trying to parse lumina sheet for mounts...");
+        collections[typeof(OrchestrionCollectible)] = (
+            OrchestrionCollectible.CollectionName,
+            8,
+            ExcelCache<Orchestrion>.GetSheet().AsParallel()
+        .Where(entry => entry.Name != "")
+        .Select(entry => (ICollectible)CollectibleCache<OrchestrionCollectible, Orchestrion>.Instance.GetObject(entry))
+        .OrderByDescending(c => c.IsFavorite())
+        .ThenByDescending(c => c.Name)
+        .ToList());
+    }
+
+    private void InitializeOutfitsCollection()
+    {
+        collections[typeof(OutfitsCollectible)] =
+        (OutfitsCollectible.CollectionName, 9, ExcelCache<ItemAdapter>.GetSheet()
+        .Where(entry => entry.LevelEquip >= 1)
+        .Where(entry => entry.ItemUICategory.Value.Name == "Outfits")
+        .Select(entry => (ICollectible)CollectibleCache<OutfitsCollectible, ItemAdapter>.Instance.GetObject(entry))
+        .OrderByDescending(c => c.IsFavorite())
+        .ThenByDescending(c => c.Name)
+        .ToList());
     }
 }

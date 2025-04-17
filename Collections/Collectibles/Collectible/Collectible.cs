@@ -122,6 +122,6 @@ public abstract class Collectible<T> : ICollectible where T : struct, IExcelRow<
     {
         return Name
                 .UpperCaseAfterSpaces()
-                .LowerCaseWords(new List<string>() { "Of", "Up" });
+                .LowerCaseWords(new List<string>() { "Of", "Up", "The" });
     }
 }

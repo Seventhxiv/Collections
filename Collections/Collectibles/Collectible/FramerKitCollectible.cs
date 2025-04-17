@@ -3,15 +3,15 @@ using FFXIVClientStructs.FFXIV.Client.Game.UI;
 
 namespace Collections;
 
-public class TripleTriadCollectible : Collectible<TripleTriadCard>, ICreateable<TripleTriadCollectible, TripleTriadCard>
+public class FramerKitCollectible: Collectible<ItemAdapter>, ICreateable<FramerKitCollectible, ItemAdapter>
 {
-    public new static string CollectionName => "Triple Triad";
+    public new static string CollectionName => "Framer Kits";
 
-    public TripleTriadCollectible(TripleTriadCard excelRow) : base(excelRow)
+    public FramerKitCollectible(ItemAdapter excelRow) : base(excelRow)
     {
     }
 
-    public static TripleTriadCollectible Create(TripleTriadCard excelRow)
+    public static FramerKitCollectible Create(ItemAdapter excelRow)
     {
         return new(excelRow);
     }
@@ -38,7 +38,7 @@ public class TripleTriadCollectible : Collectible<TripleTriadCard>, ICreateable<
 
     protected override HintModule GetPrimaryHint()
     {
-        return new HintModule($"Card Number: {ExcelRow.RowId}", FontAwesomeIcon.Hashtag);
+        return new HintModule("", null);
     }
 
     protected override HintModule GetSecondaryHint()
@@ -48,22 +48,17 @@ public class TripleTriadCollectible : Collectible<TripleTriadCard>, ICreateable<
 
     public override unsafe void UpdateObtainedState()
     {
-        isObtained = UIState.Instance()->IsTripleTriadCardUnlocked((ushort)ExcelRow.RowId);
+        isObtained = PlayerState.Instance()->IsFramersKitUnlocked(ExcelRow.AdditionalData.RowId);
     }
 
     protected override int GetIconId()
     {
-        return (int)ExcelRow.RowId + 87000;
+        return ExcelRow.Icon;
     }
 
     public override unsafe void Interact()
     {
-        if (isObtained)
-            ActionManager.Instance()->UseAction(ActionType.Companion, ExcelRow.RowId);
+        // Do nothing
     }
 
-    public override void OpenGamerEscape()
-    {
-        WikiOpener.OpenGamerEscape(GetDisplayName() + "_(Triple_Triad_Card)");
-    }
 }

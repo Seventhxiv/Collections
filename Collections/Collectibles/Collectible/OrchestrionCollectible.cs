@@ -3,15 +3,15 @@ using FFXIVClientStructs.FFXIV.Client.Game.UI;
 
 namespace Collections;
 
-public class TripleTriadCollectible : Collectible<TripleTriadCard>, ICreateable<TripleTriadCollectible, TripleTriadCard>
+public class OrchestrionCollectible : Collectible<Orchestrion>, ICreateable<OrchestrionCollectible, Orchestrion>
 {
-    public new static string CollectionName => "Triple Triad";
+    public new static string CollectionName => "Orchestrions";
 
-    public TripleTriadCollectible(TripleTriadCard excelRow) : base(excelRow)
+    public OrchestrionCollectible(Orchestrion excelRow) : base(excelRow)
     {
     }
 
-    public static TripleTriadCollectible Create(TripleTriadCard excelRow)
+    public static OrchestrionCollectible Create(Orchestrion excelRow)
     {
         return new(excelRow);
     }
@@ -38,7 +38,7 @@ public class TripleTriadCollectible : Collectible<TripleTriadCard>, ICreateable<
 
     protected override HintModule GetPrimaryHint()
     {
-        return new HintModule($"Card Number: {ExcelRow.RowId}", FontAwesomeIcon.Hashtag);
+        return new HintModule("", null);
     }
 
     protected override HintModule GetSecondaryHint()
@@ -48,22 +48,18 @@ public class TripleTriadCollectible : Collectible<TripleTriadCard>, ICreateable<
 
     public override unsafe void UpdateObtainedState()
     {
-        isObtained = UIState.Instance()->IsTripleTriadCardUnlocked((ushort)ExcelRow.RowId);
+        isObtained = PlayerState.Instance()->IsOrchestrionRollUnlocked(ExcelRow.RowId);
     }
 
     protected override int GetIconId()
     {
-        return (int)ExcelRow.RowId + 87000;
+        // lets hope squeenix never remove this orchestrion from the game lol.
+        return 25945;
     }
 
     public override unsafe void Interact()
     {
-        if (isObtained)
-            ActionManager.Instance()->UseAction(ActionType.Companion, ExcelRow.RowId);
+        // Do nothing
     }
 
-    public override void OpenGamerEscape()
-    {
-        WikiOpener.OpenGamerEscape(GetDisplayName() + "_(Triple_Triad_Card)");
-    }
 }

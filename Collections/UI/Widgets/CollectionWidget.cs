@@ -198,7 +198,8 @@ public class CollectionWidget
         }
 
         // Green checkmark
-        //UiHelper.IconButtonWithOffset(drawItemCount, FontAwesomeIcon.Check, 40, 150, ref obtained);
+        var obtained = collectible.GetIsObtained();
+        UiHelper.IconButtonWithOffset(drawItemCount, FontAwesomeIcon.Check, 33, -48, ref obtained, 1.1f);
     }
 
     private bool EnableDynamicScrolling()
