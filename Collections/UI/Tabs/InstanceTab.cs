@@ -84,7 +84,7 @@ public class InstanceTab : IDrawable
             collections[name] = collection
                 .Where((c) =>
                     {
-                        if (!(c.CollectibleKey is not null && currentDutyItemIds.Contains(c.CollectibleKey.Id)))
+                        if (!currentDutyItemIds.Contains(c.Id))
                         {
                             return false;
                         }

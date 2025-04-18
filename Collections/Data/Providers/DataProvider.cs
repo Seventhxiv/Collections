@@ -86,11 +86,11 @@ public class DataProvider
         collections[typeof(MountCollectible)] = (
             MountCollectible.CollectionName,
             1,
-            ExcelCache<Mount>.GetSheet().AsParallel()
-            .Where(entry => entry.Singular != "" && entry.Order != -1)
-            .Select(entry => (ICollectible)CollectibleCache<MountCollectible, Mount>.Instance.GetObject(entry))
+            ExcelCache<ItemAdapter>.GetSheet().AsParallel()
+            .Where(entry => entry.Unknown4 == 20000 && entry.ItemAction.Value.Data.ElementAt(0) != 0 && entry.ItemAction.Value.Type == 1322)
+            .Select(entry => (ICollectible)CollectibleCache<MountCollectible, ItemAdapter>.Instance.GetObject(entry))
             .OrderByDescending(c => c.IsFavorite())
-            .ThenByDescending(c => c.Name)
+            .ThenByDescending(c => c.GetPatchAdded())
             .ToList()
             );
     }
@@ -101,11 +101,11 @@ public class DataProvider
         collections[typeof(MinionCollectible)] = (
             MinionCollectible.CollectionName,
             2,
-            ExcelCache<Companion>.GetSheet().AsParallel()
-            .Where(entry => entry.Singular != "" && !DataOverrides.IgnoreMinionId.Contains(entry.RowId))
-            .Select(entry => (ICollectible)CollectibleCache<MinionCollectible, Companion>.Instance.GetObject(entry))
+            ExcelCache<ItemAdapter>.GetSheet().AsParallel()
+            .Where(entry => entry.ItemAction.Value.Type == 853 && !DataOverrides.IgnoreMinionId.Contains(entry.ItemAction.Value.Data.ElementAt(0)))
+            .Select(entry => (ICollectible)CollectibleCache<MinionCollectible, ItemAdapter>.Instance.GetObject(entry))
             .OrderByDescending(c => c.IsFavorite())
-            .ThenByDescending(c => c.Name)
+            .ThenByDescending(c => c.GetPatchAdded())
             .ToList()
             );
     }
@@ -143,11 +143,11 @@ public class DataProvider
         collections[typeof(TripleTriadCollectible)] = (
             TripleTriadCollectible.CollectionName,
             5,
-            ExcelCache<TripleTriadCard>.GetSheet().AsParallel()
-            .Where(entry => entry.Name != "" && entry.Name != "0")
-            .Select(entry => (ICollectible)CollectibleCache<TripleTriadCollectible, TripleTriadCard>.Instance.GetObject(entry))
+            ExcelCache<ItemAdapter>.GetSheet().AsParallel()
+            .Where(entry => entry.ItemAction.Value.Type == 3357)
+            .Select(entry => (ICollectible)CollectibleCache<TripleTriadCollectible, ItemAdapter>.Instance.GetObject(entry))
             .OrderByDescending(c => c.IsFavorite())
-            .ThenByDescending(c => c.Id)
+            .ThenByDescending(c => c.GetPatchAdded())
             .ToList()
             );
     }
@@ -185,9 +185,9 @@ public class DataProvider
         collections[typeof(OrchestrionCollectible)] = (
             OrchestrionCollectible.CollectionName,
             8,
-            ExcelCache<Orchestrion>.GetSheet().AsParallel()
-        .Where(entry => entry.Name != "")
-        .Select(entry => (ICollectible)CollectibleCache<OrchestrionCollectible, Orchestrion>.Instance.GetObject(entry))
+            ExcelCache<ItemAdapter>.GetSheet().AsParallel()
+        .Where(entry => entry.ItemAction.Value.Type == 25183)
+        .Select(entry => (ICollectible)CollectibleCache<OrchestrionCollectible, ItemAdapter>.Instance.GetObject(entry))
         .OrderByDescending(c => c.IsFavorite())
         .ThenByDescending(c => c.Name)
         .ToList());

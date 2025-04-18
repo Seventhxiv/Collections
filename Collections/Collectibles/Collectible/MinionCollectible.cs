@@ -3,15 +3,15 @@ using FFXIVClientStructs.FFXIV.Client.Game.UI;
 
 namespace Collections;
 
-public class MinionCollectible : Collectible<Companion>, ICreateable<MinionCollectible, Companion>
+public class MinionCollectible : Collectible<ItemAdapter>, ICreateable<MinionCollectible, ItemAdapter>
 {
     public new static string CollectionName => "Minions";
 
-    public MinionCollectible(Companion excelRow) : base(excelRow)
+    public MinionCollectible(ItemAdapter excelRow) : base(excelRow)
     {
     }
 
-    public static MinionCollectible Create(Companion excelRow)
+    public static MinionCollectible Create(ItemAdapter excelRow)
     {
         return new(excelRow);
     }
@@ -33,12 +33,12 @@ public class MinionCollectible : Collectible<Companion>, ICreateable<MinionColle
 
     protected override string GetDescription()
     {
-        return ExcelCache<CompanionTransient>.GetSheet().GetRow(ExcelRow.RowId)?.Description.ToString() ?? "";
+        return ExcelCache<CompanionTransient>.GetSheet().GetRow(getCompanionFromUnlock().RowId)?.Description.ToString() ?? "";
     }
 
     protected override HintModule GetPrimaryHint()
     {
-        return new HintModule("", null);
+        return new HintModule($"Patch {GetPatchAdded()}", null);
     }
 
     protected override HintModule GetSecondaryHint()
@@ -48,7 +48,7 @@ public class MinionCollectible : Collectible<Companion>, ICreateable<MinionColle
 
     public override unsafe void UpdateObtainedState()
     {
-        isObtained = UIState.Instance()->IsCompanionUnlocked(ExcelRow.RowId);
+        isObtained = UIState.Instance()->IsCompanionUnlocked(getCompanionFromUnlock().RowId);
     }
 
     protected override int GetIconId()
@@ -59,7 +59,7 @@ public class MinionCollectible : Collectible<Companion>, ICreateable<MinionColle
     public override unsafe void Interact()
     {
         if (isObtained)
-            ActionManager.Instance()->UseAction(ActionType.Companion, ExcelRow.RowId);
+            ActionManager.Instance()->UseAction(ActionType.Companion, getCompanionFromUnlock().RowId);
     }
 
     public override string GetDisplayName()
@@ -67,5 +67,10 @@ public class MinionCollectible : Collectible<Companion>, ICreateable<MinionColle
         return Name
                 .UpperCaseAfterSpaces()
                 .LowerCaseWords(new List<string>() { "Of", "Up" });
+    }
+
+    private Companion getCompanionFromUnlock()
+    {
+        return ExcelCache<Companion>.GetSheet().GetRow(ExcelRow.ItemAction.Value.Data.ElementAt(0)).Value;
     }
 }

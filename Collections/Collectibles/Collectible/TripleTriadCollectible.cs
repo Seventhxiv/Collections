@@ -3,15 +3,15 @@ using FFXIVClientStructs.FFXIV.Client.Game.UI;
 
 namespace Collections;
 
-public class TripleTriadCollectible : Collectible<TripleTriadCard>, ICreateable<TripleTriadCollectible, TripleTriadCard>
+public class TripleTriadCollectible : Collectible<ItemAdapter>, ICreateable<TripleTriadCollectible, ItemAdapter>
 {
     public new static string CollectionName => "Triple Triad";
 
-    public TripleTriadCollectible(TripleTriadCard excelRow) : base(excelRow)
+    public TripleTriadCollectible(ItemAdapter excelRow) : base(excelRow)
     {
     }
 
-    public static TripleTriadCollectible Create(TripleTriadCard excelRow)
+    public static TripleTriadCollectible Create(ItemAdapter excelRow)
     {
         return new(excelRow);
     }
@@ -38,32 +38,37 @@ public class TripleTriadCollectible : Collectible<TripleTriadCard>, ICreateable<
 
     protected override HintModule GetPrimaryHint()
     {
-        return new HintModule($"Card Number: {ExcelRow.RowId}", FontAwesomeIcon.Hashtag);
+        return new HintModule($"Patch {GetPatchAdded()}", null);
     }
 
     protected override HintModule GetSecondaryHint()
     {
-        return new HintModule("", null);
+        return new HintModule($"Card No. {ExcelRow.Description.ToString().Split("Card No. ").Last()}", null);
     }
 
     public override unsafe void UpdateObtainedState()
     {
-        isObtained = UIState.Instance()->IsTripleTriadCardUnlocked((ushort)ExcelRow.RowId);
+        isObtained = UIState.Instance()->IsTripleTriadCardUnlocked((ushort)GetCollectibleFromUnlock().RowId);
     }
 
     protected override int GetIconId()
     {
-        return (int)ExcelRow.RowId + 87000;
+        return (int)GetCollectibleFromUnlock().RowId + 87000;
     }
 
     public override unsafe void Interact()
     {
         if (isObtained)
-            ActionManager.Instance()->UseAction(ActionType.Companion, ExcelRow.RowId);
+            ActionManager.Instance()->UseAction(ActionType.Companion, GetCollectibleFromUnlock().RowId);
     }
 
     public override void OpenGamerEscape()
     {
-        WikiOpener.OpenGamerEscape(GetDisplayName() + "_(Triple_Triad_Card)");
+        WikiOpener.OpenGamerEscape(GetDisplayName());
+    }
+
+    public TripleTriadCard GetCollectibleFromUnlock()
+    {
+        return ExcelCache<TripleTriadCard>.GetSheet().GetRow(ExcelRow.ItemAction.Value.Data.ElementAt(0)).Value;
     }
 }

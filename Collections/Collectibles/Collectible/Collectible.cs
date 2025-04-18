@@ -1,3 +1,7 @@
+using Lumina;
+using LuminaSupplemental.Excel.Model;
+using LuminaSupplemental.Excel.Services;
+
 namespace Collections;
 
 public abstract class Collectible<T> : ICollectible where T : struct, IExcelRow<T>
@@ -39,6 +43,7 @@ public abstract class Collectible<T> : ICollectible where T : struct, IExcelRow<
             Dev.Log($"Missing collectible key: {Name} ({Id})");
         }
     }
+
 
     public virtual void OpenGamerEscape()
     {
@@ -123,5 +128,16 @@ public abstract class Collectible<T> : ICollectible where T : struct, IExcelRow<
         return Name
                 .UpperCaseAfterSpaces()
                 .LowerCaseWords(new List<string>() { "Of", "Up", "The" });
+    }
+
+    public string GetPatchAdded()
+    {
+        var patches = CsvLoader.LoadResource<ItemPatch>(CsvLoader.ItemPatchResourceName, true, out var failedLines, out var exceptions);
+        foreach(var patch in patches)
+        {
+            if(ExcelRow.RowId >= patch.StartItemId && ExcelRow.RowId <= patch.EndItemId ) return patch.PatchNo.ToString();
+        }
+
+        return "Unknown";
     }
 }

@@ -3,15 +3,15 @@ using FFXIVClientStructs.FFXIV.Client.Game.UI;
 
 namespace Collections;
 
-public class OrchestrionCollectible : Collectible<Orchestrion>, ICreateable<OrchestrionCollectible, Orchestrion>
+public class OrchestrionCollectible : Collectible<ItemAdapter>, ICreateable<OrchestrionCollectible, ItemAdapter>
 {
     public new static string CollectionName => "Orchestrions";
 
-    public OrchestrionCollectible(Orchestrion excelRow) : base(excelRow)
+    public OrchestrionCollectible(ItemAdapter excelRow) : base(excelRow)
     {
     }
 
-    public static OrchestrionCollectible Create(Orchestrion excelRow)
+    public static OrchestrionCollectible Create(ItemAdapter excelRow)
     {
         return new(excelRow);
     }
@@ -33,12 +33,12 @@ public class OrchestrionCollectible : Collectible<Orchestrion>, ICreateable<Orch
 
     protected override string GetDescription()
     {
-        return ExcelRow.Description.ToString();
+        return GetOrchestrionFromUnlock().Description.ToString();
     }
 
     protected override HintModule GetPrimaryHint()
     {
-        return new HintModule("", null);
+        return new HintModule($"Patch {GetPatchAdded()}", null);
     }
 
     protected override HintModule GetSecondaryHint()
@@ -48,18 +48,23 @@ public class OrchestrionCollectible : Collectible<Orchestrion>, ICreateable<Orch
 
     public override unsafe void UpdateObtainedState()
     {
-        isObtained = PlayerState.Instance()->IsOrchestrionRollUnlocked(ExcelRow.RowId);
+        isObtained = PlayerState.Instance()->IsOrchestrionRollUnlocked(GetOrchestrionFromUnlock().RowId);
     }
 
     protected override int GetIconId()
     {
         // lets hope squeenix never remove this orchestrion from the game lol.
-        return 25945;
+        return ExcelRow.Icon;
     }
 
     public override unsafe void Interact()
     {
         // Do nothing
+    }
+
+    public Orchestrion GetOrchestrionFromUnlock()
+    {
+        return ExcelCache<Orchestrion>.GetSheet().GetRow(ExcelRow.AdditionalData.RowId).Value;
     }
 
 }

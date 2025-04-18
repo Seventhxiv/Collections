@@ -37,7 +37,7 @@ public class OutfitsCollectible : Collectible<ItemAdapter>, ICreateable<OutfitsC
 
     protected override HintModule GetPrimaryHint()
     {
-        return new HintModule($"Lv. {ExcelRow.LevelEquip}", null);
+        return new HintModule($"Patch {GetPatchAdded()}", null);
     }
 
     protected override HintModule GetSecondaryHint()

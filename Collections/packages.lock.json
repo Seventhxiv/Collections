@@ -4,9 +4,9 @@
     "net9.0-windows7.0": {
       "CSVFile": {
         "type": "Direct",
-        "requested": "[3.1.0, )",
-        "resolved": "3.1.0",
-        "contentHash": "yz/FptkwDL0bxhaxoyrFPI5SyxUUfuZtbH1E2yLiHHFZFFrSXNnWJHfXSt5Anvy1gWpHCLpC520Bxy6G/Opp1g=="
+        "requested": "[3.2.0, )",
+        "resolved": "3.2.0",
+        "contentHash": "sEVTg2rdBomJbh5bKCQqBtTgA0ojnkMab/hGwQ73UWy20n8jcJTLZ2dDKmnKPD0kTHMEeJK9TXpCgHn+RMcBYg=="
       },
       "CsvHelper": {
         "type": "Direct",
@@ -28,12 +28,13 @@
       },
       "LuminaSupplemental.Excel": {
         "type": "Direct",
-        "requested": "[2.1.8, )",
-        "resolved": "2.1.8",
-        "contentHash": "erJ2gwQvLU83jucUXa/aM+mJcFMdyDmpb328DFs5cO1VL2S+pgCx3m52+bFtULgkDVZnGCcR2EFYSQj9TlocIg==",
+        "requested": "[2.3.0, )",
+        "resolved": "2.3.0",
+        "contentHash": "gSvHph3Hii0SWmvRwKOvO1/W8uAP8Aaqqh6HQmQFPtxWujhLcjvcFZ5Co1MYvb6PGXcOcfLB6Shr9UkV8/GaIA==",
         "dependencies": {
-          "CSVFile": "3.1.0",
-          "CsvHelper": "30.0.1"
+          "CSVFile": "3.2.0",
+          "CsvHelper": "30.0.1",
+          "Sylvan.Data.Csv": "1.3.9"
         }
       },
       "System.Net.Http": {
@@ -177,6 +178,11 @@
         "type": "Transitive",
         "resolved": "4.3.2",
         "contentHash": "leXiwfiIkW7Gmn7cgnNcdtNAU70SjmKW3jxGj1iKHOvdn0zRWsgv/l2OJUO5zdGdiv2VRFnAsxxhDgMzofPdWg=="
+      },
+      "Sylvan.Data.Csv": {
+        "type": "Transitive",
+        "resolved": "1.3.9",
+        "contentHash": "ej6VghLaUn5/GK6jGFvd5aHn3Wue+Yp2tpmyI507PBRb/lFA6WAPS+3yKGr5wtFzh0zaE53CnCxhjc0ZW8xu3g=="
       },
       "System.Collections": {
         "type": "Transitive",

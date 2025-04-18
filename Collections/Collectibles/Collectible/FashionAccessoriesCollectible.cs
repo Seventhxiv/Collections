@@ -45,7 +45,7 @@ public class FashionAccessoriesCollectible: Collectible<ItemAdapter>, ICreateabl
 
     protected override HintModule GetPrimaryHint()
     {
-        return new HintModule($"Collection ID: {ExcelRow.RowId.ToString()}", null);
+        return new HintModule($"Patch: {GetPatchAdded()}", null);
     }
 
     protected override HintModule GetSecondaryHint()
