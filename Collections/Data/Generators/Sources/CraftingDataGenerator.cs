@@ -10,5 +10,12 @@ public class CraftingDataGenerator : BaseDataGenerator<uint>
             var itemId = recipe.ItemResult.RowId;
             AddEntry(itemId, recipe.RowId);
         }
+        var resourceData = CSVHandler.Load<ItemIdToSource>("OutfitsToCrafted.csv");
+        foreach(var entry in resourceData)
+        {
+            // grab crafting link to item
+            var recipeId = data[entry.SourceId];
+            AddEntry(entry.ItemId, recipeId.First());
+        }
     }
 }

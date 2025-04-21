@@ -19,8 +19,9 @@ public static class CSVHandler
         }
     }
 
-    public static void Write<T>(List<T> data, string path = "")
+    public static void Write<T>(List<T> data, string fileName, string path = @"Data\Resources\")
     {
+        var fullPath = Path.Combine(Services.PluginInterface.AssemblyLocation.Directory?.FullName!, path, fileName);
         var csvConfig = new CsvConfiguration(CultureInfo.CurrentCulture)
         {
             HasHeaderRecord = true,
@@ -28,7 +29,7 @@ public static class CSVHandler
             Encoding = Encoding.UTF8
         };
 
-        using (var writer = new StreamWriter(path))
+        using (var writer = new StreamWriter(fullPath))
         using (var csvWriter = new CsvWriter(writer, csvConfig))
         {
             csvWriter.WriteRecords(data);

@@ -23,6 +23,10 @@ public class DataProvider
     {
         Dev.Start();
         PopulateData();
+        Task.Run(() =>
+            {
+                Services.XivCollectClient.FetchXivCollectData().Wait();
+            });
         Dev.Stop();
     }
 

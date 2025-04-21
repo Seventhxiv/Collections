@@ -29,6 +29,7 @@ public class Services
     public static WindowsInitializer WindowsInitializer { get; private set; }
     public static DataGenerator DataGenerator { get; private set; }
     public static UniversalisClient UniversalisClient { get; private set; }
+    public static XivCollectClient XivCollectClient { get; private set; }
     public static DataProvider DataProvider { get; private set; }
     public static LodestoneClient LodestoneClient { get; private set; }
     public static DresserObserver DresserObserver { get; private set; }
@@ -48,6 +49,7 @@ public class Services
         AddressResolver = new AddressResolver();
         PreviewExecutor = new PreviewExecutor();
         UniversalisClient = new UniversalisClient();
+        XivCollectClient = new XivCollectClient();
         ItemFinder = new ItemFinder();
         DresserObserver = new DresserObserver();
 

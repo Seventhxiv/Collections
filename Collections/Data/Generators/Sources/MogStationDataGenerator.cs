@@ -6,6 +6,7 @@ namespace Collections;
 public class MogStationDataGenerator : BaseDataGenerator<uint>
 {
     private static readonly string FileName = "ItemIdToQuest.csv";
+    private static readonly string AltFileName = "OutfitsToMogStation.csv";
     protected override void InitializeData()
     {
         // Based on LuminaSupplemental
@@ -20,6 +21,11 @@ public class MogStationDataGenerator : BaseDataGenerator<uint>
         foreach (var entry in resourceData)
         {
             AddEntry(entry.ItemId, 0);
+        }
+        resourceData = CSVHandler.Load<ItemIdToSource>(AltFileName);
+        foreach(var entry in resourceData)
+        {
+            AddEntry(entry.ItemId, entry.SourceId);
         }
 
         // FittingShopCategoryItem sheet

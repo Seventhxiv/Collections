@@ -38,12 +38,12 @@ public class MountCollectible : Collectible<ItemAdapter>, ICreateable<MountColle
 
     protected override HintModule GetPrimaryHint()
     {
-        return new HintModule($"Mount ID: {ExcelRow.RowId}", FontAwesomeIcon.PeopleGroup);
+        return new HintModule($"Patch {GetPatchAdded()}", null);
     }
 
     protected override HintModule GetSecondaryHint()
     {
-        return new HintModule(GetPatchAdded(), null);
+        return new HintModule($"{GetMountFromUnlock().ExtraSeats}", FontAwesomeIcon.PeopleGroup);
     }
 
     public override unsafe void UpdateObtainedState()

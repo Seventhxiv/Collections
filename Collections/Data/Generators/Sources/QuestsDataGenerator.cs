@@ -5,6 +5,7 @@ public class QuestsDataGenerator : BaseDataGenerator<Quest>
     public readonly Dictionary<uint, Quest> EmoteToQuest = new(); // TODO connect
 
     private static readonly string FileName = "ItemIdToQuest.csv";
+    private static readonly string AltFileName = "OutfitsToQuest.csv";
     protected override void InitializeData()
     {
         // Based on sheet
@@ -38,6 +39,7 @@ public class QuestsDataGenerator : BaseDataGenerator<Quest>
 
         // Based on resource data
         var resourceData = CSVHandler.Load<ItemIdToSource>(FileName);
+        resourceData.AddRange(CSVHandler.Load<ItemIdToSource>(AltFileName));
         foreach (var entry in resourceData)
         {
             if (entry.SourceId == 0)

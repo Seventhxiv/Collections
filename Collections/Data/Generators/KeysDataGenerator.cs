@@ -15,6 +15,8 @@ public class KeysDataGenerator
     private static readonly int EmoteHairstyleItemActionType = 2633;
     private static readonly int TripleTriadItemActionType = 3357;
     private static readonly int BardingItemActionType = 1013;
+    private static readonly int OrchestrionItemActionType = 25183;
+    
 
     public KeysDataGenerator()
     {
