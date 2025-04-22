@@ -10,7 +10,8 @@ public class CollectionWidget
     Dictionary<string, SortOption> sortOptions = new Dictionary<string, SortOption>{
         {"Patch", new SortOption("Patch", Comparer<ICollectible>.Create((c1, c2) => c1.Id.CompareTo(c2.Id)), false, (FontAwesomeIcon.SortNumericUp, FontAwesomeIcon.SortNumericDown))},
         {"Name", new SortOption("Name", Comparer<ICollectible>.Create((c1, c2) => c1.Name.CompareTo(c2.Name)), false, (FontAwesomeIcon.SortAlphaUp, FontAwesomeIcon.SortAlphaDown))},
-        {"Obtained", new SortOption("Obtained", Comparer<ICollectible>.Create((c1, c2) => c1.GetIsObtained().CompareTo(c2.GetIsObtained())), false, null)},
+        // comparing c2 to c1 to modify default sort behavior
+        {"Obtained", new SortOption("Obtained", Comparer<ICollectible>.Create((c1, c2) => c2.GetIsObtained().CompareTo(c1.GetIsObtained())), false, null)},
     };
     private string sortBy = "Patch";
     private bool isGlam { get; init; } = false;
