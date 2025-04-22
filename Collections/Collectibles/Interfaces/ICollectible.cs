@@ -18,4 +18,5 @@ public interface ICollectible
     public ISharedImmediateTexture GetIconLazy();
     public void Interact();
     public string GetDisplayName();
+    public List<CollectibleSortOption> GetSortOptions();
 }

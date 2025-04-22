@@ -6,14 +6,8 @@ public class CollectionWidget
     private int dynamicScrollingInitialSize = 200;
     private int dynamicScrollingIncrementsPerFrame = 40;
 
-    private string searchFilter = "";
-    Dictionary<string, SortOption> sortOptions = new Dictionary<string, SortOption>{
-        {"Patch", new SortOption("Patch", Comparer<ICollectible>.Create((c1, c2) => c1.Id.CompareTo(c2.Id)), false, (FontAwesomeIcon.SortNumericUp, FontAwesomeIcon.SortNumericDown))},
-        {"Name", new SortOption("Name", Comparer<ICollectible>.Create((c1, c2) => c1.Name.CompareTo(c2.Name)), false, (FontAwesomeIcon.SortAlphaUp, FontAwesomeIcon.SortAlphaDown))},
-        // comparing c2 to c1 to modify default sort behavior
-        {"Obtained", new SortOption("Obtained", Comparer<ICollectible>.Create((c1, c2) => c2.GetIsObtained().CompareTo(c1.GetIsObtained())), false, null)},
-    };
-    private string sortBy = "Patch";
+    private string searchFilter = ""; 
+    private CollectibleSortOption PageSortOption {get; set; }
     private bool isGlam { get; init; } = false;
     private EventService EventService { get; init; }
     private TooltipWidget CollectibleTooltipWidget { get; init; }
@@ -23,6 +17,7 @@ public class CollectionWidget
         this.isGlam = isGlam;
         ResetDynamicScrolling();
         CollectibleTooltipWidget = new TooltipWidget(EventService);
+        PageSortOption = new CollectibleSortOption("Default", Comparer<ICollectible>.Create((c1, c2) => c1.Name.CompareTo(c2.Name)), false, null);
     }
 
     private int dynamicScrollingCurrentSize;
@@ -31,9 +26,11 @@ public class CollectionWidget
     {
         // Draw filters
         if (enableFilters)
+        {
             DrawFilters(collectionList);
-        // Sort by user selection
-        collectionList = SortCollection(collectionList);
+            // Sort by user selection
+            collectionList = PageSortOption.SortCollection(collectionList);
+        }
         // Expand child on remaining window space
         if (expandAvailableRegion)
         {
@@ -95,7 +92,7 @@ public class CollectionWidget
     {
         ImGui.InputTextWithHint($"##changedItemsFilter{collectionList.Count}", "Filter...", ref searchFilter, 40);
         ImGui.SameLine();
-        DrawSortOptions();
+        DrawSortOptions(collectionList);
 
         ImGui.Text("Show:");
         ImGui.SameLine();
@@ -154,33 +151,34 @@ public class CollectionWidget
         }
     }
 
-    private unsafe void DrawSortOptions()
+    private unsafe void DrawSortOptions(List<ICollectible> collection)
     {
+        List<CollectibleSortOption> sortOptions = collection.First().GetSortOptions(); 
         ImGui.SetNextItemWidth("Sort By".Length * 12);
         if (ImGui.BeginCombo("", "Sort By", ImGuiComboFlags.HeightSmall))
         {
             foreach(var sortOpt in sortOptions)
             {
-                bool selected = sortBy == sortOpt.Key;
-                if(ImGui.RadioButton(sortOpt.Key, selected))
+                bool selected = PageSortOption == sortOpt;
+                if(ImGui.RadioButton(sortOpt.Name, selected))
                 {
                     // if user already has clicked on button, swap sort order
                     if(selected)
                     {
-                        sortOpt.Value.Reverse = !sortOpt.Value.Reverse;
+                        sortOpt.Reverse = !sortOpt.Reverse;
                     }
                     else
                     {
-                        sortOpt.Value.Reverse = false;
+                        sortOpt.Reverse = false;
                     }
-                    sortBy = sortOpt.Key;
+                    PageSortOption = sortOpt;
                     selected = true;
                     ResetDynamicScrolling();
                 }
                 if(selected)
                 {
                     ImGui.SameLine();
-                    UiHelper.DisabledIconButton(sortOpt.Value.GetSortIcon(), "");
+                    UiHelper.DisabledIconButton(sortOpt.GetSortIcon(), "");
                 }
             }
             ImGui.EndCombo();
@@ -277,35 +275,4 @@ public class CollectionWidget
         // Default
         return false;
     }
-
-    class SortOption
-    {
-        public SortOption(string Name, Comparer<ICollectible> Comparer, bool Reverse, (FontAwesomeIcon AscendingIcon, FontAwesomeIcon DescendingIcon)? Icons)
-        {
-            this.Name = Name;
-            this.Reverse = Reverse;
-            this.Comparer = Comparer;
-            if(Icons != null)
-            {
-                AscendingIcon = Icons.Value.AscendingIcon;
-                DescendingIcon = Icons.Value.DescendingIcon;
-            }
-        }
-        public string Name {get; set;}    
-
-        public bool Reverse {get; set;}
-
-        public Comparer<ICollectible> Comparer {get; set;}
-        private FontAwesomeIcon AscendingIcon = FontAwesomeIcon.SortUp;
-        private FontAwesomeIcon DescendingIcon = FontAwesomeIcon.SortDown;
-        public FontAwesomeIcon GetSortIcon() => Reverse ? AscendingIcon : DescendingIcon; 
-    }
-
-    private List<ICollectible> SortCollection(List<ICollectible> collection)
-    {
-        var temp = collection.AsParallel().OrderByDescending(c => !c.IsFavorite()).ThenBy(c => c, sortOptions[sortBy].Comparer);
-        if(sortOptions[sortBy].Reverse) return temp.Reverse().ToList();
-        return temp.ToList();
-    }
-
 }
