@@ -1,3 +1,5 @@
+using FFXIVClientStructs.FFXIV.Client.System.Input;
+
 namespace Collections;
 
 public class ContentFiltersWidget
@@ -87,7 +89,11 @@ public class ContentFiltersWidget
         {
             ImGui.TableSetBgColor(ImGuiTableBgTarget.CellBg, ImGui.GetColorU32(ImGuiCol.ButtonActive));
             var currentFilter = Filters[collectibleSourceCategory];
-            ResetFilters();
+            // shift click will not reset filters
+            if (!ImGui.IsKeyDown(ImGuiKey.ModShift))
+            {
+                ResetFilters();
+            }
             SetFilter(collectibleSourceCategory, !currentFilter);
         }
 
