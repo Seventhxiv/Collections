@@ -28,4 +28,24 @@ public class CollectibleSortOption
         if(Reverse) return temp.Reverse().ToList();
         return temp.ToList();
     }
+
+    public override bool Equals(object? obj)
+    {
+        if(obj == null || obj.GetType() != this.GetType()) return false;
+        var other = (CollectibleSortOption)obj;
+        return this.Name == other.Name && this.ascendingIcon == other.ascendingIcon && this.descendingIcon == other.descendingIcon && this.Reverse == other.Reverse;
+    }
+
+    public override int GetHashCode()
+    {
+        unchecked // Overflow is fine, just wrap
+        {
+            int hash = 17;
+            hash = hash * 23 + Name.GetHashCode();
+            hash = hash * 23 + Reverse.GetHashCode();
+            hash = hash * 23 + ascendingIcon.GetHashCode();
+            hash = hash * 23 + descendingIcon.GetHashCode();
+            return hash;
+        }
+    }
 }

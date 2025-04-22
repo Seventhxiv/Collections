@@ -22,8 +22,8 @@ public abstract class Collectible<T> : ICollectible where T : struct, IExcelRow<
     public ICollectibleKey CollectibleKey { get; init; }
     public T ExcelRow { get; set; }
     protected IconHandler IconHandler { get; init; }
-    private List<CollectibleSortOption> sortOptions = [
-        new CollectibleSortOption("Patch", Comparer<ICollectible>.Create((c1, c2) => c1.Id.CompareTo(c2.Id)), false, (FontAwesomeIcon.SortNumericUp, FontAwesomeIcon.SortNumericDown)),
+    protected List<CollectibleSortOption> SortOptions = [
+        new CollectibleSortOption("Id", Comparer<ICollectible>.Create((c1, c2) => c1.Id.CompareTo(c2.Id)), false, (FontAwesomeIcon.SortNumericUp, FontAwesomeIcon.SortNumericDown)),
         new CollectibleSortOption("Name", Comparer<ICollectible>.Create((c1, c2) => c1.Name.CompareTo(c2.Name)), false, (FontAwesomeIcon.SortAlphaUp, FontAwesomeIcon.SortAlphaDown)),
         // comparing c2 to c1 to modify default sort behavior
         new CollectibleSortOption("Obtained", Comparer<ICollectible>.Create((c1, c2) => c2.GetIsObtained().CompareTo(c1.GetIsObtained())), false, null)
@@ -131,8 +131,8 @@ public abstract class Collectible<T> : ICollectible where T : struct, IExcelRow<
                 .LowerCaseWords(new List<string>() { "Of", "Up" });
     }
 
-    public List<CollectibleSortOption> GetSortOptions()
+    public virtual List<CollectibleSortOption> GetSortOptions()
     {
-        return sortOptions;
+        return SortOptions;
     }
 }

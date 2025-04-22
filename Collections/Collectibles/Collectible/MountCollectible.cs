@@ -9,6 +9,7 @@ public class MountCollectible : Collectible<Mount>, ICreateable<MountCollectible
 
     public MountCollectible(Mount excelRow) : base(excelRow)
     {
+        SortOptions.Add(new CollectibleSortOption("Seats", Comparer<ICollectible>.Create((c1, c2) => ((MountCollectible)c1).ExcelRow.ExtraSeats.CompareTo(((MountCollectible)c2).ExcelRow.ExtraSeats)), false, null));
     }
 
     public static MountCollectible Create(Mount excelRow)

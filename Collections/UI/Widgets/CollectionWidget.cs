@@ -5,7 +5,7 @@ public class CollectionWidget
     private float iconSize = 65f;
     private int dynamicScrollingInitialSize = 200;
     private int dynamicScrollingIncrementsPerFrame = 40;
-
+    private int pageSortWidgetWidth = "Sort By".Length * 13;
     private string searchFilter = ""; 
     private CollectibleSortOption PageSortOption {get; set; }
     private bool isGlam { get; init; } = false;
@@ -90,6 +90,7 @@ public class CollectionWidget
 
     private void DrawFilters(List<ICollectible> collectionList)
     {
+        ImGui.SetNextItemWidth(ImGui.GetColumnWidth() - pageSortWidgetWidth);
         ImGui.InputTextWithHint($"##changedItemsFilter{collectionList.Count}", "Filter...", ref searchFilter, 40);
         ImGui.SameLine();
         DrawSortOptions(collectionList);
@@ -153,9 +154,9 @@ public class CollectionWidget
 
     private unsafe void DrawSortOptions(List<ICollectible> collection)
     {
-        List<CollectibleSortOption> sortOptions = collection.First().GetSortOptions(); 
-        ImGui.SetNextItemWidth("Sort By".Length * 12);
-        if (ImGui.BeginCombo("", "Sort By", ImGuiComboFlags.HeightSmall))
+        List<CollectibleSortOption> sortOptions = collection.First().GetSortOptions();
+        ImGui.SetNextItemWidth(pageSortWidgetWidth);
+        if (ImGui.BeginCombo($"##sortCollectionDropdown{collection.Count}", "Sort By", ImGuiComboFlags.HeightRegular))
         {
             foreach(var sortOpt in sortOptions)
             {
