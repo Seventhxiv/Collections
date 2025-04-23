@@ -24,9 +24,9 @@ public class CollectibleSortOption
     public FontAwesomeIcon GetSortIcon() => Reverse ? ascendingIcon : descendingIcon;
     public List<ICollectible> SortCollection(List<ICollectible> collection)
     {
-        var temp = collection.AsParallel().OrderByDescending(c => !c.IsFavorite()).ThenBy(c => c, Comparer);
-        if(Reverse) return temp.Reverse().ToList();
-        return temp.ToList();
+        // can't just call reverse, causes the favorites to drop down to bottom.
+        if(Reverse) return collection.AsParallel().OrderByDescending(c => c.IsFavorite()).ThenByDescending(c => c, Comparer).ToList();
+        return collection.AsParallel().OrderByDescending(c => c.IsFavorite()).ThenBy(c => c, Comparer).ToList();
     }
 
     public override bool Equals(object? obj)

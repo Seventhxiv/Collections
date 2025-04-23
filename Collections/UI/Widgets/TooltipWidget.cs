@@ -21,6 +21,18 @@ public class TooltipWidget
         {
             ImGui.Image(icon.GetWrapOrEmpty().ImGuiHandle, iconSize);
             ImGui.SameLine();
+            // adds dye icons to the tooltips
+            if (collectible.GetType() == typeof(GlamourCollectible) && ((GlamourCollectible)collectible).GetNumberOfDyeSlots() >= 1)
+            {
+                var _ = true;
+                UiHelper.IconButtonWithOffset(0, FontAwesomeIcon.DotCircle, 20, 5, ref _, .8f,ColorsPalette.GREY, ColorsPalette.GREEN);
+                if(((GlamourCollectible)collectible).GetNumberOfDyeSlots() == 2)
+                {
+                    ImGui.SameLine();
+                    UiHelper.IconButtonWithOffset(1, FontAwesomeIcon.DotCircle, 30, -15, ref _, .8f,ColorsPalette.GREY, ColorsPalette.GREEN);
+                }
+                ImGui.SameLine();
+            }
         }
 
         // Description + Top right icons (Obtained / Wish list / Favourite)

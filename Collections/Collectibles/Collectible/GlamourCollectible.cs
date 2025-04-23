@@ -8,6 +8,7 @@ public class GlamourCollectible : Collectible<ItemAdapter>, ICreateable<GlamourC
 
     public GlamourCollectible(ItemAdapter excelRow) : base(excelRow)
     {
+        SortOptions.Add(new CollectibleSortOption("Dye Channels", Comparer<ICollectible>.Create((c1, c2) => ((GlamourCollectible)c1).ExcelRow.DyeCount.CompareTo(((GlamourCollectible)c2).ExcelRow.DyeCount)), false, null));
     }
 
     public static GlamourCollectible Create(ItemAdapter excelRow)
@@ -55,6 +56,10 @@ public class GlamourCollectible : Collectible<ItemAdapter>, ICreateable<GlamourC
     protected override int GetIconId()
     {
         return ExcelRow.Icon;
+    }
+    public int GetNumberOfDyeSlots()
+    {
+        return ExcelRow.DyeCount;
     }
 
     public override void Interact()
