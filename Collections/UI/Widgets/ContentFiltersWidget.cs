@@ -89,8 +89,8 @@ public class ContentFiltersWidget
         {
             ImGui.TableSetBgColor(ImGuiTableBgTarget.CellBg, ImGui.GetColorU32(ImGuiCol.ButtonActive));
             var currentFilter = Filters[collectibleSourceCategory];
-            // shift click will not reset filters
-            if (!ImGui.IsKeyDown(ImGuiKey.ModShift))
+            // ctrl click will not reset filters
+            if (!ImGui.IsKeyDown(ImGuiKey.ModCtrl))
             {
                 ResetFilters();
             }
@@ -102,7 +102,7 @@ public class ContentFiltersWidget
         {
             ImGui.TableSetBgColor(ImGuiTableBgTarget.CellBg, ImGui.GetColorU32(ImGuiCol.CheckMark));
             var currentFilter = Filters[collectibleSourceCategory];
-            if(!ImGui.IsKeyDown(ImGuiKey.ModShift))
+            if(!ImGui.IsKeyDown(ImGuiKey.ModCtrl))
             {
                 SetAllFilters();
             }

@@ -92,7 +92,8 @@ public class CollectionWidget
     {
         ImGui.SetNextItemWidth(ImGui.GetColumnWidth() - pageSortWidgetWidth);
         ImGui.InputTextWithHint($"##changedItemsFilter{collectionList.Count}", "Filter...", ref searchFilter, 40);
-        ImGui.SameLine();
+        // default behavior cuts the dropdown a little bit off.
+        ImGui.SameLine(ImGui.GetColumnWidth() - pageSortWidgetWidth + 4, 0);
         DrawSortOptions(collectionList);
 
         ImGui.Text("Show:");
@@ -154,7 +155,8 @@ public class CollectionWidget
 
     private unsafe void DrawSortOptions(List<ICollectible> collection)
     {
-        List<CollectibleSortOption> sortOptions = collection.First().GetSortOptions();
+        List<CollectibleSortOption> sortOptions = [];
+        if(collection.Count > 0) sortOptions = collection.First().GetSortOptions();
         ImGui.SetNextItemWidth(pageSortWidgetWidth);
         if (ImGui.BeginCombo($"##sortCollectionDropdown{collection.Count}", "Sort By", ImGuiComboFlags.HeightRegular))
         {
@@ -184,7 +186,6 @@ public class CollectionWidget
             }
             ImGui.EndCombo();
         }
-        
     }
 
     private int drawItemCount = 0;
