@@ -101,11 +101,11 @@ public class ContentFiltersWidget
         if (ImGui.IsItemClicked(ImGuiMouseButton.Right))
         {
             ImGui.TableSetBgColor(ImGuiTableBgTarget.CellBg, ImGui.GetColorU32(ImGuiCol.CheckMark));
-            var currentFilter = Filters[collectibleSourceCategory];
             if(!ImGui.IsKeyDown(ImGuiKey.ModCtrl))
             {
                 SetAllFilters();
             }
+            var currentFilter = Filters[collectibleSourceCategory];
             SetFilter(collectibleSourceCategory, !currentFilter);
         }
 
