@@ -37,14 +37,9 @@ public class MountCollectible : Collectible<Mount>, ICreateable<MountCollectible
         return ExcelCache<MountTransient>.GetSheet().GetRow(ExcelRow.RowId)?.Description.ToString() ?? "";
     }
 
-    protected override HintModule GetPrimaryHint()
-    {
-        return new HintModule((ExcelRow.ExtraSeats + 1).ToString(), FontAwesomeIcon.PeopleGroup);
-    }
-
     protected override HintModule GetSecondaryHint()
     {
-        return new HintModule("", null);
+        return new HintModule((ExcelRow.ExtraSeats + 1).ToString(), FontAwesomeIcon.PeopleGroup);
     }
 
     public override unsafe void UpdateObtainedState()

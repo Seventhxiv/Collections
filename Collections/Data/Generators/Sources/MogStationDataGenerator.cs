@@ -9,7 +9,7 @@ public class MogStationDataGenerator : BaseDataGenerator<uint>
     protected override void InitializeData()
     {
         // Based on LuminaSupplemental
-        var StoreItemList = CsvLoader.LoadResource<StoreItem>(CsvLoader.StoreItemResourceName, out var failedLines, out var exceptions);
+        var StoreItemList = CsvLoader.LoadResource<StoreItem>(CsvLoader.StoreItemResourceName, true, out var failedLines, out var exceptions);
         foreach (var entry in StoreItemList)
         {
             AddEntry(entry.ItemId, 0);

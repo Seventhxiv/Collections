@@ -35,11 +35,6 @@ public class BardingCollectible : Collectible<BuddyEquip>, ICreateable<BardingCo
         return "";
     }
 
-    protected override HintModule GetPrimaryHint()
-    {
-        return new HintModule("", null);
-    }
-
     protected override HintModule GetSecondaryHint()
     {
         return new HintModule("", null);

@@ -2,6 +2,7 @@ using FFXIVClientStructs.FFXIV.Client.Game.UI;
 
 namespace Collections;
 
+
 public class EmoteCollectible : Collectible<Emote>, ICreateable<EmoteCollectible, Emote>
 {
     public new static string CollectionName => "Emotes";
@@ -35,14 +36,9 @@ public class EmoteCollectible : Collectible<Emote>, ICreateable<EmoteCollectible
         return "";
     }
 
-    protected override HintModule GetPrimaryHint()
-    {
-        return new HintModule("", null);
-    }
-
     protected override HintModule GetSecondaryHint()
     {
-        return new HintModule("", null);
+        return new HintModule($"", null);
     }
 
     public override unsafe void UpdateObtainedState()
@@ -55,7 +51,7 @@ public class EmoteCollectible : Collectible<Emote>, ICreateable<EmoteCollectible
         return ExcelRow.Icon;
     }
 
-    public override void Interact()
+    public override unsafe void Interact()
     {
         // Do nothing
     }

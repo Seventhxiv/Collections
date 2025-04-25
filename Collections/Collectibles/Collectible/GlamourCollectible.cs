@@ -36,14 +36,9 @@ public class GlamourCollectible : Collectible<ItemAdapter>, ICreateable<GlamourC
         return "";
     }
 
-    protected override HintModule GetPrimaryHint()
-    {
-        return new HintModule($"Lv. {ExcelRow.LevelEquip}", null);
-    }
-
     protected override HintModule GetSecondaryHint()
     {
-        return new HintModule($"{ExcelRow.ClassJobCategory.Value.Name}", null);
+        return new HintModule($"{ExcelRow.ClassJobCategory.Value.Name}, Lv. {ExcelRow.LevelEquip}", null);
     }
 
     public override void UpdateObtainedState()

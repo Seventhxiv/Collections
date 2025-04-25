@@ -45,11 +45,6 @@ public class HairstyleCollectible : Collectible<CharaMakeCustomize>, ICreateable
         return "";
     }
 
-    protected override HintModule GetPrimaryHint()
-    {
-        return new HintModule("", null);
-    }
-
     protected override HintModule GetSecondaryHint()
     {
         return new HintModule("", null);
