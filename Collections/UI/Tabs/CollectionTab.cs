@@ -62,7 +62,7 @@ public class CollectionTab : IDrawable
         var contentFilters = ContentFiltersWidget.Filters.Where(d => d.Value).Select(d => d.Key);
         filteredCollection = collection.AsParallel()
             .Where(c => c.CollectibleKey is not null)
-            .Where(c => !contentFilters.Any() || contentFilters.Intersect(c.CollectibleKey.SourceCategories).Any())
+            .Where(c => !contentFilters.Any() || (contentFilters.Intersect(c.CollectibleKey.SourceCategories).Any() && c.CollectibleKey.SourceCategories.Count != 0))
             // Order
             .OrderByDescending(c => c.IsFavorite())
             .ThenByDescending(c => c.Name)
