@@ -25,11 +25,12 @@ public class TooltipWidget
             if (collectible.GetType() == typeof(GlamourCollectible) && ((GlamourCollectible)collectible).GetNumberOfDyeSlots() >= 1)
             {
                 var _ = true;
-                UiHelper.IconButtonWithOffset(0, FontAwesomeIcon.DotCircle, 20, 5, ref _, .8f,ColorsPalette.GREY, ColorsPalette.GREEN);
+                UiHelper.IconButtonWithOffset(0, FontAwesomeIcon.CircleNotch, 25, 5, ref _, .8f,ColorsPalette.BLACK, ColorsPalette.GREEN);
                 if(((GlamourCollectible)collectible).GetNumberOfDyeSlots() == 2)
                 {
+                    
                     ImGui.SameLine();
-                    UiHelper.IconButtonWithOffset(1, FontAwesomeIcon.DotCircle, 30, -15, ref _, .8f,ColorsPalette.GREY, ColorsPalette.GREEN);
+                    UiHelper.IconButtonWithOffset(1, FontAwesomeIcon.CircleNotch, 30, -15, ref _, .8f,ColorsPalette.BLACK, ColorsPalette.GREEN);
                 }
                 ImGui.SameLine();
             }
