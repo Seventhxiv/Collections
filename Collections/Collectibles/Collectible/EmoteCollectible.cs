@@ -1,3 +1,6 @@
+using FFXIVClientStructs.FFXIV.Client.Game;
+using FFXIVClientStructs.FFXIV.Client.Game.Character;
+using FFXIVClientStructs.FFXIV.Client.Game.Control;
 using FFXIVClientStructs.FFXIV.Client.Game.UI;
 
 namespace Collections;
@@ -53,6 +56,7 @@ public class EmoteCollectible : Collectible<Emote>, ICreateable<EmoteCollectible
 
     public override unsafe void Interact()
     {
-        // Do nothing
+        if(isObtained)
+            EmoteManager.Instance()->ExecuteEmote((ushort)ExcelRow.RowId);
     }
 }

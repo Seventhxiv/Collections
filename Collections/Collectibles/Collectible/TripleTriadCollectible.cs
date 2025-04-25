@@ -53,8 +53,7 @@ public class TripleTriadCollectible : Collectible<TripleTriadCard>, ICreateable<
 
     public override unsafe void Interact()
     {
-        if (isObtained)
-            ActionManager.Instance()->UseAction(ActionType.Companion, ExcelRow.RowId);
+        // Do nothing
     }
 
     public override void OpenGamerEscape()
