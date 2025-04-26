@@ -9,6 +9,7 @@ public class GlamourCollectible : Collectible<ItemAdapter>, ICreateable<GlamourC
     public GlamourCollectible(ItemAdapter excelRow) : base(excelRow)
     {
         SortOptions.Add(new CollectibleSortOption("Dye Channels", Comparer<ICollectible>.Create((c1, c2) => ((GlamourCollectible)c1).ExcelRow.DyeCount.CompareTo(((GlamourCollectible)c2).ExcelRow.DyeCount)), false, null));
+        SortOptions.Add(new CollectibleSortOption("Model", Comparer<ICollectible>.Create((c1, c2) => ((GlamourCollectible)c1).ExcelRow.ModelMain.CompareTo(((GlamourCollectible)c2).ExcelRow.ModelMain)), false, null));
     }
 
     public static GlamourCollectible Create(ItemAdapter excelRow)

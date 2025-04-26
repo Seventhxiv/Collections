@@ -1,3 +1,4 @@
+using FFXIVClientStructs.FFXIV.Client.System.Configuration;
 using LuminaSupplemental.Excel.Model;
 using LuminaSupplemental.Excel.Services;
 
@@ -20,32 +21,40 @@ public abstract class Collectible<T> : ICollectible where T : struct, IExcelRow<
     protected abstract uint GetId();
     protected abstract string GetName();
     protected abstract string GetDescription();
-    protected abstract HintModule GetSecondaryHint();
     protected abstract string GetCollectionName();
 
     public ICollectibleKey CollectibleKey { get; init; }
     public T ExcelRow { get; set; }
     protected IconHandler IconHandler { get; init; }
     protected List<CollectibleSortOption> SortOptions = [
+        // comparing c2 to c1 to modify default sort behavior
         new CollectibleSortOption(
             "Patch", 
             Comparer<ICollectible>.Create((c1, c2) => c2.PatchAdded.CompareTo(c1.PatchAdded)),
-            false,
-            (FontAwesomeIcon.SortNumericDown, FontAwesomeIcon.SortNumericUp)
+            Icons: (FontAwesomeIcon.SortNumericDown, FontAwesomeIcon.SortNumericUp)
         ),
         new CollectibleSortOption(
             "Name",
             Comparer<ICollectible>.Create((c1, c2) => c1.Name.CompareTo(c2.Name)),
-            false,
-            (FontAwesomeIcon.SortAlphaUp, FontAwesomeIcon.SortAlphaDown)
+            Icons: (FontAwesomeIcon.SortAlphaUp, FontAwesomeIcon.SortAlphaDown)
         ),
         // comparing c2 to c1 to modify default sort behavior
         new CollectibleSortOption(
             "Obtained",
-            Comparer<ICollectible>.Create((c1, c2) => c2.GetIsObtained().CompareTo(c1.GetIsObtained())),
-            false,
-            null
+            Comparer<ICollectible>.Create((c1, c2) => c2.GetIsObtained().CompareTo(c1.GetIsObtained()))
         )
+    ];
+    protected List<CollectibleFilterOption> FilterOptions = [
+        new CollectibleFilterOption(
+            "Exclude Unknown",
+            c => c.CollectibleKey.SourceCategories.Count == 0,
+            Description: "Exclude items that this plugin cannot find a source for"
+        ),
+        new CollectibleFilterOption(
+            "Exclude Time-Limited",
+            c => c.CollectibleKey.SourceCategories.Contains(SourceCategory.Event),
+            Description: "Exclude items only obtainable from seasonal or limited events"
+        ),
     ];
 
     public Collectible(T excelRow)
@@ -73,6 +82,10 @@ public abstract class Collectible<T> : ICollectible where T : struct, IExcelRow<
     protected virtual HintModule GetPrimaryHint()
     {
         return new HintModule($"Patch {GetDisplayPatch()}", FontAwesomeIcon.Hashtag);
+    }
+    protected virtual HintModule GetSecondaryHint()
+    {
+        return new HintModule("", null);
     }
 
     protected bool isObtained = false;
@@ -158,6 +171,20 @@ public abstract class Collectible<T> : ICollectible where T : struct, IExcelRow<
     public virtual List<CollectibleSortOption> GetSortOptions()
     {
         return SortOptions;
+    }
+
+    public virtual List<CollectibleFilterOption> GetFilterOptions()
+    {
+        return FilterOptions;
+    }
+
+    public virtual bool GetIsFiltered()
+    {
+        foreach(var filterOptions in FilterOptions)
+        {
+            if(filterOptions.IsFiltered(this)) return true;
+        }
+        return false;
     }
 
     protected virtual decimal GetPatchAdded()

@@ -39,11 +39,6 @@ public class EmoteCollectible : Collectible<Emote>, ICreateable<EmoteCollectible
         return "";
     }
 
-    protected override HintModule GetSecondaryHint()
-    {
-        return new HintModule($"", null);
-    }
-
     public override unsafe void UpdateObtainedState()
     {
         isObtained = UIState.Instance()->IsEmoteUnlocked((ushort)ExcelRow.RowId);

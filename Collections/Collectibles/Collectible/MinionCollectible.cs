@@ -36,11 +36,6 @@ public class MinionCollectible : Collectible<Companion>, ICreateable<MinionColle
         return ExcelCache<CompanionTransient>.GetSheet().GetRow(ExcelRow.RowId)?.Description.ToString() ?? "";
     }
 
-    protected override HintModule GetSecondaryHint()
-    {
-        return new HintModule("", null);
-    }
-
     public override unsafe void UpdateObtainedState()
     {
         isObtained = UIState.Instance()->IsCompanionUnlocked(ExcelRow.RowId);

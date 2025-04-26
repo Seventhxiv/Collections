@@ -45,11 +45,6 @@ public class HairstyleCollectible : Collectible<CharaMakeCustomize>, ICreateable
         return "";
     }
 
-    protected override HintModule GetSecondaryHint()
-    {
-        return new HintModule("", null);
-    }
-
     public override unsafe void UpdateObtainedState()
     {
         isObtained = UIState.Instance()->IsUnlockLinkUnlocked(ExcelRow.UnlockLink);

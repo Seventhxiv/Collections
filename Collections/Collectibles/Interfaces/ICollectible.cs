@@ -20,4 +20,6 @@ public interface ICollectible
     public void Interact();
     public string GetDisplayName();
     public List<CollectibleSortOption> GetSortOptions();
+    public List<CollectibleFilterOption> GetFilterOptions();
+    public bool GetIsFiltered();
 }

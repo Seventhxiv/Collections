@@ -3,7 +3,7 @@ using Collections;
 // Provides collections a way to specify ways of sorting 
 public class CollectibleSortOption
 {
-    public CollectibleSortOption(string Name, Comparer<ICollectible> Comparer, bool Reverse, (FontAwesomeIcon AscendingIcon, FontAwesomeIcon DescendingIcon)? Icons)
+    public CollectibleSortOption(string Name, Comparer<ICollectible> Comparer, bool Reverse = false, (FontAwesomeIcon AscendingIcon, FontAwesomeIcon DescendingIcon)? Icons = null)
     {
         this.Name = Name;
         this.Reverse = Reverse;
@@ -14,19 +14,22 @@ public class CollectibleSortOption
             descendingIcon = Icons.Value.DescendingIcon;
         }
     }
+    // name of the sort option
     public string Name {get; set;}    
-
+    // whether the sorted items should be returned in reverse order
     public bool Reverse {get; set;}
-
+    // how items should be sorted against one another.
     public Comparer<ICollectible> Comparer {get; set;}
+    // optional icon to represent sorting
     private FontAwesomeIcon ascendingIcon = FontAwesomeIcon.SortUp;
+    // optional icon to represent reverse sorting
     private FontAwesomeIcon descendingIcon = FontAwesomeIcon.SortDown;
     public FontAwesomeIcon GetSortIcon() => Reverse ? ascendingIcon : descendingIcon;
-    public List<ICollectible> SortCollection(List<ICollectible> collection)
+    public OrderedParallelQuery<ICollectible> SortCollection(IEnumerable<ICollectible> collection)
     {
         // can't just call reverse, causes the favorites to drop down to bottom.
-        if(Reverse) return collection.AsParallel().OrderByDescending(c => c.IsFavorite()).ThenByDescending(c => c, Comparer).ToList();
-        return collection.AsParallel().OrderByDescending(c => c.IsFavorite()).ThenBy(c => c, Comparer).ToList();
+        if(Reverse) return collection.AsParallel().OrderByDescending(c => c.IsFavorite()).ThenByDescending(c => c, Comparer);
+        return collection.AsParallel().OrderByDescending(c => c.IsFavorite()).ThenBy(c => c, Comparer);
     }
 
     public override bool Equals(object? obj)

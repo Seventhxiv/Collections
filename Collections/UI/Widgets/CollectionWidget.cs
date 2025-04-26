@@ -7,7 +7,7 @@ public class CollectionWidget
     private int dynamicScrollingIncrementsPerFrame = 40;
     private int pageSortWidgetWidth = "Sort By".Length * 13;
     private string searchFilter = ""; 
-    private CollectibleSortOption PageSortOption {get; set; }
+    private CollectibleSortOption PageSortOption { get; set; }
     private bool isGlam { get; init; } = false;
     private EventService EventService { get; init; }
     private TooltipWidget CollectibleTooltipWidget { get; init; }
@@ -17,7 +17,7 @@ public class CollectionWidget
         this.isGlam = isGlam;
         ResetDynamicScrolling();
         CollectibleTooltipWidget = new TooltipWidget(EventService);
-        PageSortOption = new CollectibleSortOption("Default", Comparer<ICollectible>.Create((c1, c2) => c1.Name.CompareTo(c2.Name)), false, null);
+        PageSortOption = new CollectibleSortOption("Patch", Comparer<ICollectible>.Create((c1, c2) => c2.PatchAdded.CompareTo(c1.PatchAdded)), false, null);
     }
 
     private int dynamicScrollingCurrentSize;
@@ -29,7 +29,7 @@ public class CollectionWidget
         {
             DrawFilters(collectionList);
             // Sort by user selection
-            collectionList = PageSortOption.SortCollection(collectionList);
+            collectionList = PageSortOption.SortCollection(collectionList).ToList();
         }
         // Expand child on remaining window space
         if (expandAvailableRegion)
@@ -162,7 +162,7 @@ public class CollectionWidget
         {
             foreach(var sortOpt in sortOptions)
             {
-                bool selected = PageSortOption == sortOpt;
+                bool selected = PageSortOption.Equals(sortOpt);
                 if(ImGui.RadioButton(sortOpt.Name, selected))
                 {
                     // if user already has clicked on button, swap sort order
@@ -203,17 +203,6 @@ public class CollectionWidget
 
         }
 
-        if (ImGui.IsItemClicked())
-        {
-            Dev.Log($"Interacting with {collectible.Name}");
-            collectible.Interact();
-            if (isGlam)
-            {
-                Dev.Log("Publishing GlamourItemChangeEvent");
-                EventService.Publish<GlamourItemChangeEvent, GlamourItemChangeEventArgs>(new GlamourItemChangeEventArgs((GlamourCollectible)collectible));
-            }
-        }
-
         // Details on hover
         if (ImGui.IsItemHovered())
         {
@@ -241,6 +230,17 @@ public class CollectionWidget
         {
             collectible.SetFavorite(isFavorite);
             EventService.Publish<FilterChangeEvent, FilterChangeEventArgs>(new FilterChangeEventArgs());
+        }
+        
+        if (ImGui.IsItemClicked())
+        {
+            Dev.Log($"Interacting with {collectible.Name}");
+            collectible.Interact();
+            if (isGlam)
+            {
+                Dev.Log("Publishing GlamourItemChangeEvent");
+                EventService.Publish<GlamourItemChangeEvent, GlamourItemChangeEventArgs>(new GlamourItemChangeEventArgs((GlamourCollectible)collectible));
+            }
         }
 
         // Green checkmark

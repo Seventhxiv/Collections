@@ -240,6 +240,10 @@ public class TooltipWidget
 
         if (collectible.SecondaryHint.Description != string.Empty)
             DrawHintModule(collectible.SecondaryHint);
+
+        // helpful for development
+        if(Services.PluginInterface.IsDev)
+            DrawHintModule(new HintModule($"Collection ID: {collectible.Id}     Item ID: {collectible.CollectibleKey?.Id}", null));
     }
 
     public void DrawHintModule(HintModule hintmodule)

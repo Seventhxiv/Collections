@@ -35,11 +35,6 @@ public class BardingCollectible : Collectible<BuddyEquip>, ICreateable<BardingCo
         return "";
     }
 
-    protected override HintModule GetSecondaryHint()
-    {
-        return new HintModule("", null);
-    }
-
     public override unsafe void UpdateObtainedState()
     {
         isObtained = UIState.Instance()->Buddy.CompanionInfo.IsBuddyEquipUnlocked(ExcelRow.RowId);
