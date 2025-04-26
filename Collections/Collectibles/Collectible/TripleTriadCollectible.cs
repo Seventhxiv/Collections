@@ -35,12 +35,7 @@ public class TripleTriadCollectible : Collectible<ItemAdapter>, ICreateable<Trip
     {
         return ExcelRow.Description.ToString();
     }
-
-    protected override HintModule GetPrimaryHint()
-    {
-        return new HintModule($"Patch {GetPatchAdded()}", null);
-    }
-
+    
     protected override HintModule GetSecondaryHint()
     {
         return new HintModule($"Card No. {ExcelRow.Description.ToString().Split("Card No. ").Last()}", null);
@@ -58,8 +53,7 @@ public class TripleTriadCollectible : Collectible<ItemAdapter>, ICreateable<Trip
 
     public override unsafe void Interact()
     {
-        if (isObtained)
-            ActionManager.Instance()->UseAction(ActionType.Companion, GetCollectibleFromUnlock().RowId);
+        // Do nothing
     }
 
     public override void OpenGamerEscape()

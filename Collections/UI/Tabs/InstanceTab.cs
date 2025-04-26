@@ -4,7 +4,7 @@ public class InstanceTab : IDrawable
 {
     private Dictionary<string, List<ICollectible>> collections = new();
     private uint collectiblesLoadedInstanceId = 0;
-    private bool hideObtainedCollectables = false;
+    private bool hideObtainedCollectibles = false;
 
     private EventService EventService { get; init; }
     private CollectionWidget CollectionWidget { get; init; }
@@ -18,7 +18,7 @@ public class InstanceTab : IDrawable
     public void OnDutyStarted(object sender, ushort arg)
     {
         Dev.Log("Received DutyStarted event");
-        hideObtainedCollectables = Services.Configuration.AutoHideObtainedFromInstanceTab;
+        hideObtainedCollectibles = Services.Configuration.AutoHideObtainedFromInstanceTab;
         collectiblesLoadedInstanceId = 0; // Makes sure we always load at the start of an instance
         if (Services.Configuration.AutoOpenInstanceTab)
         {
@@ -41,8 +41,8 @@ public class InstanceTab : IDrawable
         {
             LoadCollectibles();
         }
-        // Let user hide or show obtained instance collectables
-        if(ImGui.Checkbox("Hide Obtained", ref hideObtainedCollectables)) {
+        // Let user hide or show obtained instance collectibles
+        if(ImGui.Checkbox("Hide Obtained", ref hideObtainedCollectibles)) {
             LoadCollectibles();
         };
 
@@ -90,7 +90,7 @@ public class InstanceTab : IDrawable
                         }
                         // Only update items that are part of this instance
                         c.UpdateObtainedState();
-                        return !hideObtainedCollectables || !c.GetIsObtained();
+                        return !hideObtainedCollectibles || !c.GetIsObtained();
                     }
                 )
                 .ToList();

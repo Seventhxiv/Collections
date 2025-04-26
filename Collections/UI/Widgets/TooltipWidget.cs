@@ -21,6 +21,19 @@ public class TooltipWidget
         {
             ImGui.Image(icon.GetWrapOrEmpty().ImGuiHandle, iconSize);
             ImGui.SameLine();
+            // adds dye icons to the tooltips
+            if (collectible.GetType() == typeof(GlamourCollectible) && ((GlamourCollectible)collectible).GetNumberOfDyeSlots() >= 1)
+            {
+                var _ = true;
+                UiHelper.IconButtonWithOffset(0, FontAwesomeIcon.CircleNotch, 25, 5, ref _, .8f,ColorsPalette.BLACK, ColorsPalette.GREEN);
+                if(((GlamourCollectible)collectible).GetNumberOfDyeSlots() == 2)
+                {
+                    
+                    ImGui.SameLine();
+                    UiHelper.IconButtonWithOffset(1, FontAwesomeIcon.CircleNotch, 30, -15, ref _, .8f,ColorsPalette.BLACK, ColorsPalette.GREEN);
+                }
+                ImGui.SameLine();
+            }
         }
 
         // Description + Top right icons (Obtained / Wish list / Favourite)
@@ -227,6 +240,10 @@ public class TooltipWidget
 
         if (collectible.SecondaryHint.Description != string.Empty)
             DrawHintModule(collectible.SecondaryHint);
+
+        // helpful for development
+        if(Services.PluginInterface.IsDev)
+            DrawHintModule(new HintModule($"Collection ID: {collectible.Id}     Item ID: {collectible.CollectibleKey?.Id}", null));
     }
 
     public void DrawHintModule(HintModule hintmodule)

@@ -1,4 +1,4 @@
-using Lumina;
+using FFXIVClientStructs.FFXIV.Client.System.Configuration;
 using LuminaSupplemental.Excel.Model;
 using LuminaSupplemental.Excel.Services;
 
@@ -14,18 +14,48 @@ public abstract class Collectible<T> : ICollectible where T : struct, IExcelRow<
     public HintModule PrimaryHint { get; init; }
     public HintModule SecondaryHint { get; init; }
     public string Description { get; init; }
+    // keep as decimal; Version sucks for how FF14 handles versioning.
+    public decimal PatchAdded {get; init; }
 
     protected abstract int GetIconId();
     protected abstract uint GetId();
     protected abstract string GetName();
     protected abstract string GetDescription();
-    protected abstract HintModule GetPrimaryHint();
-    protected abstract HintModule GetSecondaryHint();
     protected abstract string GetCollectionName();
 
     public ICollectibleKey CollectibleKey { get; init; }
     public T ExcelRow { get; set; }
     protected IconHandler IconHandler { get; init; }
+    protected List<CollectibleSortOption> SortOptions = [
+        // comparing c2 to c1 to modify default sort behavior
+        new CollectibleSortOption(
+            "Patch", 
+            Comparer<ICollectible>.Create((c1, c2) => c2.PatchAdded.CompareTo(c1.PatchAdded)),
+            Icons: (FontAwesomeIcon.SortNumericDown, FontAwesomeIcon.SortNumericUp)
+        ),
+        new CollectibleSortOption(
+            "Name",
+            Comparer<ICollectible>.Create((c1, c2) => c1.Name.CompareTo(c2.Name)),
+            Icons: (FontAwesomeIcon.SortAlphaUp, FontAwesomeIcon.SortAlphaDown)
+        ),
+        // comparing c2 to c1 to modify default sort behavior
+        new CollectibleSortOption(
+            "Obtained",
+            Comparer<ICollectible>.Create((c1, c2) => c2.GetIsObtained().CompareTo(c1.GetIsObtained()))
+        )
+    ];
+    protected List<CollectibleFilterOption> FilterOptions = [
+        new CollectibleFilterOption(
+            "Exclude Unknown",
+            c => c.CollectibleKey.SourceCategories.Count == 0,
+            Description: "Exclude items that this plugin cannot find a source for"
+        ),
+        new CollectibleFilterOption(
+            "Exclude Time-Limited",
+            c => c.CollectibleKey.SourceCategories.Contains(SourceCategory.Event),
+            Description: "Exclude items only obtainable from seasonal or limited events"
+        ),
+    ];
 
     public Collectible(T excelRow)
     {
@@ -34,20 +64,29 @@ public abstract class Collectible<T> : ICollectible where T : struct, IExcelRow<
         CollectibleKey = CollectibleKeyFactory.Get(this);
         Name = GetName();
         Description = GetDescription();
-        PrimaryHint = GetPrimaryHint();
-        SecondaryHint = GetSecondaryHint();
-        IconHandler = new IconHandler(GetIconId());
-
         if (CollectibleKey is null)
         {
             Dev.Log($"Missing collectible key: {Name} ({Id})");
         }
+        PatchAdded = GetPatchAdded();
+        PrimaryHint = GetPrimaryHint();
+        SecondaryHint = GetSecondaryHint();
+        IconHandler = new IconHandler(GetIconId());
     }
 
 
     public virtual void OpenGamerEscape()
     {
         WikiOpener.OpenGamerEscape(GetDisplayName());
+    }
+
+    protected virtual HintModule GetPrimaryHint()
+    {
+        return new HintModule($"Patch {GetDisplayPatch()}", FontAwesomeIcon.Hashtag);
+    }
+    protected virtual HintModule GetSecondaryHint()
+    {
+        return new HintModule("", null);
     }
 
     protected bool isObtained = false;
@@ -127,17 +166,47 @@ public abstract class Collectible<T> : ICollectible where T : struct, IExcelRow<
     {
         return Name
                 .UpperCaseAfterSpaces()
-                .LowerCaseWords(new List<string>() { "Of", "Up", "The" });
+                .LowerCaseWords(new List<string>() { "Of", "Up", "The"});
     }
 
-    public string GetPatchAdded()
+    public virtual List<CollectibleSortOption> GetSortOptions()
     {
-        var patches = CsvLoader.LoadResource<ItemPatch>(CsvLoader.ItemPatchResourceName, true, out var failedLines, out var exceptions);
-        foreach(var patch in patches)
-        {
-            if(ExcelRow.RowId >= patch.StartItemId && ExcelRow.RowId <= patch.EndItemId ) return patch.PatchNo.ToString();
-        }
+        return SortOptions;
+    }
 
-        return "Unknown";
+    public virtual List<CollectibleFilterOption> GetFilterOptions()
+    {
+        return FilterOptions;
+    }
+
+    public virtual bool GetIsFiltered()
+    {
+        foreach(var filterOptions in FilterOptions)
+        {
+            if(filterOptions.IsFiltered(this)) return true;
+        }
+        return false;
+    }
+
+    protected virtual decimal GetPatchAdded()
+    {
+        decimal temp = (decimal)0.0;
+        if(CollectibleKey != null)
+        {
+            // find patch added to the game
+            foreach(var patch in CsvLoader.LoadResource<ItemPatch>(CsvLoader.ItemPatchResourceName, true, out var failedLines, out var exceptions))
+            {
+                if( CollectibleKey.Id >= patch.StartItemId && CollectibleKey.Id <= patch.EndItemId )
+                {
+                    temp = patch.PatchNo;
+                }
+            }
+        }
+        return temp;
+    }
+
+    public virtual string GetDisplayPatch()
+    {
+        return PatchAdded <= 0 ? "Unknown" : PatchAdded.ToString();
     }
 }

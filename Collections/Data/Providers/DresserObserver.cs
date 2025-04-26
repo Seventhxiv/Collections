@@ -23,6 +23,20 @@ public unsafe class DresserObserver
 
     public unsafe void OnFrameworkTick(IFramework framework)
     {
+        try
+        {
+            OnFrameworkTickX(framework);
+        }
+        catch (Exception ex)
+        {
+            // Got reports of crash on framework tick, with "Exception Info: System.AccessViolationException: Attempted to read or write protected memory. This is often an indication that other memory is corrupt."
+            // This seems to happen outside of the Inn, for now will just log the error, functionality seems to be working fine
+            Services.PluginLog.Error(ex, "Error in DresserObserver.OnFrameworkTick");
+        }
+    }
+
+    private unsafe void OnFrameworkTickX(IFramework framework)
+    {
         if (IsDresserLoaded())
         {
             if (SecondsSinceLastLoad() > RELOAD_THRESHOLD_IN_SECONDS)
