@@ -4,6 +4,7 @@ public class InstanceTab : IDrawable
 {
     private Dictionary<string, List<ICollectible>> collections = new();
     private uint collectiblesLoadedInstanceId = 0;
+    private bool hideObtainedCollectibles = false;
 
     private EventService EventService { get; init; }
     private CollectionWidget CollectionWidget { get; init; }
@@ -17,6 +18,8 @@ public class InstanceTab : IDrawable
     public void OnDutyStarted(object sender, ushort arg)
     {
         Dev.Log("Received DutyStarted event");
+        hideObtainedCollectibles = Services.Configuration.AutoHideObtainedFromInstanceTab;
+        collectiblesLoadedInstanceId = 0; // Makes sure we always load at the start of an instance
         if (Services.Configuration.AutoOpenInstanceTab)
         {
             Services.WindowsInitializer.MainWindow.OpenTab("Instance");
@@ -38,6 +41,10 @@ public class InstanceTab : IDrawable
         {
             LoadCollectibles();
         }
+        // Let user hide or show obtained instance collectibles
+        if(ImGui.Checkbox("Hide Obtained", ref hideObtainedCollectibles)) {
+            LoadCollectibles();
+        };
 
         // Draw collections
         DrawCollections();
@@ -75,7 +82,17 @@ public class InstanceTab : IDrawable
         foreach (var (name, collection) in collections)
         {
             collections[name] = collection
-                .Where(c => c.CollectibleKey is not null && currentDutyItemIds.Contains(c.CollectibleKey.Id))
+                .Where((c) =>
+                    {
+                        if (!(c.CollectibleKey is not null && currentDutyItemIds.Contains(c.CollectibleKey.Id)))
+                        {
+                            return false;
+                        }
+                        // Only update items that are part of this instance
+                        c.UpdateObtainedState();
+                        return !hideObtainedCollectibles || !c.GetIsObtained();
+                    }
+                )
                 .ToList();
         }
     }
