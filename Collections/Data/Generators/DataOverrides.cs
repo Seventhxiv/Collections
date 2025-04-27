@@ -44,6 +44,13 @@ public class DataOverrides
         }},
     };
 
+    public static readonly Dictionary<Type, Dictionary<uint, decimal>> collectibleIdToPatchAdded = new()
+    {
+        {typeof(Mount), new Dictionary<uint, decimal>() {
+            {50, (decimal)2.5}, // Midgarsormr
+        }},
+    };
+
     public static readonly List<uint> IgnoreBardingId = new()
     {
         0, // Leather Barding
@@ -73,10 +80,10 @@ public class DataOverrides
 
     public static readonly List<uint> IgnoreFashionAccessoryId = new()
     {
-        36345, // False Oval Spectacles
-        37486, // False Shaded Spectacles
-        37487, // False Classic Spectacles
-        40364, // Rose-Colored Spectacles
+        22, // False Spectacles
+        25, // False Shaded Spectacles
+        26, // False Classic Spectacles
+        32, // Rose-Colored Spectacles
     };
 
     public static readonly List<uint> IgnoreMogStationId = new()

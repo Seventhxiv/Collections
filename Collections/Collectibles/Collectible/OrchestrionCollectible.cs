@@ -3,15 +3,15 @@ using FFXIVClientStructs.FFXIV.Client.Game.UI;
 
 namespace Collections;
 
-public class OrchestrionCollectible : Collectible<ItemAdapter>, ICreateable<OrchestrionCollectible, ItemAdapter>
+public class OrchestrionCollectible : Collectible<Orchestrion>, ICreateable<OrchestrionCollectible, Orchestrion>
 {
     public new static string CollectionName => "Orchestrions";
 
-    public OrchestrionCollectible(ItemAdapter excelRow) : base(excelRow)
+    public OrchestrionCollectible(Orchestrion excelRow) : base(excelRow)
     {
     }
 
-    public static OrchestrionCollectible Create(ItemAdapter excelRow)
+    public static OrchestrionCollectible Create(Orchestrion excelRow)
     {
         return new(excelRow);
     }
@@ -33,28 +33,18 @@ public class OrchestrionCollectible : Collectible<ItemAdapter>, ICreateable<Orch
 
     protected override string GetDescription()
     {
-        return GetOrchestrionFromUnlock().Description.ToString();
-    }
-
-    protected override HintModule GetPrimaryHint()
-    {
-        return new HintModule($"Patch {GetPatchAdded()}", null);
-    }
-
-    protected override HintModule GetSecondaryHint()
-    {
-        return new HintModule("", null);
+        return ExcelRow.Description.ToString();
     }
 
     public override unsafe void UpdateObtainedState()
     {
-        isObtained = PlayerState.Instance()->IsOrchestrionRollUnlocked(GetOrchestrionFromUnlock().RowId);
+        isObtained = PlayerState.Instance()->IsOrchestrionRollUnlocked(ExcelRow.RowId);
     }
 
     protected override int GetIconId()
     {
-        // lets hope squeenix never remove this orchestrion from the game lol.
-        return ExcelRow.Icon;
+        // unless we have a better idea, 
+        return ExcelCache<ItemAdapter>.GetSheet().GetRow(CollectibleKey.Id).Value.Icon;
     }
 
     public override unsafe void Interact()
@@ -62,9 +52,13 @@ public class OrchestrionCollectible : Collectible<ItemAdapter>, ICreateable<Orch
         // Do nothing
     }
 
-    public Orchestrion GetOrchestrionFromUnlock()
+    public ItemAdapter? GetUnlockItem()
     {
-        return ExcelCache<Orchestrion>.GetSheet().GetRow(ExcelRow.AdditionalData.RowId).Value;
+        if(CollectibleKey != null)
+        {
+            return ExcelCache<ItemAdapter>.GetSheet().GetRow(CollectibleKey.Id);
+        }
+        return null;
     }
 
 }

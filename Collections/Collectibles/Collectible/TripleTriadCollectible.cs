@@ -3,15 +3,15 @@ using FFXIVClientStructs.FFXIV.Client.Game.UI;
 
 namespace Collections;
 
-public class TripleTriadCollectible : Collectible<ItemAdapter>, ICreateable<TripleTriadCollectible, ItemAdapter>
+public class TripleTriadCollectible : Collectible<TripleTriadCard>, ICreateable<TripleTriadCollectible, TripleTriadCard>
 {
     public new static string CollectionName => "Triple Triad";
 
-    public TripleTriadCollectible(ItemAdapter excelRow) : base(excelRow)
+    public TripleTriadCollectible(TripleTriadCard excelRow) : base(excelRow)
     {
     }
 
-    public static TripleTriadCollectible Create(ItemAdapter excelRow)
+    public static TripleTriadCollectible Create(TripleTriadCard excelRow)
     {
         return new(excelRow);
     }
@@ -36,19 +36,19 @@ public class TripleTriadCollectible : Collectible<ItemAdapter>, ICreateable<Trip
         return ExcelRow.Description.ToString();
     }
     
-    protected override HintModule GetSecondaryHint()
-    {
-        return new HintModule($"Card No. {ExcelRow.Description.ToString().Split("Card No. ").Last()}", null);
-    }
+    // protected override HintModule GetSecondaryHint()
+    // {
+    //     return new HintModule($"Card No. {ExcelRow.Description.ToString().Split("Card No. ").Last()}", null);
+    // }
 
     public override unsafe void UpdateObtainedState()
     {
-        isObtained = UIState.Instance()->IsTripleTriadCardUnlocked((ushort)GetCollectibleFromUnlock().RowId);
+        isObtained = UIState.Instance()->IsTripleTriadCardUnlocked((ushort)ExcelRow.RowId);
     }
 
     protected override int GetIconId()
     {
-        return (int)GetCollectibleFromUnlock().RowId + 87000;
+        return (int)ExcelRow.RowId + 87000;
     }
 
     public override unsafe void Interact()
@@ -59,10 +59,5 @@ public class TripleTriadCollectible : Collectible<ItemAdapter>, ICreateable<Trip
     public override void OpenGamerEscape()
     {
         WikiOpener.OpenGamerEscape(GetDisplayName());
-    }
-
-    public TripleTriadCard GetCollectibleFromUnlock()
-    {
-        return ExcelCache<TripleTriadCard>.GetSheet().GetRow(ExcelRow.ItemAction.Value.Data.ElementAt(0)).Value;
     }
 }

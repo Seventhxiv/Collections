@@ -202,6 +202,16 @@ public class CollectionWidget
         {
 
         }
+        if (ImGui.IsItemClicked())
+        {
+            Dev.Log($"Interacting with {collectible.Name}");
+            collectible.Interact();
+            if (isGlam)
+            {
+                Dev.Log("Publishing GlamourItemChangeEvent");
+                EventService.Publish<GlamourItemChangeEvent, GlamourItemChangeEventArgs>(new GlamourItemChangeEventArgs((GlamourCollectible)collectible));
+            }
+        }
 
         // Details on hover
         if (ImGui.IsItemHovered())
@@ -232,16 +242,7 @@ public class CollectionWidget
             EventService.Publish<FilterChangeEvent, FilterChangeEventArgs>(new FilterChangeEventArgs());
         }
         
-        if (ImGui.IsItemClicked())
-        {
-            Dev.Log($"Interacting with {collectible.Name}");
-            collectible.Interact();
-            if (isGlam)
-            {
-                Dev.Log("Publishing GlamourItemChangeEvent");
-                EventService.Publish<GlamourItemChangeEvent, GlamourItemChangeEventArgs>(new GlamourItemChangeEventArgs((GlamourCollectible)collectible));
-            }
-        }
+        
 
         // Green checkmark
         var obtained = collectible.GetIsObtained();

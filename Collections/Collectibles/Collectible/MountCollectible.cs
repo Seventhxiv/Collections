@@ -3,16 +3,16 @@ using FFXIVClientStructs.FFXIV.Client.Game.UI;
 
 namespace Collections;
 
-public class MountCollectible : Collectible<ItemAdapter>, ICreateable<MountCollectible, ItemAdapter>
+public class MountCollectible : Collectible<Mount>, ICreateable<MountCollectible, Mount>
 {
     public new static string CollectionName => "Mounts";
 
-    public MountCollectible(ItemAdapter excelRow) : base(excelRow)
+    public MountCollectible(Mount excelRow) : base(excelRow)
     {
         SortOptions.Add(new CollectibleSortOption("Seats", Comparer<ICollectible>.Create((c1, c2) => ((MountCollectible)c1).ExcelRow.ExtraSeats.CompareTo(((MountCollectible)c2).ExcelRow.ExtraSeats)), false, null));
     }
 
-    public static MountCollectible Create(ItemAdapter excelRow)
+    public static MountCollectible Create(Mount excelRow)
     {
         return new(excelRow);
     }
@@ -24,7 +24,7 @@ public class MountCollectible : Collectible<ItemAdapter>, ICreateable<MountColle
 
     protected override string GetName()
     {
-        return GetMountFromUnlock().Singular.ToString();
+        return ExcelRow.Singular.ToString();
     }
 
     protected override uint GetId()
@@ -34,7 +34,7 @@ public class MountCollectible : Collectible<ItemAdapter>, ICreateable<MountColle
 
     protected override string GetDescription()
     {
-        return ExcelCache<MountTransient>.GetSheet().GetRow(GetMountFromUnlock().RowId)?.Description.ToString() ?? "";
+        return ExcelCache<MountTransient>.GetSheet().GetRow(ExcelRow.RowId)?.Description.ToString() ?? "";
     }
 
     protected override HintModule GetSecondaryHint()
@@ -44,27 +44,22 @@ public class MountCollectible : Collectible<ItemAdapter>, ICreateable<MountColle
 
     public override unsafe void UpdateObtainedState()
     {
-        isObtained = PlayerState.Instance()->IsMountUnlocked(GetMountFromUnlock().RowId);
+        isObtained = PlayerState.Instance()->IsMountUnlocked(ExcelRow.RowId);
     }
 
     protected override int GetIconId()
     {
-        return GetMountFromUnlock().Icon;
+        return ExcelRow.Icon;
     }
 
     public override unsafe void Interact()
     {
         if (isObtained)
-            ActionManager.Instance()->UseAction(ActionType.Mount, GetMountFromUnlock().RowId);
+            ActionManager.Instance()->UseAction(ActionType.Mount, ExcelRow.RowId);
     }
 
     public override void OpenGamerEscape()
     {
         WikiOpener.OpenGamerEscape(GetDisplayName() + "_(Mount)");
-    }
-
-    private Mount GetMountFromUnlock()
-    {
-        return ExcelCache<Mount>.GetSheet().GetRow(ExcelRow.ItemAction.Value.Data.ElementAt(0)).Value;
     }
 }

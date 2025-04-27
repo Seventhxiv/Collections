@@ -3,15 +3,15 @@ using FFXIVClientStructs.FFXIV.Client.Game.UI;
 
 namespace Collections;
 
-public class MinionCollectible : Collectible<ItemAdapter>, ICreateable<MinionCollectible, ItemAdapter>
+public class MinionCollectible : Collectible<Companion>, ICreateable<MinionCollectible, Companion>
 {
     public new static string CollectionName => "Minions";
 
-    public MinionCollectible(ItemAdapter excelRow) : base(excelRow)
+    public MinionCollectible(Companion excelRow) : base(excelRow)
     {
     }
 
-    public static MinionCollectible Create(ItemAdapter excelRow)
+    public static MinionCollectible Create(Companion excelRow)
     {
         return new(excelRow);
     }
@@ -33,12 +33,12 @@ public class MinionCollectible : Collectible<ItemAdapter>, ICreateable<MinionCol
 
     protected override string GetDescription()
     {
-        return ExcelCache<CompanionTransient>.GetSheet().GetRow(getCompanionFromUnlock().RowId)?.Description.ToString() ?? "";
+        return ExcelCache<CompanionTransient>.GetSheet().GetRow(ExcelRow.RowId)?.Description.ToString() ?? "";
     }
 
     public override unsafe void UpdateObtainedState()
     {
-        isObtained = UIState.Instance()->IsCompanionUnlocked(getCompanionFromUnlock().RowId);
+        isObtained = UIState.Instance()->IsCompanionUnlocked(ExcelRow.RowId);
     }
 
     protected override int GetIconId()
@@ -49,7 +49,10 @@ public class MinionCollectible : Collectible<ItemAdapter>, ICreateable<MinionCol
     public override unsafe void Interact()
     {
         if (isObtained)
-            ActionManager.Instance()->UseAction(ActionType.Companion, getCompanionFromUnlock().RowId);
+        {
+            // TODO: Fashion Accessories can prevent the use of actions
+            ActionManager.Instance()->UseAction(ActionType.Companion, ExcelRow.RowId);
+        }
     }
 
     public override string GetDisplayName()
@@ -57,10 +60,5 @@ public class MinionCollectible : Collectible<ItemAdapter>, ICreateable<MinionCol
         return Name
                 .UpperCaseAfterSpaces()
                 .LowerCaseWords(new List<string>() { "Of", "Up" });
-    }
-
-    private Companion getCompanionFromUnlock()
-    {
-        return ExcelCache<Companion>.GetSheet().GetRow(ExcelRow.ItemAction.Value.Data.ElementAt(0)).Value;
     }
 }

@@ -23,10 +23,10 @@ public class DataProvider
     {
         Dev.Start();
         PopulateData();
-        Task.Run(() =>
-            {
-                Services.XivCollectClient.FetchXivCollectData().Wait();
-            });
+        // Task.Run(() =>
+        //     {
+        //         Services.XivCollectClient.FetchXivCollectData().Wait();
+        //     });
         Dev.Stop();
     }
 
@@ -66,6 +66,7 @@ public class DataProvider
         InitializeOutfitsCollection();
         InitializeFramerKitCollection();
         InitializeFashionAccessoriesCollection();
+        InitializeGlassesCollection();
     }
 
     private void InitializeGlamourCollection()
@@ -90,9 +91,9 @@ public class DataProvider
         collections[typeof(MountCollectible)] = (
             MountCollectible.CollectionName,
             1,
-            ExcelCache<ItemAdapter>.GetSheet().AsParallel()
-            .Where(entry => entry.Unknown4 == 20000 && entry.ItemAction.Value.Data.ElementAt(0) != 0 && entry.ItemAction.Value.Type == 1322)
-            .Select(entry => (ICollectible)CollectibleCache<MountCollectible, ItemAdapter>.Instance.GetObject(entry))
+            ExcelCache<Mount>.GetSheet().AsParallel()
+            .Where(entry => entry.Icon != 0)
+            .Select(entry => (ICollectible)CollectibleCache<MountCollectible, Mount>.Instance.GetObject(entry))
             .OrderByDescending(c => c.IsFavorite())
             .ThenByDescending(c => c.PatchAdded)
             .ToList()
@@ -105,9 +106,9 @@ public class DataProvider
         collections[typeof(MinionCollectible)] = (
             MinionCollectible.CollectionName,
             2,
-            ExcelCache<ItemAdapter>.GetSheet().AsParallel()
-            .Where(entry => entry.ItemAction.Value.Type == 853 && !DataOverrides.IgnoreMinionId.Contains(entry.ItemAction.Value.Data.ElementAt(0)))
-            .Select(entry => (ICollectible)CollectibleCache<MinionCollectible, ItemAdapter>.Instance.GetObject(entry))
+            ExcelCache<Companion>.GetSheet().AsParallel()
+            .Where(entry => entry.Icon != 0 && !DataOverrides.IgnoreMinionId.Contains(entry.RowId))
+            .Select(entry => (ICollectible)CollectibleCache<MinionCollectible, Companion>.Instance.GetObject(entry))
             .OrderByDescending(c => c.IsFavorite())
             .ThenByDescending(c => c.PatchAdded)
             .ToList()
@@ -147,9 +148,9 @@ public class DataProvider
         collections[typeof(TripleTriadCollectible)] = (
             TripleTriadCollectible.CollectionName,
             5,
-            ExcelCache<ItemAdapter>.GetSheet().AsParallel()
-            .Where(entry => entry.ItemAction.Value.Type == 3357)
-            .Select(entry => (ICollectible)CollectibleCache<TripleTriadCollectible, ItemAdapter>.Instance.GetObject(entry))
+            ExcelCache<TripleTriadCard>.GetSheet().AsParallel()
+            .Where(entry => entry.Name != "" && entry.Name != "0")
+            .Select(entry => (ICollectible)CollectibleCache<TripleTriadCollectible, TripleTriadCard>.Instance.GetObject(entry))
             .OrderByDescending(c => c.IsFavorite())
             .ThenByDescending(c => c.PatchAdded)
             .ToList()
@@ -189,9 +190,9 @@ public class DataProvider
         collections[typeof(OrchestrionCollectible)] = (
             OrchestrionCollectible.CollectionName,
             8,
-            ExcelCache<ItemAdapter>.GetSheet().AsParallel()
-        .Where(entry => entry.ItemAction.Value.Type == 25183)
-        .Select(entry => (ICollectible)CollectibleCache<OrchestrionCollectible, ItemAdapter>.Instance.GetObject(entry))
+            ExcelCache<Orchestrion>.GetSheet().AsParallel()
+        .Where(entry => entry.Name != "" && entry.Name != "0")
+        .Select(entry => (ICollectible)CollectibleCache<OrchestrionCollectible, Orchestrion>.Instance.GetObject(entry))
         .OrderByDescending(c => c.IsFavorite())
         .ThenByDescending(c => c.Name)
         .ToList());
@@ -213,7 +214,7 @@ public class DataProvider
     {
         collections[typeof(FramerKitCollectible)] =
         (FramerKitCollectible.CollectionName, 10, ExcelCache<ItemAdapter>.GetSheet().AsParallel()
-        .Where(entry => entry.Unknown4 == 44000 && entry.ItemUICategory.Value.Name != "Soul Crystal") // All framer kits have 44000 here, plus soul of the astro?
+        .Where(entry => entry.ItemAction.Value.Type == 29459)
         .Select(entry => (ICollectible)CollectibleCache<FramerKitCollectible, ItemAdapter>.Instance.GetObject(entry))
         .OrderByDescending(c => c.IsFavorite())
         .ThenByDescending(c => c.Name)
@@ -223,9 +224,19 @@ public class DataProvider
     private void InitializeFashionAccessoriesCollection()
     {
         collections[typeof(FashionAccessoriesCollectible)] =
-        (FashionAccessoriesCollectible.CollectionName, 11, ExcelCache<ItemAdapter>.GetSheet().AsParallel()
-        .Where(entry => FashionAccessoriesCollectible.IsGlasses(entry) || FashionAccessoriesCollectible.IsFashionAccessory(entry) && !DataOverrides.IgnoreFashionAccessoryId.Contains(entry.RowId))
-        .Select(entry => (ICollectible)CollectibleCache<FashionAccessoriesCollectible, ItemAdapter>.Instance.GetObject(entry))
+        (FashionAccessoriesCollectible.CollectionName, 11, ExcelCache<Ornament>.GetSheet().AsParallel()
+        .Where(entry => entry.Icon != 0 && !DataOverrides.IgnoreFashionAccessoryId.Contains(entry.RowId))
+        .Select(entry => (ICollectible)CollectibleCache<FashionAccessoriesCollectible, Ornament>.Instance.GetObject(entry))
+        .OrderByDescending(c => c.IsFavorite())
+        .ThenByDescending(c => c.Name)
+        .ToList());
+    }
+    private void InitializeGlassesCollection()
+    {
+        collections[typeof(GlassesCollectible)] =
+        (GlassesCollectible.CollectionName, 12, ExcelCache<Glasses>.GetSheet().AsParallel()
+        .Where(entry => entry.Icon != 0 && entry.Name == entry.Style.Value.Name)
+        .Select(entry => (ICollectible)CollectibleCache<GlassesCollectible, Glasses>.Instance.GetObject(entry))
         .OrderByDescending(c => c.IsFavorite())
         .ThenByDescending(c => c.Name)
         .ToList());

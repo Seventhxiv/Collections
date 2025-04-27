@@ -1,17 +1,18 @@
 using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Client.Game.UI;
+using FFXIVClientStructs.FFXIV.Component.Excel;
 
 namespace Collections;
 
-public class FramerKitCollectible: Collectible<ItemAdapter>, ICreateable<FramerKitCollectible, ItemAdapter>
+public class GlassesCollectible: Collectible<Glasses>, ICreateable<GlassesCollectible, Glasses>
 {
-    public new static string CollectionName => "Framer Kits";
+    public new static string CollectionName => "Glasses";
 
-    public FramerKitCollectible(ItemAdapter excelRow) : base(excelRow)
+    public GlassesCollectible(Glasses excelRow) : base(excelRow)
     {
     }
 
-    public static FramerKitCollectible Create(ItemAdapter excelRow)
+    public static GlassesCollectible Create(Glasses excelRow)
     {
         return new(excelRow);
     }
@@ -38,7 +39,7 @@ public class FramerKitCollectible: Collectible<ItemAdapter>, ICreateable<FramerK
 
     public override unsafe void UpdateObtainedState()
     {
-        isObtained = PlayerState.Instance()->IsFramersKitUnlocked(ExcelRow.AdditionalData.RowId);
+        isObtained = PlayerState.Instance()->IsGlassesUnlocked((ushort)ExcelRow.RowId);
     }
 
     protected override int GetIconId()
@@ -48,7 +49,7 @@ public class FramerKitCollectible: Collectible<ItemAdapter>, ICreateable<FramerK
 
     public override unsafe void Interact()
     {
-        // Do nothing
+        if(isObtained)
+            ActionManager.Instance()->UseAction(ActionType.Unk_10, ExcelRow.RowId);
     }
-
 }

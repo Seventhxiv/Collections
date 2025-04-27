@@ -13,6 +13,7 @@ public class XivCollectClient
         {BlueMageCollectible.CollectionName, "spells"},
         {EmoteCollectible.CollectionName, "emotes"},
         {FashionAccessoriesCollectible.CollectionName, "fashions"},
+        {GlassesCollectible.CollectionName, "facewear"},
         {FramerKitCollectible.CollectionName, "frames"},
         {HairstyleCollectible.CollectionName, "hairstyles"},
         {MinionCollectible.CollectionName, "minions"},
@@ -33,7 +34,7 @@ public class XivCollectClient
         httpClient.Dispose();
     }
 
-    private async Task<List<CollectibleResult>> GetXivCollectDataInternal(string collectionEndpoint)
+    private async Task<List<CollectibleResult>?> GetXivCollectDataInternal(string collectionEndpoint)
     {
         try {
             var client = new HttpClient();
@@ -52,7 +53,6 @@ public class XivCollectClient
             Dev.Log("Caught exception" + e.ToString());
             return null;
         }
-        return null;
     }
 
     public async Task<bool> FetchXivCollectData()
@@ -60,9 +60,9 @@ public class XivCollectClient
         var collections = Services.DataProvider.collections;
         foreach(var collection in collections)
         {
-
             var items = await GetXivCollectDataInternal(collection.Value.name);
-            await GenerateResourceSheetsFromXivCollect(items, collection.Value.collection);
+            if(items != null)
+                await GenerateResourceSheetsFromXivCollect(items, collection.Value.collection);
         }
         return true;
     }

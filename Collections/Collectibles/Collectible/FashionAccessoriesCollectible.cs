@@ -4,16 +4,16 @@ using FFXIVClientStructs.FFXIV.Component.Excel;
 
 namespace Collections;
 
-public class FashionAccessoriesCollectible: Collectible<ItemAdapter>, ICreateable<FashionAccessoriesCollectible, ItemAdapter>
+public class FashionAccessoriesCollectible: Collectible<Ornament>, ICreateable<FashionAccessoriesCollectible, Ornament>
 {
     public new static string CollectionName => "Fashion Accessories";
 
-    public FashionAccessoriesCollectible(ItemAdapter excelRow) : base(excelRow)
+    public FashionAccessoriesCollectible(Ornament excelRow) : base(excelRow)
     {
 
     }
 
-    public static FashionAccessoriesCollectible Create(ItemAdapter excelRow)
+    public static FashionAccessoriesCollectible Create(Ornament excelRow)
     {
         return new(excelRow);
     }
@@ -25,12 +25,12 @@ public class FashionAccessoriesCollectible: Collectible<ItemAdapter>, ICreateabl
 
     protected override string GetName()
     {
-        if(IsGlasses(ExcelRow))
-        {
-            var temp = ExcelCache<Glasses>.GetSheet().GetRow(GetAccessorySheetId());
-            if(temp != null) return temp.Value.Name.ToString();
-        }
-        return ExcelRow.Name.ToString();
+        // if(IsGlasses(ExcelRow))
+        // {
+        //     var temp = ExcelCache<Glasses>.GetSheet().GetRow(GetAccessorySheetId());
+        //     if(temp != null) return temp.Value.Name.ToString();
+        // }
+        return ExcelRow.Singular.ToString();
     }
 
     protected override uint GetId()
@@ -40,49 +40,42 @@ public class FashionAccessoriesCollectible: Collectible<ItemAdapter>, ICreateabl
 
     protected override string GetDescription()
     {
-        return ExcelRow.Description.ToString();
-    }
-
-    protected override HintModule GetPrimaryHint()
-    {
-        return new HintModule($"Patch: {GetPatchAdded()}", null);
-    }
-
-    protected override HintModule GetSecondaryHint()
-    {
-        return new HintModule("", null);
+        if(CollectibleKey != null)
+            return ExcelCache<ItemAdapter>.GetSheet().GetRow(CollectibleKey.Id).Value.Description.ToString();
+        return "";
     }
 
     public override unsafe void UpdateObtainedState()
     {
-        if(IsGlasses(ExcelRow)) isObtained = PlayerState.Instance()->IsGlassesUnlocked((ushort)GetAccessorySheetId());
-        else isObtained = PlayerState.Instance()->IsOrnamentUnlocked(GetAccessorySheetId());
+        // if(IsGlasses(ExcelRow)) isObtained = PlayerState.Instance()->IsGlassesUnlocked((ushort)GetAccessorySheetId());
+        isObtained = PlayerState.Instance()->IsOrnamentUnlocked(ExcelRow.RowId);
     }
 
     protected override int GetIconId()
     {
-        if(IsGlasses(ExcelRow))
-        {
-            Glasses? temp = ExcelCache<Glasses>.GetSheet().GetRow(GetAccessorySheetId());
-            if(temp != null) return temp.Value.Icon;
-        }
+        // if(IsGlasses(ExcelRow))
+        // {
+        //     Glasses? temp = ExcelCache<Glasses>.GetSheet().GetRow(GetAccessorySheetId());
+        //     if(temp != null) return temp.Value.Icon;
+        // }
         return ExcelRow.Icon;
     }
 
     public override unsafe void Interact()
     {
-        // Do nothing
+        if (isObtained)
+            ActionManager.Instance()->UseAction(ActionType.Ornament, ExcelRow.RowId);
     }
 
-    public uint GetAccessorySheetId()
-    {
-        // facewear
-        if(IsGlasses(ExcelRow)) return ExcelRow.AdditionalData.RowId;
-        // fashion accessories
-        if((uint)ExcelRow.ItemAction.Value.Data.ElementAt(0) != 0) return (uint)ExcelRow.ItemAction.Value.Data.ElementAt(0);
-        // no link found.
-        return 0;
-    }
+    // public uint GetAccessorySheetId()
+    // {
+    //     // facewear
+    //     // if(IsGlasses(ExcelRow)) return ExcelRow.AdditionalData.RowId;
+    //     // fashion accessories
+    //     if((uint)ExcelRow.ItemAction.Value.Data.ElementAt(0) != 0) return (uint)ExcelRow.ItemAction.Value.Data.ElementAt(0);
+    //     // no link found.
+    //     return 0;
+    // }
 
     public static bool IsGlasses(ItemAdapter item)
     {
