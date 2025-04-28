@@ -1,6 +1,5 @@
 using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Client.Game.UI;
-using FFXIVClientStructs.FFXIV.Component.Excel;
 
 namespace Collections;
 
@@ -10,7 +9,6 @@ public class FashionAccessoriesCollectible: Collectible<Ornament>, ICreateable<F
 
     public FashionAccessoriesCollectible(Ornament excelRow) : base(excelRow)
     {
-
     }
 
     public static FashionAccessoriesCollectible Create(Ornament excelRow)
@@ -25,11 +23,6 @@ public class FashionAccessoriesCollectible: Collectible<Ornament>, ICreateable<F
 
     protected override string GetName()
     {
-        // if(IsGlasses(ExcelRow))
-        // {
-        //     var temp = ExcelCache<Glasses>.GetSheet().GetRow(GetAccessorySheetId());
-        //     if(temp != null) return temp.Value.Name.ToString();
-        // }
         return ExcelRow.Singular.ToString();
     }
 
@@ -40,24 +33,20 @@ public class FashionAccessoriesCollectible: Collectible<Ornament>, ICreateable<F
 
     protected override string GetDescription()
     {
+        // trying to use the underlying unlock item for fashion accessories, as the unlock description is cooler.
         if(CollectibleKey != null)
             return ExcelCache<ItemAdapter>.GetSheet().GetRow(CollectibleKey.Id).Value.Description.ToString();
-        return "";
+        
+        return ExcelCache<OrnamentTransient>.GetSheet().GetRow(ExcelRow.RowId).Value.Text.ToString() ?? "";
     }
 
     public override unsafe void UpdateObtainedState()
     {
-        // if(IsGlasses(ExcelRow)) isObtained = PlayerState.Instance()->IsGlassesUnlocked((ushort)GetAccessorySheetId());
         isObtained = PlayerState.Instance()->IsOrnamentUnlocked(ExcelRow.RowId);
     }
 
     protected override int GetIconId()
     {
-        // if(IsGlasses(ExcelRow))
-        // {
-        //     Glasses? temp = ExcelCache<Glasses>.GetSheet().GetRow(GetAccessorySheetId());
-        //     if(temp != null) return temp.Value.Icon;
-        // }
         return ExcelRow.Icon;
     }
 
@@ -65,25 +54,5 @@ public class FashionAccessoriesCollectible: Collectible<Ornament>, ICreateable<F
     {
         if (isObtained)
             ActionManager.Instance()->UseAction(ActionType.Ornament, ExcelRow.RowId);
-    }
-
-    // public uint GetAccessorySheetId()
-    // {
-    //     // facewear
-    //     // if(IsGlasses(ExcelRow)) return ExcelRow.AdditionalData.RowId;
-    //     // fashion accessories
-    //     if((uint)ExcelRow.ItemAction.Value.Data.ElementAt(0) != 0) return (uint)ExcelRow.ItemAction.Value.Data.ElementAt(0);
-    //     // no link found.
-    //     return 0;
-    // }
-
-    public static bool IsGlasses(ItemAdapter item)
-    {
-        return (item.AdditionalData.RowId != 0) && item.Unknown4 == 31000 && item.ItemUICategory.Value.Name == "Miscellany";
-    }
-
-    public static bool IsFashionAccessory(ItemAdapter item)
-    {
-        return item.ItemAction.Value.Type == 20086 && item.ItemUICategory.Value.Name == "Miscellany";
     }
 }

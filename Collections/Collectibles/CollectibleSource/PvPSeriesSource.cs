@@ -1,5 +1,6 @@
 namespace Collections;
 
+// Used to represent collectibles obtained from PvP Series - should be populated before shop items.
 public class PvPSeriesSource : CollectibleSource
 {
     private PvPSeries PvPSeries { get; init; }
@@ -30,8 +31,7 @@ public class PvPSeriesSource : CollectibleSource
     {
     }
 
-    // TODO: replace with PvPSeries icon
-    public static int iconId = 000006; //61501;
+    public static int iconId = 061806; //alternative is 009058;
     protected override int GetIconId()
     {
         return iconId;

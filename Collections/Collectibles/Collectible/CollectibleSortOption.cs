@@ -28,8 +28,8 @@ public class CollectibleSortOption
     public OrderedParallelQuery<ICollectible> SortCollection(IEnumerable<ICollectible> collection)
     {
         // can't just call reverse, causes the favorites to drop down to bottom.
-        if(Reverse) return collection.AsParallel().OrderByDescending(c => c.IsFavorite()).ThenByDescending(c => c, Comparer);
-        return collection.AsParallel().OrderByDescending(c => c.IsFavorite()).ThenBy(c => c, Comparer);
+        if(Reverse) return collection.AsParallel().OrderByDescending(c => c.IsFavorite()).ThenByDescending(c => c, Comparer).ThenByDescending(c => c.Id);
+        return collection.AsParallel().OrderByDescending(c => c.IsFavorite()).ThenBy(c => c, Comparer).ThenBy(c => c.Id);
     }
 
     public override bool Equals(object? obj)
