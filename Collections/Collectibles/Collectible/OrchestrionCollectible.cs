@@ -43,8 +43,7 @@ public class OrchestrionCollectible : Collectible<Orchestrion>, ICreateable<Orch
 
     protected override int GetIconId()
     {
-        // unless we have a better idea, 
-        return ExcelCache<ItemAdapter>.GetSheet().GetRow(CollectibleKey.Id).Value.Icon;
+        return 25945; // A Cold Wind orchestrion item icon ID.
     }
 
     public override unsafe void Interact()
@@ -52,13 +51,8 @@ public class OrchestrionCollectible : Collectible<Orchestrion>, ICreateable<Orch
         // Do nothing
     }
 
-    public ItemAdapter? GetUnlockItem()
+    public override void OpenGamerEscape()
     {
-        if(CollectibleKey != null)
-        {
-            return ExcelCache<ItemAdapter>.GetSheet().GetRow(CollectibleKey.Id);
-        }
-        return null;
+        WikiOpener.OpenGamerEscape(GetDisplayName() + "_Orchestrion_Roll");
     }
-
 }

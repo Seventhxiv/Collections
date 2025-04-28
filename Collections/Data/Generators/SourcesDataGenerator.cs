@@ -12,6 +12,7 @@ public class SourcesDataGenerator
     public QuestsDataGenerator QuestsDataGenerator { get; private set; }
     public CraftingDataGenerator CraftingDataGenerator { get; private set; }
     public TripleTriadNpcDataGenerator TripleTriadNpcDataGenerator { get; private set; }
+    public SubmarineDataGenerator SubmarineDataGenerator {get; private set; }
 
     public SourcesDataGenerator()
     {
@@ -30,6 +31,7 @@ public class SourcesDataGenerator
         var PvPDataGeneratorTask = Task.Run(() => new PvPSeriesDataGenerator());
         var CraftingDataGeneratorTask = Task.Run(() => new CraftingDataGenerator());
         var TripleTriadNpcDataGeneratorTask = Task.Run(() => new TripleTriadNpcDataGenerator());
+        var SubmarineDataGeneratorTask = Task.Run(() => new SubmarineDataGenerator());
 
         ShopsDataGenerator = await ShopsDataGeneratorTask;
         InstancesDataGenerator = await InstancesDataGeneratorTask;
@@ -41,5 +43,6 @@ public class SourcesDataGenerator
         PvPDataGenerator = await PvPDataGeneratorTask;
         CraftingDataGenerator = await CraftingDataGeneratorTask;
         TripleTriadNpcDataGenerator = await TripleTriadNpcDataGeneratorTask;
+        SubmarineDataGenerator = await SubmarineDataGeneratorTask;
     }
 }

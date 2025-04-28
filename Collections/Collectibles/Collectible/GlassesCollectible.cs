@@ -56,4 +56,9 @@ public class GlassesCollectible: Collectible<Glasses>, ICreateable<GlassesCollec
         if(isObtained)
             ActionManager.Instance()->UseAction(ActionType.Unk_10, ExcelRow.RowId);
     }
+
+    public override void OpenGamerEscape()
+    {
+        WikiOpener.OpenGamerEscape(GetDisplayName() + "_(Facewear)");
+    }
 }

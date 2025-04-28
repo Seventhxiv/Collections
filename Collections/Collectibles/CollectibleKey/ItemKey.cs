@@ -87,6 +87,11 @@ public class ItemKey : CollectibleKey<(ItemAdapter, int)>, ICreateable<ItemKey, 
             collectibleSources.AddRange(recipes.Select(entry => new CraftingSource(entry)));
         }
 
+        if (dataGenerator.SubmarineDataGenerator.data.TryGetValue(excelRow.RowId, out var submarines))
+        {
+            collectibleSources.AddRange(submarines.Select(entry => new SubmarineSource(entry)));
+        }
+
         if (Services.DataGenerator.KeysDataGenerator.ItemIdToTripleTriadId.TryGetValue(excelRow.RowId, out var tripleTriadId))
         {
             if (dataGenerator.TripleTriadNpcDataGenerator.data.TryGetValue(tripleTriadId, out var npcs))
