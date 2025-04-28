@@ -1,4 +1,3 @@
-using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Client.Game.UI;
 
 namespace Collections;
@@ -51,4 +50,9 @@ public class FramerKitCollectible: Collectible<ItemAdapter>, ICreateable<FramerK
         // Do nothing
     }
 
+    // Framer Kits are weird. Every kit (minus one) has an associated BannerBg, but their only connection is through BannerCondition.
+    // private (BannerBg, BannerFrame?, BannerDecoration?, CharaCardBase?, CharaCardDecoration?, CharaCardHeader?) GetUnlockedAssets()
+    // {
+        
+    // }
 }

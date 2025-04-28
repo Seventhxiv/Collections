@@ -71,6 +71,11 @@ public class ItemKey : CollectibleKey<(ItemAdapter, int)>, ICreateable<ItemKey, 
         {
             collectibleSources.AddRange(achievements.Select(entry => new AchievementSource(entry)));
         }
+        
+        if (dataGenerator.PvPDataGenerator.data.TryGetValue(excelRow.RowId, out var pvpSeries))
+        {
+            collectibleSources.AddRange(pvpSeries.Select(entry => new PvPSeriesSource(entry.Item1, entry.Item2)));
+        }
 
         if (dataGenerator.QuestsDataGenerator.data.TryGetValue(excelRow.RowId, out var quests))
         {

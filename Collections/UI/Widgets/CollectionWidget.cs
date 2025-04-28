@@ -200,7 +200,6 @@ public class CollectionWidget
 
         if (ImGui.ImageButton(icon.GetWrapOrEmpty().ImGuiHandle, new Vector2(iconSize, iconSize), default, new Vector2(1f, 1f), -1, default, tint))
         {
-
         }
         if (ImGui.IsItemClicked())
         {
@@ -242,11 +241,12 @@ public class CollectionWidget
             EventService.Publish<FilterChangeEvent, FilterChangeEventArgs>(new FilterChangeEventArgs());
         }
         
-        
-
-        // Green checkmark
+        // Mimicks the official FFXIV Yellow checkmark1
         var obtained = collectible.GetIsObtained();
-        UiHelper.IconButtonWithOffset(drawItemCount, FontAwesomeIcon.Check, 33, -48, ref obtained, 1.1f);
+        // shadow
+        UiHelper.IconButtonWithOffset(drawItemCount, FontAwesomeIcon.Check, 32, -48, ref obtained, 1.1f, new Vector4(1f, .741f, .188f, 1).Darken(.7f), ColorsPalette.BLACK.WithAlpha(0));
+        // color
+        UiHelper.IconButtonWithOffset(drawItemCount, FontAwesomeIcon.Check, 33, -48, ref obtained, 1.0f, new Vector4(1f, .741f, .188f, 1), ColorsPalette.BLACK.WithAlpha(0));
     }
 
     private bool EnableDynamicScrolling()

@@ -1,4 +1,3 @@
-
 namespace Collections;
 
 public class AchievementSource : CollectibleSource

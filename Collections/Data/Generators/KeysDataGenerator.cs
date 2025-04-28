@@ -133,7 +133,7 @@ public class KeysDataGenerator
             }
         }
     }
-
+    
     private void PopulateMiscData()
     {
         foreach (var (type, dict) in DataOverrides.collectibleIdToUnlockMisc)
