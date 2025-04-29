@@ -190,7 +190,8 @@ public abstract class Collectible<T> : ICollectible where T : struct, IExcelRow<
 
     protected virtual decimal GetPatchAdded()
     {
-        decimal temp = (decimal)0.0;
+        // this way, unknown patch (new) items will appear at the top when sorted
+        decimal temp = (decimal)999.0;
         if(CollectibleKey != null)
         {
             // find patch added to the game
@@ -198,15 +199,30 @@ public abstract class Collectible<T> : ICollectible where T : struct, IExcelRow<
             {
                 if( CollectibleKey.Id >= patch.StartItemId && CollectibleKey.Id <= patch.EndItemId )
                 {
-                    temp = patch.PatchNo;
+                    return patch.PatchNo;
                 }
             }
         }
+        // try manual override
+        // TODO: lookup patch from quest ID
+        var patchOverrides = DataOverrides.collectibleIdToPatchAdded;
+        foreach(var (type, dict) in patchOverrides)
+        {
+            if(typeof(T) == type)
+            {
+                foreach(var (id, patch) in dict)
+                if(Id == id)
+                {
+                    temp = patch;
+                }
+            }
+        }
+        
         return temp;
     }
 
     public virtual string GetDisplayPatch()
     {
-        return PatchAdded <= 0 ? "Unknown" : PatchAdded.ToString();
+        return PatchAdded >= 999 ? "Unknown" : PatchAdded.ToString();
     }
 }

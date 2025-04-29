@@ -37,6 +37,13 @@ public class DataOverrides
         }},
     };
 
+    public static readonly Dictionary<Type, Dictionary<uint, (uint, int)>> collectibleIdToSeriesReward = new()
+    {
+        {typeof(Glasses), new Dictionary<uint, (uint, int)>() {
+            {13, (1, 15)} // Shaded Spectacles
+        }},
+    };
+
     public static readonly Dictionary<Type, Dictionary<uint, uint>> collectibleIdToUnlockInstanceId = new()
     {
         {typeof(Companion), new Dictionary<uint, uint>() {
@@ -49,6 +56,15 @@ public class DataOverrides
         {typeof(Mount), new Dictionary<uint, decimal>() {
             {50, (decimal)2.5}, // Midgarsormr
         }},
+        {typeof(BuddyEquip), new Dictionary<uint, decimal>() {
+            {1, (decimal)2.0}, // Lominsan Saddle
+            {5, (decimal)2.0}, // Gridanian Saddle
+            {9, (decimal)2.0}, // Ul'dahn Saddle
+        }},
+        {typeof(CharaMakeCustomize), new Dictionary<uint, decimal>() {
+            {228, (decimal)2.4}, // Eternal Bonding
+        }},
+        // No emotes; too many
     };
 
     public static readonly List<uint> IgnoreBardingId = new()
