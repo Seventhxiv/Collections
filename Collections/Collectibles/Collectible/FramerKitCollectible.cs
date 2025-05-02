@@ -32,7 +32,7 @@ public class FramerKitCollectible: Collectible<ItemAdapter>, ICreateable<FramerK
 
     protected override string GetDescription()
     {
-        return ExcelRow.Description.ToString();
+        return ExcelRow.Description.ToString().Split("<br>").First();
     }
 
     public override unsafe void UpdateObtainedState()
