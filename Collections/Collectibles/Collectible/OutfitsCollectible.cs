@@ -37,8 +37,6 @@ public class OutfitsCollectible : Collectible<ItemAdapter>, ICreateable<OutfitsC
 
     public override void UpdateObtainedState()
     {
-        //Dev.Log($"Trying to obtain status of {GetName()}\n  ItemId: {ExcelRow.RowId}\n  IsInDresser: {Services.ItemFinder.IsItemInDresser(ExcelRow.RowId)}");
-        
         isObtained = Services.ItemFinder.IsItemInInventory(ExcelRow.RowId)
                     || Services.ItemFinder.IsItemInDresser(ExcelRow.RowId)
                     || Services.ItemFinder.IsItemInArmoireCache(ExcelRow.RowId);

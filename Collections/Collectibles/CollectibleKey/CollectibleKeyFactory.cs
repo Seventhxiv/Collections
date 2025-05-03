@@ -7,6 +7,10 @@ public class CollectibleKeyFactory
         var type = typeof(T);
         var keysDataGenerator = Services.DataGenerator.KeysDataGenerator;
         var id = collectible.Id;
+        if(type == typeof(OutfitsCollectible))
+        {
+            Dev.Log("Creating Glamour Collectible Key");
+        }
 
         if (type == typeof(ItemAdapter))
         {

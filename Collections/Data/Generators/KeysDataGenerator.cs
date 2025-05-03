@@ -20,8 +20,6 @@ public class KeysDataGenerator
     private static readonly int GlassesItemActionType = 37312;
     private static readonly int FramerKitItemActionType = 29459;
 
-    
-
     public KeysDataGenerator()
     {
         PopulateItemData();
