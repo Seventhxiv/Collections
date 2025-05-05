@@ -33,4 +33,9 @@ public class QuestSource : CollectibleSource
     {
         return iconId;
     }
+
+    public override QuestSource Clone()
+    {
+        return new QuestSource(Quest);
+    }
 }

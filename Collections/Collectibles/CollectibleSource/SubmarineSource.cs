@@ -34,4 +34,9 @@ public class SubmarineSource : CollectibleSource
     public override void DisplayLocation()
     {
     }
+
+    public override SubmarineSource Clone()
+    {
+        return new SubmarineSource(subMap);
+    }
 }

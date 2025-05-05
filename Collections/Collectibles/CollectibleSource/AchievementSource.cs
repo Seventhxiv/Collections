@@ -46,4 +46,9 @@ public class AchievementSource : CollectibleSource
     {
         return iconId;
     }
+
+    public override AchievementSource Clone()
+    {
+        return new AchievementSource(achievement: Achievement);
+    }
 }

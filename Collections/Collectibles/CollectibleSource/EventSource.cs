@@ -34,4 +34,9 @@ public class EventSource : CollectibleSource
     {
         return iconId;
     }
+
+    public override EventSource Clone()
+    {
+        return new EventSource(eventName);
+    }
 }

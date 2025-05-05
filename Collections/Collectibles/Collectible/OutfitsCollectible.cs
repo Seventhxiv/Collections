@@ -55,11 +55,11 @@ public class OutfitsCollectible : Collectible<ItemAdapter>, ICreateable<OutfitsC
     // Internally, outfits and their associated items are stored as 'MirageStoreSetItem'
     // We can use this to get the items required to create the outfit in the first place.
     // reason the collection isn't a MirageStoreSetItem is because that class is only a LookupTable,
-    // and it's more convenient to store it internally like a glamourItem.
-    public List<uint> GetAssociatedItemIds()
+    // and it's more convenient to store it internally like a GlamourCollectible.
+    public static List<uint> GetAssociatedItemIds(uint itemId)
     {
         List<uint> associatedItems = [];
-        var outfitSet = ExcelCache<MirageStoreSetItem>.GetSheet().GetRow(ExcelRow.RowId);
+        var outfitSet = ExcelCache<MirageStoreSetItem>.GetSheet().GetRow(itemId);
         if(outfitSet is not null)
         {
             var related = outfitSet.Value;

@@ -36,4 +36,9 @@ public class PvPSeriesSource : CollectibleSource
     {
         return iconId;
     }
+
+    public override PvPSeriesSource Clone()
+    {
+        return new PvPSeriesSource(PvPSeries, PvPSeriesLevel);
+    }
 }
