@@ -4,6 +4,7 @@ public interface ICollectible
 {
     public string Name { get; init; }
     public uint Id { get; init; }
+    public decimal PatchAdded {get;init;}
     public HintModule PrimaryHint { get; init; }
     public HintModule SecondaryHint { get; init; }
     public string Description { get; init; }
@@ -18,4 +19,7 @@ public interface ICollectible
     public ISharedImmediateTexture GetIconLazy();
     public void Interact();
     public string GetDisplayName();
+    public List<CollectibleSortOption> GetSortOptions();
+    public List<CollectibleFilterOption> GetFilterOptions();
+    public bool GetIsFiltered();
 }

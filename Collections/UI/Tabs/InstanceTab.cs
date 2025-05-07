@@ -84,7 +84,10 @@ public class InstanceTab : IDrawable
             collections[name] = collection
                 .Where((c) =>
                     {
-                        if (!(c.CollectibleKey is not null && currentDutyItemIds.Contains(c.CollectibleKey.Id)))
+                        // TODO: blue mage spells don't come from items.
+                        if(name == BlueMageCollectible.CollectionName) return false;
+                        if ((c.CollectibleKey is not null) && ((c.CollectibleKey.Id == 0) ||
+                        (!currentDutyItemIds.Contains(c.CollectibleKey.Id))))
                         {
                             return false;
                         }

@@ -1,4 +1,3 @@
-
 namespace Collections;
 
 public class AchievementSource : CollectibleSource
@@ -46,5 +45,10 @@ public class AchievementSource : CollectibleSource
     protected override int GetIconId()
     {
         return iconId;
+    }
+
+    public override AchievementSource Clone()
+    {
+        return new AchievementSource(achievement: Achievement);
     }
 }

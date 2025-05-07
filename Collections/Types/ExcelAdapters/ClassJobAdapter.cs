@@ -44,7 +44,7 @@ public struct ClassJobAdapter(ExcelPage page, uint offset, uint row) : IExcelRow
         { 39, (Collections.Job.RPR, 62419, ClassRole.Melee)},
         { 20, (Collections.Job.MNK, 62402, ClassRole.Melee)},
         { 34, (Collections.Job.SAM, 62414, ClassRole.Melee)},
-        { 41, (Collections.Job.VPR, 62043, ClassRole.Melee)},
+        { 41, (Collections.Job.VPR, 62421, ClassRole.Melee)},
 
         { 23, (Collections.Job.BRD, 62405, ClassRole.Ranged)},
         { 31, (Collections.Job.MCH, 62411, ClassRole.Ranged)},
@@ -53,7 +53,7 @@ public struct ClassJobAdapter(ExcelPage page, uint offset, uint row) : IExcelRow
         { 25, (Collections.Job.BLM, 62407, ClassRole.Caster)},
         { 27, (Collections.Job.SMN, 62408, ClassRole.Caster)},
         { 35, (Collections.Job.RDM, 62415, ClassRole.Caster)},
-        { 42, (Collections.Job.PCT, 62044, ClassRole.Caster)},
+        { 42, (Collections.Job.PCT, 62422, ClassRole.Caster)},
         { 36, (Collections.Job.BLU, 62416, ClassRole.Caster)},
     };
 

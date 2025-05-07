@@ -11,6 +11,10 @@ public class CollectibleKeyFactory
         if (type == typeof(ItemAdapter))
         {
             var item = (ItemAdapter)ExcelCache<ItemAdapter>.GetSheet().GetRow(id)!;
+            if(item.ItemUICategory.RowId == 112)
+            {
+                return CollectibleKeyCache<OutfitKey, ItemAdapter>.Instance.GetObject((item, 0));
+            }
             return CollectibleKeyCache<ItemKey, ItemAdapter>.Instance.GetObject((item, 0));
         }
 

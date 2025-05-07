@@ -75,6 +75,12 @@ public class MainWindow : Window, IDisposable
     {
         if (T == typeof(GlamourCollectible))
             return new GlamourTab();
+        // else if(T == typeof(FashionAccessoriesCollectible) || T == typeof(GlassesCollectible))
+        // {
+        //     var combinedAccessories = Services.DataProvider.GetCollection(typeof(FashionAccessoriesCollectible));
+        //     combinedAccessories.AddRange(Services.DataProvider.GetCollection(typeof(GlassesCollectible)));
+        //     return new CollectionTab(combinedAccessories);
+        // }
         else
             return new CollectionTab(Services.DataProvider.GetCollection(T));
 

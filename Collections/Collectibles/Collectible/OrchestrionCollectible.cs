@@ -3,15 +3,15 @@ using FFXIVClientStructs.FFXIV.Client.Game.UI;
 
 namespace Collections;
 
-public class TripleTriadCollectible : Collectible<TripleTriadCard>, ICreateable<TripleTriadCollectible, TripleTriadCard>
+public class OrchestrionCollectible : Collectible<Orchestrion>, ICreateable<OrchestrionCollectible, Orchestrion>
 {
-    public new static string CollectionName => "Triple Triad";
+    public new static string CollectionName => "Orchestrions";
 
-    public TripleTriadCollectible(TripleTriadCard excelRow) : base(excelRow)
+    public OrchestrionCollectible(Orchestrion excelRow) : base(excelRow)
     {
     }
 
-    public static TripleTriadCollectible Create(TripleTriadCard excelRow)
+    public static OrchestrionCollectible Create(Orchestrion excelRow)
     {
         return new(excelRow);
     }
@@ -35,20 +35,15 @@ public class TripleTriadCollectible : Collectible<TripleTriadCard>, ICreateable<
     {
         return ExcelRow.Description.ToString();
     }
-    
-    // protected override HintModule GetSecondaryHint()
-    // {
-    //     return new HintModule($"Card No. {ExcelRow.Description.ToString().Split("Card No. ").Last()}", null);
-    // }
 
     public override unsafe void UpdateObtainedState()
     {
-        isObtained = UIState.Instance()->IsTripleTriadCardUnlocked((ushort)ExcelRow.RowId);
+        isObtained = PlayerState.Instance()->IsOrchestrionRollUnlocked(ExcelRow.RowId);
     }
 
     protected override int GetIconId()
     {
-        return (int)ExcelRow.RowId + 87000;
+        return 25945; // A Cold Wind orchestrion item icon ID.
     }
 
     public override unsafe void Interact()
@@ -58,6 +53,6 @@ public class TripleTriadCollectible : Collectible<TripleTriadCard>, ICreateable<
 
     public override void OpenGamerEscape()
     {
-        WikiOpener.OpenGamerEscape(GetDisplayName() + "_Card");
+        WikiOpener.OpenGamerEscape(GetDisplayName() + "_Orchestrion_Roll");
     }
 }

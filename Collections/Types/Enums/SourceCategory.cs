@@ -19,4 +19,5 @@ public enum SourceCategory
     BeastTribes,
     TreasureHunts,
     Crafting,
+    Voyages,
 }

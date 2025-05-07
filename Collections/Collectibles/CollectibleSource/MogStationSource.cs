@@ -31,4 +31,9 @@ public class MogStationSource : CollectibleSource
     {
         return iconId;
     }
+
+    public override MogStationSource Clone()
+    {
+        return new MogStationSource();
+    }
 }

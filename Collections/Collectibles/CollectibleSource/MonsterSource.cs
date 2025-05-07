@@ -67,4 +67,9 @@ public class MonsterSource : CollectibleSource
 
         return location = monster.GetLocationEntry();
     }
+
+    public override MonsterSource Clone()
+    {
+        return new MonsterSource(monster);
+    }
 }

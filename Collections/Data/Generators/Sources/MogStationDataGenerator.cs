@@ -5,22 +5,22 @@ namespace Collections;
 
 public class MogStationDataGenerator : BaseDataGenerator<uint>
 {
-    private static readonly string FileName = "ItemIdToQuest.csv";
+    private static readonly string FileName = "ItemIdToMogStation.csv";
     protected override void InitializeData()
     {
         // Based on LuminaSupplemental
-        var StoreItemList = CsvLoader.LoadResource<StoreItem>(CsvLoader.StoreItemResourceName, out var failedLines, out var exceptions);
+        var StoreItemList = CsvLoader.LoadResource<StoreItem>(CsvLoader.StoreItemResourceName, true, out var failedLines, out var exceptions);
         foreach (var entry in StoreItemList)
         {
             AddEntry(entry.ItemId, 0);
         }
 
         // Based on resource data
-        var resourceData = CSVHandler.Load<ItemIdToSource>(FileName);
-        foreach (var entry in resourceData)
-        {
-            AddEntry(entry.ItemId, 0);
-        }
+        // var resourceData = CSVHandler.Load<ItemIdToSource>(FileName);
+        // foreach (var entry in resourceData)
+        // {
+        //     AddEntry(entry.ItemId, 0);
+        // }
 
         // FittingShopCategoryItem sheet
         var FittingShopCategoryItemSheet = ExcelSubRowCache<FittingShopCategoryItem>.GetSheet()!;

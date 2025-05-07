@@ -62,4 +62,10 @@ public class NpcSource : CollectibleSource
     {
         return 061104;
     }
+
+    public override NpcSource Clone()
+    {
+
+        return new NpcSource(eNpcResident.Value);
+    }
 }

@@ -41,4 +41,9 @@ public class CraftingSource : CollectibleSource
     {
         return iconId;
     }
+
+    public override CraftingSource Clone()
+    {
+        return new CraftingSource(recipeId);
+    }
 }

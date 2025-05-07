@@ -19,6 +19,14 @@ public class ShopSource : CollectibleSource
         }
     }
 
+    // used for cloning
+    private ShopSource(List<(ItemKey, int)> costItems, ENpcResident? npc, uint shopId)
+    {
+        this.costItems = costItems;
+        this.ENpcResident = npc;
+        this.ShopId = shopId;
+    }
+
     private string name;
     public override string GetName()
     {
@@ -121,5 +129,10 @@ public class ShopSource : CollectibleSource
     protected override int GetIconId()
     {
         return 60550;
+    }
+
+    public override ShopSource Clone()
+    {
+        return new ShopSource(costItems, ENpcResident, ShopId);
     }
 }
