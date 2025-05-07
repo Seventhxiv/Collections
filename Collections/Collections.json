@@ -2,7 +2,7 @@
     "Author": "Seventh",
     "Name": "Collections",
     "Punchline": "Track, Discover and Interact with your Collections in game",
-    "Description": "Collections provides an interface to track, discover and interact with your Collections in game.\nIntegrates with Glamour systems (Preview, Create Sets, Glamour Plates).\nSupports: Glamour, Mounts, Minions, Emotes, Hairstyles, Triple Triad, Blue Mage, Bardings.",
+    "Description": "Collections provides an interface to track, discover and interact with your Collections in game.\nIntegrates with Glamour systems (Preview, Create Sets, Glamour Plates).\nSupports: Glamour, Mounts, Minions, Emotes, Hairstyles, Triple Triad, Blue Mage, Bardings, Framer Kits, Orchestrions, Outfits, Fashion Accessories, Facewear.",
     "InternalName": "Collections",
     "ApplicableVersion": "any",
     "RepoUrl": "https://github.com/Seventhxiv/Collections",
