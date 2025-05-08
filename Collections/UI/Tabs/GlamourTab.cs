@@ -191,8 +191,9 @@ public class GlamourTab : IDrawable
     public void OnPublish(GlamourItemChangeEventArgs args)
     {
         var equipSlot = args.Collectible.ExcelRow.EquipSlot;
-        var stainId = EquipSlotsWidget.paletteWidgets[equipSlot].ActiveStain.RowId;
-        Services.PreviewExecutor.PreviewWithTryOnRestrictions(args.Collectible, stainId, Services.Configuration.ForceTryOn);
+        var stain0Id = EquipSlotsWidget.paletteWidgets[equipSlot].ActiveStainPrimary.RowId;
+        var stain1Id = EquipSlotsWidget.paletteWidgets[equipSlot].ActiveStainSecondary.RowId;
+        Services.PreviewExecutor.PreviewWithTryOnRestrictions(args.Collectible, stain0Id, stain1Id, Services.Configuration.ForceTryOn);
     }
 
     public void OnPublish(GlamourSetChangeEventArgs args)
@@ -207,7 +208,7 @@ public class GlamourTab : IDrawable
         // Preview the selected set
         foreach (var (equipSlot, glamourItem) in args.GlamourSet.Items)
         {
-            Services.PreviewExecutor.PreviewWithTryOnRestrictions(glamourItem.GetCollectible(), glamourItem.StainId, false);
+            Services.PreviewExecutor.PreviewWithTryOnRestrictions(glamourItem.GetCollectible(), glamourItem.Stain0Id, glamourItem.Stain1Id, false);
         }
     }
 
@@ -222,7 +223,7 @@ public class GlamourTab : IDrawable
         foreach (var (equipSlot, glamourItem) in EquipSlotsWidget.currentGlamourSet.Items)
         {
             var collectible = CollectibleCache<GlamourCollectible, ItemAdapter>.Instance.GetObject(glamourItem.ItemId);
-            Services.PreviewExecutor.PreviewWithTryOnRestrictions(collectible, glamourItem.StainId, Services.Configuration.ForceTryOn);
+            Services.PreviewExecutor.PreviewWithTryOnRestrictions(collectible, glamourItem.Stain0Id, glamourItem.Stain1Id, Services.Configuration.ForceTryOn);
         }
     }
 

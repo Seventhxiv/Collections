@@ -47,7 +47,7 @@ public class DataProvider
         SupportedClassJobs = ExcelCache<ClassJobAdapter>.GetSheet().AsParallel().Where(entry => ClassJobAdapter.ClassJobConfig.ContainsKey(entry.RowId)).ToList();
 
         // Stains
-        SupportedStains = ExcelCache<StainAdapter>.GetSheet().Where(s => s.Color != 0).ToList();
+        SupportedStains = ExcelCache<StainAdapter>.GetSheet().Where(s => s.Name != "").ToList();
 
         // Collections
         InitializeGlamourCollection();

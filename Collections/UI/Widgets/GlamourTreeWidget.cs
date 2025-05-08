@@ -328,7 +328,7 @@ public class GlamourTreeWidget
         // TODO add indication on which items exist in Dresser
         foreach (var (equipSlot, glamourItem) in currentGlamourSet.Items)
         {
-            PlatesExecutor.SetPlateItem(glamourItem.GetCollectible().ExcelRow, (byte)glamourItem.StainId);
+            PlatesExecutor.SetPlateItem(glamourItem.GetCollectible().ExcelRow, (byte)glamourItem.Stain0Id);
         }
     }
 
@@ -359,11 +359,13 @@ public class GlamourTreeWidget
             if (invSlot is not null)
             {
                 var itemId = invSlot->GlamourId != 0 ? invSlot->GlamourId : invSlot->ItemId;
-                var stainId = invSlot->Stains[0];
+                var stain0Id = invSlot->Stains[0];
+                var stain1Id = invSlot->Stains[1];
                 var item = itemSheet.GetRow(itemId);
+                if(item is null) return;
                 if (Services.DataProvider.SupportedEquipSlots.Contains(item.Value.EquipSlot))
                 {
-                    currentGlamourSet.SetItem(item.Value, stainId);
+                    currentGlamourSet.SetItem(item.Value, stain0Id, stain1Id);
                 }
             }
         }
