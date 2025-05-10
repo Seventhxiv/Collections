@@ -10,7 +10,6 @@ public class ContainerSource : CollectibleSource
         CollectibleKey = CollectibleKeyCache<ItemKey, ItemAdapter>.Instance.GetObject((container, initDepth));
     }
 
-
     public override string GetName()
     {
         return container.Name.ToString();
@@ -41,5 +40,10 @@ public class ContainerSource : CollectibleSource
     protected override int GetIconId()
     {
         return container.Icon;
+    }
+
+    public override ContainerSource Clone()
+    {
+        return new ContainerSource(container.RowId, 1);
     }
 }

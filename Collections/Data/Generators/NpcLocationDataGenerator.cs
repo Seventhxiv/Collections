@@ -84,7 +84,7 @@ public class NpcLocationDataGenerator
         }
 
         // Inject from CSV
-        var eNpcPlaces = CsvLoader.LoadResource<ENpcPlace>(CsvLoader.ENpcPlaceResourceName, out var failedLines, out var exceptions);
+        var eNpcPlaces = CsvLoader.LoadResource<ENpcPlace>(CsvLoader.ENpcPlaceResourceName, true, out var failedLines, out var exceptions);
         foreach (var entry in eNpcPlaces)
         {
             if (npcToLocation.ContainsKey(entry.ENpcResidentId))

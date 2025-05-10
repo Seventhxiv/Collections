@@ -125,6 +125,11 @@ public class UiHelper
 
     public static void IconButtonWithOffset(int id, FontAwesomeIcon fontAwesomeIcon, int Xoffset, int Yoffset, ref bool state, float scale)
     {
+        IconButtonWithOffset(id, fontAwesomeIcon, Xoffset, Yoffset, ref state, scale, ColorsPalette.YELLOW, ColorsPalette.GREY);
+    }
+
+    public static void IconButtonWithOffset(int id, FontAwesomeIcon fontAwesomeIcon, int Xoffset, int Yoffset, ref bool state, float scale, Vector4 enabledColor, Vector4 disabledColor)
+    {
         // ID
         ImGui.PushID(id);
 
@@ -135,7 +140,7 @@ public class UiHelper
         ImGui.SetCursorPos(new Vector2(ImGui.GetCursorPos().X - Xoffset, ImGui.GetCursorPos().Y - Yoffset));
 
         // Font
-        ImGui.PushStyleColor(ImGuiCol.Text, state ? ColorsPalette.YELLOW : ColorsPalette.GREY);
+        ImGui.PushStyleColor(ImGuiCol.Text, state ? enabledColor : disabledColor);
 
         // Button
         ImGui.SetWindowFontScale(scale);
@@ -149,6 +154,7 @@ public class UiHelper
         ImGui.SetCursorPos(previousPos);
         ImGui.PopStyleColor();
         ImGui.PopID();
+        
     }
 
     public static void IconButtonWithPopUpInputText(FontAwesomeIcon fontAwesomeIcon, Action<string> onInput)

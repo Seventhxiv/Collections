@@ -7,7 +7,7 @@ public class ContainersDataGenerator : BaseDataGenerator<uint>
 {
     protected override void InitializeData()
     {
-        var ItemSupplementList = CsvLoader.LoadResource<ItemSupplement>(CsvLoader.ItemSupplementResourceName, out var failedLines, out var exceptions);
+        var ItemSupplementList = CsvLoader.LoadResource<ItemSupplement>(CsvLoader.ItemSupplementResourceName, true, out var failedLines, out var exceptions);
         foreach (var entry in ItemSupplementList)
         {
             AddEntry(entry.ItemId, entry.SourceItemId);

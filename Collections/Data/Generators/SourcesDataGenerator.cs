@@ -8,9 +8,11 @@ public class SourcesDataGenerator
     public MogStationDataGenerator MogStationDataGenerator { get; private set; }
     public ContainersDataGenerator ContainersDataGenerator { get; private set; }
     public AchievementsDataGenerator AchievementsDataGenerator { get; private set; }
+    public PvPSeriesDataGenerator PvPDataGenerator { get; private set; }
     public QuestsDataGenerator QuestsDataGenerator { get; private set; }
     public CraftingDataGenerator CraftingDataGenerator { get; private set; }
     public TripleTriadNpcDataGenerator TripleTriadNpcDataGenerator { get; private set; }
+    public SubmarineDataGenerator SubmarineDataGenerator {get; private set; }
 
     public SourcesDataGenerator()
     {
@@ -26,8 +28,10 @@ public class SourcesDataGenerator
         var QuestsDataGeneratorTask = Task.Run(() => new QuestsDataGenerator());
         var ContainersDataGeneratorTask = Task.Run(() => new ContainersDataGenerator());
         var AchievementsDataGeneratorTask = Task.Run(() => new AchievementsDataGenerator());
+        var PvPDataGeneratorTask = Task.Run(() => new PvPSeriesDataGenerator());
         var CraftingDataGeneratorTask = Task.Run(() => new CraftingDataGenerator());
         var TripleTriadNpcDataGeneratorTask = Task.Run(() => new TripleTriadNpcDataGenerator());
+        var SubmarineDataGeneratorTask = Task.Run(() => new SubmarineDataGenerator());
 
         ShopsDataGenerator = await ShopsDataGeneratorTask;
         InstancesDataGenerator = await InstancesDataGeneratorTask;
@@ -36,7 +40,9 @@ public class SourcesDataGenerator
         QuestsDataGenerator = await QuestsDataGeneratorTask;
         ContainersDataGenerator = await ContainersDataGeneratorTask;
         AchievementsDataGenerator = await AchievementsDataGeneratorTask;
+        PvPDataGenerator = await PvPDataGeneratorTask;
         CraftingDataGenerator = await CraftingDataGeneratorTask;
         TripleTriadNpcDataGenerator = await TripleTriadNpcDataGeneratorTask;
+        SubmarineDataGenerator = await SubmarineDataGeneratorTask;
     }
 }

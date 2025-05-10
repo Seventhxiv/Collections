@@ -36,16 +36,6 @@ public class MinionCollectible : Collectible<Companion>, ICreateable<MinionColle
         return ExcelCache<CompanionTransient>.GetSheet().GetRow(ExcelRow.RowId)?.Description.ToString() ?? "";
     }
 
-    protected override HintModule GetPrimaryHint()
-    {
-        return new HintModule("", null);
-    }
-
-    protected override HintModule GetSecondaryHint()
-    {
-        return new HintModule("", null);
-    }
-
     public override unsafe void UpdateObtainedState()
     {
         isObtained = UIState.Instance()->IsCompanionUnlocked(ExcelRow.RowId);
@@ -59,7 +49,10 @@ public class MinionCollectible : Collectible<Companion>, ICreateable<MinionColle
     public override unsafe void Interact()
     {
         if (isObtained)
+        {
+            // TODO: Fashion Accessories can prevent the use of actions
             ActionManager.Instance()->UseAction(ActionType.Companion, ExcelRow.RowId);
+        }
     }
 
     public override string GetDisplayName()

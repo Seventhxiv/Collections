@@ -7,4 +7,5 @@ public interface ICollectibleSource
     public bool GetIslocatable();
     public void DisplayLocation();
     public ISharedImmediateTexture GetIconLazy();
+    public ICollectibleSource Clone();
 }

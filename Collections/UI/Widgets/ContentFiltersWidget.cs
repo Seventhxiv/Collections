@@ -1,3 +1,5 @@
+using FFXIVClientStructs.FFXIV.Client.System.Input;
+
 namespace Collections;
 
 public class ContentFiltersWidget
@@ -11,23 +13,24 @@ public class ContentFiltersWidget
     private Dictionary<SourceCategory, ISharedImmediateTexture> icons = new();
     private Dictionary<SourceCategory, int> contentTypesToIconId = new()
     {
-            {SourceCategory.Gil, 65002},
-            {SourceCategory.Scrips, 65028},
-            {SourceCategory.MGP, 65025},
-            {SourceCategory.PvP, 65014}, // 61806
-            {SourceCategory.Duty, InstanceSource.defaultIconId},
-            {SourceCategory.Quest, QuestSource.iconId},
-            {SourceCategory.Event, EventSource.iconId},
-            {SourceCategory.Tomestones, 65086},
-            {SourceCategory.DeepDungeon, 61824},
-            {SourceCategory.BeastTribes, 65016},
-            {SourceCategory.MogStation, MogStationSource.iconId},
-            {SourceCategory.Achievement, AchievementSource.iconId},
-            {SourceCategory.CompanySeals, 65005},
-            {SourceCategory.IslandSanctuary, 65096},
-            {SourceCategory.HuntSeals, 65034},
-            {SourceCategory.TreasureHunts, 000115}, //61829
-            {SourceCategory.Crafting, 62202},
+        {SourceCategory.Gil, 65002},
+        {SourceCategory.Scrips, 65028},
+        {SourceCategory.MGP, 65025},
+        {SourceCategory.PvP, PvPSeriesSource.iconId}, // 61806
+        {SourceCategory.Duty, InstanceSource.defaultIconId},
+        {SourceCategory.Quest, QuestSource.iconId},
+        {SourceCategory.Event, EventSource.iconId},
+        {SourceCategory.Tomestones, 65086},
+        {SourceCategory.DeepDungeon, 61824},
+        {SourceCategory.BeastTribes, 65016}, // 65042
+        {SourceCategory.MogStation, MogStationSource.iconId},
+        {SourceCategory.Achievement, AchievementSource.iconId},
+        {SourceCategory.CompanySeals, 65005},
+        {SourceCategory.IslandSanctuary, 65096},
+        {SourceCategory.HuntSeals, 65034},
+        {SourceCategory.TreasureHunts, 000115}, //61829
+        {SourceCategory.Crafting, 62202},
+        {SourceCategory.Voyages, SubmarineSource.defaultIconId},
     };
 
     private int columns { get; init; }
@@ -87,14 +90,24 @@ public class ContentFiltersWidget
         {
             ImGui.TableSetBgColor(ImGuiTableBgTarget.CellBg, ImGui.GetColorU32(ImGuiCol.ButtonActive));
             var currentFilter = Filters[collectibleSourceCategory];
-            ResetFilters();
+            // ctrl click will not reset filters
+            if (!ImGui.IsKeyDown(ImGuiKey.ModCtrl))
+            {
+                ResetFilters();
+            }
             SetFilter(collectibleSourceCategory, !currentFilter);
         }
 
-        // Right click to remove filter
+        // Right click to exclude filter
         if (ImGui.IsItemClicked(ImGuiMouseButton.Right))
         {
-            SetFilter(collectibleSourceCategory, !Filters[collectibleSourceCategory]);
+            ImGui.TableSetBgColor(ImGuiTableBgTarget.CellBg, ImGui.GetColorU32(ImGuiCol.CheckMark));
+            if(!ImGui.IsKeyDown(ImGuiKey.ModCtrl))
+            {
+                SetAllFilters();
+            }
+            var currentFilter = Filters[collectibleSourceCategory];
+            SetFilter(collectibleSourceCategory, !currentFilter);
         }
 
         // Save hover state
@@ -142,6 +155,14 @@ public class ContentFiltersWidget
         foreach (var (sourceType, _) in contentTypesToIconId)
         {
             Filters[sourceType] = false;
+        }
+    }
+
+    private void SetAllFilters()
+    {
+        foreach (var (sourceType, _) in contentTypesToIconId)
+        {
+            Filters[sourceType] = true;
         }
     }
 }
