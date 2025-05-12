@@ -33,4 +33,9 @@ public class MiscSource : CollectibleSource
     {
         return 60404;
     }
+
+    public override MiscSource Clone()
+    {
+        return new MiscSource(misc);
+    }
 }

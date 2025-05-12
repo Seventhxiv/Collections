@@ -15,6 +15,10 @@ public class KeysDataGenerator
     private static readonly int EmoteHairstyleItemActionType = 2633;
     private static readonly int TripleTriadItemActionType = 3357;
     private static readonly int BardingItemActionType = 1013;
+    private static readonly int OrchestrionItemActionType = 25183;
+    private static readonly int FashionAccessoryItemActionType = 20086;
+    private static readonly int GlassesItemActionType = 37312;
+    private static readonly int FramerKitItemActionType = 29459;
 
     public KeysDataGenerator()
     {
@@ -32,6 +36,7 @@ public class KeysDataGenerator
         {
             var type = item.ItemAction.Value.Type;
             var collectibleData = item.ItemAction.Value.Data;
+            var additionalData = item.AdditionalData.RowId;
             if (type == MountItemActionType)
             {
                 AddCollectibleKeyEntry(collectibleIdToItem, typeof(Mount), collectibleData[0], item);
@@ -53,6 +58,22 @@ public class KeysDataGenerator
             else if (type == BardingItemActionType)
             {
                 AddCollectibleKeyEntry(collectibleIdToItem, typeof(BuddyEquip), collectibleData[0], item);
+            }
+            else if (type == OrchestrionItemActionType)
+            {
+                AddCollectibleKeyEntry(collectibleIdToItem, typeof(Orchestrion), item.AdditionalData.RowId, item);
+            }
+            else if (type == FashionAccessoryItemActionType)
+            {
+                AddCollectibleKeyEntry(collectibleIdToItem, typeof(Ornament), collectibleData[0], item);
+            }
+            else if (type == GlassesItemActionType)
+            {
+                AddCollectibleKeyEntry(collectibleIdToItem, typeof(Glasses), item.AdditionalData.RowId, item);
+            }
+            else if (type == FramerKitItemActionType)
+            {
+                AddCollectibleKeyEntry(collectibleIdToItem, typeof(ItemAdapter), item.AdditionalData.RowId, item);
             }
         }
     }
@@ -110,7 +131,7 @@ public class KeysDataGenerator
             }
         }
     }
-
+    
     private void PopulateMiscData()
     {
         foreach (var (type, dict) in DataOverrides.collectibleIdToUnlockMisc)

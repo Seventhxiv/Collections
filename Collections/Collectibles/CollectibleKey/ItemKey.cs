@@ -71,6 +71,11 @@ public class ItemKey : CollectibleKey<(ItemAdapter, int)>, ICreateable<ItemKey, 
         {
             collectibleSources.AddRange(achievements.Select(entry => new AchievementSource(entry)));
         }
+        
+        if (dataGenerator.PvPDataGenerator.data.TryGetValue(excelRow.RowId, out var pvpSeries))
+        {
+            collectibleSources.AddRange(pvpSeries.Select(entry => new PvPSeriesSource(entry.Item1, entry.Item2)));
+        }
 
         if (dataGenerator.QuestsDataGenerator.data.TryGetValue(excelRow.RowId, out var quests))
         {
@@ -80,6 +85,11 @@ public class ItemKey : CollectibleKey<(ItemAdapter, int)>, ICreateable<ItemKey, 
         if (dataGenerator.CraftingDataGenerator.data.TryGetValue(excelRow.RowId, out var recipes))
         {
             collectibleSources.AddRange(recipes.Select(entry => new CraftingSource(entry)));
+        }
+
+        if (dataGenerator.SubmarineDataGenerator.data.TryGetValue(excelRow.RowId, out var submarines))
+        {
+            collectibleSources.AddRange(submarines.Select(entry => new SubmarineSource(entry)));
         }
 
         if (Services.DataGenerator.KeysDataGenerator.ItemIdToTripleTriadId.TryGetValue(excelRow.RowId, out var tripleTriadId))

@@ -8,8 +8,8 @@ public unsafe class DresserObserver
     public List<uint> DresserItemIds;
     public List<uint> ArmoireItemIds;
 
-    private static MirageManager* MirageManager = FFXIVClientStructs.FFXIV.Client.Game.MirageManager.Instance();
-    private static FFXIVClientStructs.FFXIV.Client.Game.UI.Cabinet Cabinet = UIState.Instance()->Cabinet;
+    private static MirageManager* MirageManager => FFXIVClientStructs.FFXIV.Client.Game.MirageManager.Instance();
+    private static FFXIVClientStructs.FFXIV.Client.Game.UI.Cabinet Cabinet => UIState.Instance()->Cabinet;
 
     private bool firstTimeLoaded = true;
     private DateTime lastLoadTime;
@@ -29,8 +29,6 @@ public unsafe class DresserObserver
         }
         catch (Exception ex)
         {
-            // Got reports of crash on framework tick, with "Exception Info: System.AccessViolationException: Attempted to read or write protected memory. This is often an indication that other memory is corrupt."
-            // This seems to happen outside of the Inn, for now will just log the error, functionality seems to be working fine
             Services.PluginLog.Error(ex, "Error in DresserObserver.OnFrameworkTick");
         }
     }
@@ -61,13 +59,14 @@ public unsafe class DresserObserver
 
     private unsafe bool IsDresserLoaded()
     {
+        if (MirageManager == null)
+            return false;
         return MirageManager->PrismBoxLoaded;
     }
 
     public bool IsArmoireLoaded()
     {
-        var cabinet = UIState.Instance()->Cabinet;
-        return cabinet.IsCabinetLoaded();
+        return Cabinet.IsCabinetLoaded();
     }
 
     private unsafe double SecondsSinceLastLoad()

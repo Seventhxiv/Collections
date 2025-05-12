@@ -5,9 +5,9 @@ public class CollectionWidget
     private float iconSize = 65f;
     private int dynamicScrollingInitialSize = 200;
     private int dynamicScrollingIncrementsPerFrame = 40;
-
-    private string searchFilter = "";
-
+    private int pageSortWidgetWidth = "Sort By".Length * 13;
+    private string searchFilter = ""; 
+    private CollectibleSortOption PageSortOption { get; set; }
     private bool isGlam { get; init; } = false;
     private EventService EventService { get; init; }
     private TooltipWidget CollectibleTooltipWidget { get; init; }
@@ -17,6 +17,7 @@ public class CollectionWidget
         this.isGlam = isGlam;
         ResetDynamicScrolling();
         CollectibleTooltipWidget = new TooltipWidget(EventService);
+        PageSortOption = new CollectibleSortOption("Patch", Comparer<ICollectible>.Create((c1, c2) => c2.PatchAdded.CompareTo(c1.PatchAdded)), false, null);
     }
 
     private int dynamicScrollingCurrentSize;
@@ -25,8 +26,11 @@ public class CollectionWidget
     {
         // Draw filters
         if (enableFilters)
+        {
             DrawFilters(collectionList);
-
+            // Sort by user selection
+            collectionList = PageSortOption.SortCollection(collectionList).ToList();
+        }
         // Expand child on remaining window space
         if (expandAvailableRegion)
         {
@@ -86,7 +90,14 @@ public class CollectionWidget
 
     private void DrawFilters(List<ICollectible> collectionList)
     {
+        ImGui.SetNextItemWidth(ImGui.GetColumnWidth() - pageSortWidgetWidth);
         ImGui.InputTextWithHint($"##changedItemsFilter{collectionList.Count}", "Filter...", ref searchFilter, 40);
+        // default behavior cuts the dropdown a little bit off.
+        ImGui.SameLine(ImGui.GetColumnWidth() - pageSortWidgetWidth + 4, 0);
+        DrawSortOptions(collectionList);
+
+        ImGui.Text("Show:");
+        ImGui.SameLine();
 
         if (ImGui.RadioButton("All", ref obtainedState, 0))
             ResetDynamicScrolling();
@@ -142,6 +153,41 @@ public class CollectionWidget
         }
     }
 
+    private unsafe void DrawSortOptions(List<ICollectible> collection)
+    {
+        List<CollectibleSortOption> sortOptions = [];
+        if(collection.Count > 0) sortOptions = collection.First().GetSortOptions();
+        ImGui.SetNextItemWidth(pageSortWidgetWidth);
+        if (ImGui.BeginCombo($"##sortCollectionDropdown{collection.Count}", "Sort By", ImGuiComboFlags.HeightRegular))
+        {
+            foreach(var sortOpt in sortOptions)
+            {
+                bool selected = PageSortOption.Equals(sortOpt);
+                if(ImGui.RadioButton(sortOpt.Name, selected))
+                {
+                    // if user already has clicked on button, swap sort order
+                    if(selected)
+                    {
+                        sortOpt.Reverse = !sortOpt.Reverse;
+                    }
+                    else
+                    {
+                        sortOpt.Reverse = false;
+                    }
+                    PageSortOption = sortOpt;
+                    selected = true;
+                    ResetDynamicScrolling();
+                }
+                if(selected)
+                {
+                    ImGui.SameLine();
+                    UiHelper.DisabledIconButton(sortOpt.GetSortIcon(), "");
+                }
+            }
+            ImGui.EndCombo();
+        }
+    }
+
     private int drawItemCount = 0;
     private Vector4 defaultTint = new(1f, 1f, 1f, 1f);
     private unsafe void DrawItem(ICollectible collectible)
@@ -154,9 +200,7 @@ public class CollectionWidget
 
         if (ImGui.ImageButton(icon.GetWrapOrEmpty().ImGuiHandle, new Vector2(iconSize, iconSize), default, new Vector2(1f, 1f), -1, default, tint))
         {
-
         }
-
         if (ImGui.IsItemClicked())
         {
             Dev.Log($"Interacting with {collectible.Name}");
@@ -196,9 +240,13 @@ public class CollectionWidget
             collectible.SetFavorite(isFavorite);
             EventService.Publish<FilterChangeEvent, FilterChangeEventArgs>(new FilterChangeEventArgs());
         }
-
-        // Green checkmark
-        //UiHelper.IconButtonWithOffset(drawItemCount, FontAwesomeIcon.Check, 40, 150, ref obtained);
+        
+        // Mimicks the official FFXIV Yellow checkmark1
+        var obtained = collectible.GetIsObtained();
+        // shadow
+        UiHelper.IconButtonWithOffset(drawItemCount, FontAwesomeIcon.Check, 32, -48, ref obtained, 1.1f, new Vector4(1f, .741f, .188f, 1).Darken(.7f), ColorsPalette.BLACK.WithAlpha(0));
+        // color
+        UiHelper.IconButtonWithOffset(drawItemCount, FontAwesomeIcon.Check, 33, -48, ref obtained, 1.0f, new Vector4(1f, .741f, .188f, 1), ColorsPalette.BLACK.WithAlpha(0));
     }
 
     private bool EnableDynamicScrolling()

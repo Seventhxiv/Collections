@@ -70,4 +70,9 @@ public class InstanceSource : CollectibleSource
             return (int)contentIconId;
         }
     }
+
+    public override InstanceSource Clone()
+    {
+        return new InstanceSource(ContentFinderCondition);
+    }
 }
