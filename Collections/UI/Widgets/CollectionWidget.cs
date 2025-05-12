@@ -118,13 +118,6 @@ public class CollectionWidget
                 Services.Configuration.ForceTryOn = false;
             }
             ImGuiComponents.HelpMarker("Preview items on your character. Resets on window closing.\nDisabled for Mog Station items.");
-            if (ImGui.IsItemHovered())
-            {
-                ImGui.BeginTooltip();
-                ImGui.Text("Preview items on your character. Resets on window closing.");
-                ImGui.Text("Disabled for Mog Station items.");
-                ImGui.EndTooltip();
-            }
             ImGui.SameLine();
 
             // Try On Button
@@ -138,6 +131,8 @@ public class CollectionWidget
             ImGui.PushStyleColor(ImGuiCol.Button, Services.WindowsInitializer.MainWindow.originalButtonColor);
             if (ImGui.Button("Reset Preview"))
             {
+                // Personally, I think it shoud also remove equipped items.
+                
                 Services.PreviewExecutor.ResetAllPreview();
             }
             ImGui.PopStyleColor();

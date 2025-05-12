@@ -29,7 +29,6 @@ public unsafe class PreviewExecutor
 
     private static void TryOn(uint item, byte stain0 = 0, byte stain1 = 0)
     {
-        // Will need to implement second dye layer
         AgentTryon.TryOn(0xFF, item, stain0, stain1, item, false);
     }
 
@@ -102,6 +101,8 @@ public unsafe class PreviewExecutor
             };
             PreviewEquipment(equipSlot, equipmentModelId);
         }
+        // Treat reset events as preview events so that reset catches and resets this slot.
+        previewHistory.Add(equipSlot);
     }
 
     private unsafe void PreviewEquipment(ItemAdapter item, byte stain0Id, byte? stain1Id)
