@@ -144,8 +144,8 @@ public class PaletteWidget
             
             var newStain = StainColorConverter.FindClosestStain(pickedColor);
 
-            // right click on the color picker 'should' select second dye slot.
-            if(ImGui.IsMouseDown(ImGuiMouseButton.Right))
+            // shift click on the color picker to modify second dye slot.
+            if(ImGui.IsKeyDown(ImGuiKey.ModShift))
             {
                 if(ActiveStainSecondary.RowId != newStain.RowId)
                 {
