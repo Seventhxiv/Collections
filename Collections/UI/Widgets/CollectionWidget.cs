@@ -187,6 +187,9 @@ public class CollectionWidget
     private Vector4 defaultTint = new(1f, 1f, 1f, 1f);
     private unsafe void DrawItem(ICollectible collectible)
     {
+        // for debouncing, prevents interaction and favorite at the same time.
+        bool interact = false;
+        bool debounce = false;
         var icon = collectible.GetIconLazy();
 
         ImGui.SetItemAllowOverlap();
@@ -198,13 +201,7 @@ public class CollectionWidget
         }
         if (ImGui.IsItemClicked())
         {
-            Dev.Log($"Interacting with {collectible.Name}");
-            collectible.Interact();
-            if (isGlam)
-            {
-                Dev.Log("Publishing GlamourItemChangeEvent");
-                EventService.Publish<GlamourItemChangeEvent, GlamourItemChangeEventArgs>(new GlamourItemChangeEventArgs((GlamourCollectible)collectible));
-            }
+            interact = true;
         }
 
         // Details on hover
@@ -230,10 +227,24 @@ public class CollectionWidget
         // Favorite
         var isFavorite = collectible.IsFavorite();
         UiHelper.IconButtonWithOffset(drawItemCount, FontAwesomeIcon.Star, 33, 0, ref isFavorite, 0.9f);
+        if(ImGui.IsItemClicked()) {
+            debounce = true;
+        }
         if (isFavorite != collectible.IsFavorite())
         {
             collectible.SetFavorite(isFavorite);
             EventService.Publish<FilterChangeEvent, FilterChangeEventArgs>(new FilterChangeEventArgs());
+        }
+
+        if(interact && !debounce)
+        {
+            Dev.Log($"Interacting with {collectible.Name}");
+            collectible.Interact();
+            if (isGlam)
+            {
+                Dev.Log("Publishing GlamourItemChangeEvent");
+                EventService.Publish<GlamourItemChangeEvent, GlamourItemChangeEventArgs>(new GlamourItemChangeEventArgs((GlamourCollectible)collectible));
+            }
         }
         
         // Mimicks the official FFXIV Yellow checkmark1
