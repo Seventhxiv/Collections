@@ -218,14 +218,19 @@ public class EquipSlotsWidget
     public void OnPublish(DyeChangeEventArgs args)
     {
         var glamourItem = currentGlamourSet.GetItem(args.EquipSlot);
-
-        // If Dye changed for empty equip slot - do nothing
+        var equipSlot = args.EquipSlot;
+        // If Dye changed for empty equip slot - use the characters equipped item
         if (glamourItem is null)
         {
+            Services.PreviewExecutor.PreviewWithTryOnRestrictions(
+                equipSlot,
+                paletteWidgets[equipSlot].ActiveStainPrimary.RowId,
+                paletteWidgets[equipSlot].ActiveStainSecondary.RowId,
+                Services.Configuration.ForceTryOn
+                );
             return;
         }
 
-        var equipSlot = args.EquipSlot;
 
         // Update currentGlamourSet
         currentGlamourSet.GetItem(equipSlot).Stain0Id = paletteWidgets[equipSlot].ActiveStainPrimary.RowId;

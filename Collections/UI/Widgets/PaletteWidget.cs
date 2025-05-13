@@ -37,8 +37,24 @@ public class PaletteWidget
 
     public void DrawPalette()
     {
+        // Help/Tooltips
         ImGui.PushStyleColor(ImGuiCol.Text, ColorsPalette.GREY2);
         ImGui.Text("Left Click for Dye Channel 1, Right Click for Dye Channel 2");
+        ImGui.SameLine();
+        ImGuiComponents.HelpMarker("Left click to select the closest color match to the highlighted color. \nHold shift and Left click to do the above for dye channel 2");
+        ImGui.Separator();
+        // Swap dye colors
+        if(ImGuiComponents.IconButton(FontAwesomeIcon.DiagramNext))
+        {
+            var temp = ActiveStainPrimary;
+            ActiveStainPrimary = ActiveStainSecondary;
+            ActiveStainSecondary = temp;
+            EventService.Publish<DyeChangeEvent, DyeChangeEventArgs>(new DyeChangeEventArgs(EquipSlot));
+        }
+        if (ImGui.IsItemHovered())
+        {
+            ImGui.SetTooltip("Swap Dyes");
+        }
         ImGui.Separator();
         var i = 0;
         foreach (var (shade, stainList) in StainsByShade)

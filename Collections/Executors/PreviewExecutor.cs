@@ -27,6 +27,27 @@ public unsafe class PreviewExecutor
         }
     }
 
+    // Use when dye event is applied to a slot without a preview.
+    // more expensive than through using the collectible.
+    public void PreviewWithTryOnRestrictions(EquipSlot equipSlot, uint stain0Id, uint stain1Id, bool tryOn)
+    {
+
+        var itemSheet = ExcelCache<ItemAdapter>.GetSheet()!;
+        var invSlot = InventoryManager.Instance()->GetInventorySlot(InventoryType.EquippedItems, (int)equipSlot);
+        var item = itemSheet.GetRow(invSlot->GlamourId != 0 ? invSlot->GlamourId : invSlot->ItemId);
+        // if(stain0Id < 0) stain0Id = invSlot->Stains[0];
+        // if(stain1Id < 0) stain0Id = invSlot->Stains[1];
+        var tryOnOverride = tryOn; // no need to worry about already equipped mog items
+        if (tryOnOverride)
+        {
+            TryOn(item.Value.RowId, (byte)stain0Id, (byte)stain1Id);
+        }
+        else
+        {
+            Preview(item.Value, (byte)stain0Id, (byte)stain1Id);
+        }
+    }
+
     private static void TryOn(uint item, byte stain0 = 0, byte stain1 = 0)
     {
         AgentTryon.TryOn(0xFF, item, stain0, stain1, item, false);
