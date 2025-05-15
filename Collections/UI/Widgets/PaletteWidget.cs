@@ -39,9 +39,9 @@ public class PaletteWidget
     {
         // Help/Tooltips
         ImGui.PushStyleColor(ImGuiCol.Text, ColorsPalette.GREY2);
-        ImGui.Text("Left Click for Dye Channel 1, Right Click for Dye Channel 2");
+        ImGui.Text("Left click for Dye 1 | Right click for Dye 2");
         ImGui.SameLine();
-        ImGuiComponents.HelpMarker("Left click to select the closest color match to the highlighted color. \nHold shift and Left click to do the above for dye channel 2");
+        ImGuiComponents.HelpMarker("Color Picker:\nLeft click to select the closest Dye to the highlighted color\nHold shift and left click to do the above for Dye 2");
         ImGui.Separator();
         // Swap dye colors
         if(ImGuiComponents.IconButton(FontAwesomeIcon.DiagramNext))
