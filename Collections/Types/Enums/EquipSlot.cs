@@ -10,6 +10,7 @@ public enum EquipSlot : uint
     Head,
     Body,
     Gloves,
+    Waist, // Here to keep equipSlot Row ID = order
     Legs,
     Feet,
     Ears,
