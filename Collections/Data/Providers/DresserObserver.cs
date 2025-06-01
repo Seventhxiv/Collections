@@ -11,49 +11,42 @@ public unsafe class DresserObserver
     private static MirageManager* MirageManager => FFXIVClientStructs.FFXIV.Client.Game.MirageManager.Instance();
     private static FFXIVClientStructs.FFXIV.Client.Game.UI.Cabinet Cabinet => UIState.Instance()->Cabinet;
 
-    private bool firstTimeLoaded = true;
-    private DateTime lastLoadTime;
-    private const int RELOAD_THRESHOLD_IN_SECONDS = 5;
     private const int DRESSER_ITEM_LIMIT = 800;
 
     public DresserObserver()
     {
+
+        Dev.Log($"DresserObserver: AddonEventHandler called with ");
         InitializeContentsFromConfiguration();
+        Services.AddonLifecycle.RegisterListener(AddonEvent.PostRefresh, "MiragePrismPrismBox", (_, args) =>
+        {
+            LoadDresserContentsIfLoaded();
+        });
     }
 
-    public unsafe void OnFrameworkTick(IFramework framework)
+    public void Dispose()
     {
-        try
-        {
-            OnFrameworkTickX(framework);
-        }
-        catch (Exception ex)
-        {
-            Services.PluginLog.Error(ex, "Error in DresserObserver.OnFrameworkTick");
-        }
+        Services.AddonLifecycle.UnregisterListener(AddonEvent.PostRefresh, "MiragePrismPrismBox");
     }
 
-    private unsafe void OnFrameworkTickX(IFramework framework)
+    private unsafe void LoadDresserContentsIfLoaded()
     {
+        Dev.Log("DresserObserver: LoadDresserContentsDeduped called");
+
         if (IsDresserLoaded())
         {
-            if (SecondsSinceLastLoad() > RELOAD_THRESHOLD_IN_SECONDS)
+            LoadDresserContents();
+
+            // Only load Armoire when loading Dresser
+            // Dresser loaded is good indication that we are at an Inn, and interacted with either Dresser or Armoire
+            if (IsArmoireLoaded())
             {
-                LoadDresserContents();
-
-                // Only load Armoire when loading Dresser
-                // Dresser loaded is good indication that we are at an Inn, and interacted with either Dresser or Armoire
-                if (IsArmoireLoaded())
-                {
-                    LoadArmoireContents();
-                }
-
-                firstTimeLoaded = false;
+                LoadArmoireContents();
             }
         }
         else
         {
-            firstTimeLoaded = true;
+            Dev.Log("DresserObserver: MirageManager is null, skipping Dresser load");
         }
     }
 
@@ -69,16 +62,8 @@ public unsafe class DresserObserver
         return Cabinet.IsCabinetLoaded();
     }
 
-    private unsafe double SecondsSinceLastLoad()
-    {
-        return (DateTime.Now - lastLoadTime).TotalSeconds;
-    }
-
-
     private void LoadDresserContents()
     {
-        lastLoadTime = DateTime.Now;
-
         var initialItemCount = DresserItemIds.Count;
         DresserItemIds.Clear();
 
@@ -91,23 +76,13 @@ public unsafe class DresserObserver
             DresserItemIds.Add(pureItemId);
         }
 
-        if (firstTimeLoaded)
-        {
-            Dev.Log($"New Dresser load state detected, reloading every {RELOAD_THRESHOLD_IN_SECONDS} seconds");
-            Dev.Log($"Dresser contents count: {initialItemCount} -> {DresserItemIds.Count}");
-        }
-        else
-        {
-            Dev.Log($"Refreshing Dresser contents count: {initialItemCount} -> {DresserItemIds.Count}");
-        }
+        Dev.Log($"Refreshing Dresser contents count: {initialItemCount} -> {DresserItemIds.Count}");
 
         SaveDresserContentsInConfiguration();
     }
 
     private void LoadArmoireContents()
     {
-        lastLoadTime = DateTime.Now;
-
         var initialItemCount = ArmoireItemIds.Count;
         ArmoireItemIds.Clear();
 
@@ -121,15 +96,7 @@ public unsafe class DresserObserver
             }
         }
 
-        if (firstTimeLoaded)
-        {
-            Dev.Log($"New Armoire load state detected, reloading every {RELOAD_THRESHOLD_IN_SECONDS} seconds");
-            Dev.Log($"Armoire contents count: {initialItemCount} -> {ArmoireItemIds.Count}");
-        }
-        else
-        {
-            Dev.Log($"Refreshing Armoire contents count: {initialItemCount} -> {ArmoireItemIds.Count}");
-        }
+        Dev.Log($"Refreshing Armoire contents count: {initialItemCount} -> {ArmoireItemIds.Count}");
 
         SaveArmoireContentsInConfiguration();
     }

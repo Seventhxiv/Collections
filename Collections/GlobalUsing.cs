@@ -17,6 +17,7 @@ global using Dalamud.Game;
 global using Dalamud.Plugin.Services;
 global using Dalamud.Interface;
 global using Dalamud.Interface.Components;
+global using Dalamud.Game.Addon.Lifecycle;
 
 // Project
 global using static Collections.Extensions;

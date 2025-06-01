@@ -22,6 +22,7 @@ public class Services
     [PluginService] public static IPluginLog PluginLog { get; private set; }
     [PluginService] public static ITextureProvider TextureProvider { get; private set; }
     [PluginService] public static IDutyState DutyState { get; private set; }
+    [PluginService] public static IAddonLifecycle AddonLifecycle { get; private set; }
 
     public static Plugin Plugin { get; private set; }
     public static Configuration Configuration { get; private set; }
@@ -62,7 +63,6 @@ public class Services
 
         // Framework ticks
         Framework.Update += WindowsInitializer.MainWindow.OnFrameworkTick;
-        Framework.Update += DresserObserver.OnFrameworkTick;
 
         Dev.Stop();
 
@@ -80,6 +80,8 @@ public class Services
 
         // Framework ticks
         Framework.Update -= WindowsInitializer.MainWindow.OnFrameworkTick;
-        Framework.Update -= DresserObserver.OnFrameworkTick;
+
+        // Dresser
+        DresserObserver.Dispose();
     }
 }
