@@ -2,7 +2,8 @@ namespace Collections;
 
 public class PaletteWidget
 {
-    public StainAdapter ActiveStain = EmptyStain;
+    public StainAdapter ActiveStainPrimary = EmptyStain;
+    public StainAdapter ActiveStainSecondary = EmptyStain;
 
     private Vector2 stainButtonSize = new(30, 30);
     private Vector2 stainButtonRectSize = new(35, 35);
@@ -36,6 +37,25 @@ public class PaletteWidget
 
     public void DrawPalette()
     {
+        // Help/Tooltips
+        ImGui.PushStyleColor(ImGuiCol.Text, ColorsPalette.GREY2);
+        ImGui.Text("Left click for Dye 1 | Right click for Dye 2");
+        ImGui.SameLine();
+        ImGuiComponents.HelpMarker("Color Picker:\nLeft click to select the closest Dye to the highlighted color\nHold shift and left click to do the above for Dye 2");
+        ImGui.Separator();
+        // Swap dye colors
+        if(ImGuiComponents.IconButton(FontAwesomeIcon.DiagramNext))
+        {
+            var temp = ActiveStainPrimary;
+            ActiveStainPrimary = ActiveStainSecondary;
+            ActiveStainSecondary = temp;
+            EventService.Publish<DyeChangeEvent, DyeChangeEventArgs>(new DyeChangeEventArgs(EquipSlot));
+        }
+        if (ImGui.IsItemHovered())
+        {
+            ImGui.SetTooltip("Swap Dyes");
+        }
+        ImGui.Separator();
         var i = 0;
         foreach (var (shade, stainList) in StainsByShade)
         {
@@ -45,20 +65,57 @@ public class PaletteWidget
                 var stain = stainList[j];
                 var color = stain.RGBcolor;
                 var colorVec = new Vector4(color.R / 255f, color.G / 255f, color.B / 255f, 1f);
-
-                if (ActiveStain.RowId == stain.RowId)
+                // Both dye slots set to same color
+                if(ActiveStainPrimary.RowId == stain.RowId && ActiveStainSecondary.RowId == stain.RowId)
+                {
+                    var origPos = ImGui.GetCursorPos();
+                    ImGui.SetCursorPos(new Vector2(origPos.X + stainButtonRectOffset.X, origPos.Y + stainButtonRectOffset.Y));
+                    ImGui.ColorButton(stain.Name.ToString(), ColorsPalette.WHITE, ImGuiColorEditFlags.NoTooltip, stainButtonRectSize);
+                    ImGui.SetCursorPos(origPos);
+                }
+                else if (ActiveStainPrimary.RowId == stain.RowId)
                 {
                     var origPos = ImGui.GetCursorPos();
                     ImGui.SetCursorPos(new Vector2(origPos.X + stainButtonRectOffset.X, origPos.Y + stainButtonRectOffset.Y));
                     ImGui.ColorButton(stain.Name.ToString(), ColorsPalette.YELLOW, ImGuiColorEditFlags.NoTooltip, stainButtonRectSize);
                     ImGui.SetCursorPos(origPos);
                 }
+                else if (ActiveStainSecondary.RowId == stain.RowId)
+                {
+                    var origPos = ImGui.GetCursorPos();
+                    ImGui.SetCursorPos(new Vector2(origPos.X + stainButtonRectOffset.X, origPos.Y + stainButtonRectOffset.Y));
+                    // Bright blue for secondary select
+                    ImGui.ColorButton(stain.Name.ToString(), new Vector4(.195f, .964f, .983f ,0), ImGuiColorEditFlags.NoTooltip, stainButtonRectSize);
+                    ImGui.SetCursorPos(origPos);
+                }
 
                 // Draw button
-                if (ImGui.ColorButton(stain.Name.ToString(), colorVec, ImGuiColorEditFlags.NoSidePreview | ImGuiColorEditFlags.NoSmallPreview | ImGuiColorEditFlags.NoTooltip, stainButtonSize))
+                if (ImGui.ColorButton(stain.Name.ToString(), colorVec, ImGuiColorEditFlags.NoSidePreview | ImGuiColorEditFlags.NoSmallPreview | ImGuiColorEditFlags.NoInputs | ImGuiColorEditFlags.NoTooltip, stainButtonSize))
+                {} // KEEP THESE CURLY BRACES HERE
+                if(ImGui.IsItemClicked(ImGuiMouseButton.Left))
                 {
-                    ActiveStain = stain;
-                    pickedColor = new Vector3(ActiveStain.RGBcolor.R / 255f, ActiveStain.RGBcolor.G / 255f, ActiveStain.RGBcolor.B / 255f);
+                    // toggle off if clicked on while active
+                    if(stain.RowId == ActiveStainPrimary.RowId)
+                    {
+                        ActiveStainPrimary = EmptyStain;
+                    }
+                    else {
+                        ActiveStainPrimary = stain;
+                    }
+                    pickedColor = new Vector3(ActiveStainPrimary.RGBcolor.R / 255f, ActiveStainPrimary.RGBcolor.G / 255f, ActiveStainPrimary.RGBcolor.B / 255f);
+                    EventService.Publish<DyeChangeEvent, DyeChangeEventArgs>(new DyeChangeEventArgs(EquipSlot));
+                }
+                if(ImGui.IsItemClicked(ImGuiMouseButton.Right))
+                {
+                    // toggle off if clicked on while active
+                    if(stain.RowId == ActiveStainSecondary.RowId)
+                    {
+                        ActiveStainSecondary = EmptyStain;
+                    }
+                    else {
+                        ActiveStainSecondary = stain;
+                    }
+                    pickedColor = new Vector3(ActiveStainPrimary.RGBcolor.R / 255f, ActiveStainPrimary.RGBcolor.G / 255f, ActiveStainPrimary.RGBcolor.B / 255f);
                     EventService.Publish<DyeChangeEvent, DyeChangeEventArgs>(new DyeChangeEventArgs(EquipSlot));
                 }
 
@@ -100,23 +157,30 @@ public class PaletteWidget
             // Show original selection
             //var pickedColorVec4 = new Vector4(pickedColor.X, pickedColor.Y, pickedColor.Z, 1);
             //ImGui.ColorButton("color-button", pickedColorVec4);
-
+            
             var newStain = StainColorConverter.FindClosestStain(pickedColor);
 
-            if (ActiveStain.RowId != newStain.RowId)
+            // shift click on the color picker to modify second dye slot.
+            if(ImGui.IsKeyDown(ImGuiKey.ModShift))
             {
-                ActiveStain = newStain;
+                if(ActiveStainSecondary.RowId != newStain.RowId)
+                {
+                    ActiveStainSecondary = newStain;
+                    EventService.Publish<DyeChangeEvent, DyeChangeEventArgs>(new DyeChangeEventArgs(EquipSlot));
+                }
+            }
+            else if (ActiveStainPrimary.RowId != newStain.RowId)
+            {
+                ActiveStainPrimary = newStain;
                 EventService.Publish<DyeChangeEvent, DyeChangeEventArgs>(new DyeChangeEventArgs(EquipSlot));
             }
-
-            //ImGui.Text(color);
-            //ImGui.Text(ActiveStain.Name);
         }
     }
 
     public void ResetStain()
     {
-        ActiveStain = EmptyStain;
+        ActiveStainPrimary = EmptyStain;
+        ActiveStainSecondary = EmptyStain;
     }
 }
 

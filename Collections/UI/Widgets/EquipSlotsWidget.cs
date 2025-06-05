@@ -44,7 +44,7 @@ public class EquipSlotsWidget
         // TODO indication which items exist in Dresser
         foreach (var (equipSlot, glamourItem) in currentGlamourSet.Items)
         {
-            PlatesExecutor.SetPlateItem(glamourItem.GetCollectible().ExcelRow, (byte)glamourItem.StainId);
+            PlatesExecutor.SetPlateItem(glamourItem.GetCollectible().ExcelRow, (byte)glamourItem.Stain0Id, (byte)glamourItem.Stain1Id);
         }
     }
     public unsafe void Draw()
@@ -114,8 +114,8 @@ public class EquipSlotsWidget
             ImGui.SetCursorPos(new Vector2(ImGui.GetCursorPos().X + paletteWidgetButtonOffset.X, ImGui.GetCursorPos().Y + paletteWidgetButtonOffset.Y));
 
             // Draw Palette Widget button
-            var paletteButtonColor = paletteWidgets[equipSlot].ActiveStain.RowId == 0 ?
-                paletteWidgetButtonDefaultColor : paletteWidgets[equipSlot].ActiveStain.VecColor;
+            var paletteButtonColor = paletteWidgets[equipSlot].ActiveStainPrimary.RowId == 0 ?
+                paletteWidgetButtonDefaultColor : paletteWidgets[equipSlot].ActiveStainPrimary.VecColor;
             ImGui.PushStyleColor(ImGuiCol.Text, paletteButtonColor);
             ImGui.PushStyleColor(ImGuiCol.ButtonHovered, new Vector4(0, 0, 0, 0));
             ImGuiComponents.IconButton(FontAwesomeIcon.PaintBrush);
@@ -136,8 +136,10 @@ public class EquipSlotsWidget
 
                 // Details on hover
                 ImGui.BeginTooltip();
-                var stainName = paletteWidgets[equipSlot].ActiveStain.RowId == 0 ? "No Dye Selected" : paletteWidgets[equipSlot].ActiveStain.Name;
-                ImGui.Text(stainName.ToString());
+                var stain0Name = paletteWidgets[equipSlot].ActiveStainPrimary.RowId == 0 ? "No Dye Selected" : paletteWidgets[equipSlot].ActiveStainPrimary.Name;
+                var stain1Name = paletteWidgets[equipSlot].ActiveStainSecondary.RowId == 0 ? "No Dye Selected" : paletteWidgets[equipSlot].ActiveStainSecondary.Name;
+                ImGui.Text(stain0Name.ToString());
+                ImGui.Text(stain1Name.ToString());
                 ImGui.EndTooltip();
 
                 // Reset on right click
@@ -201,7 +203,8 @@ public class EquipSlotsWidget
         // Set pelette stain state
         foreach (var (equipSlot, glamourItem) in args.GlamourSet.Items)
         {
-            paletteWidgets[equipSlot].ActiveStain = glamourItem.GetStain();
+            paletteWidgets[equipSlot].ActiveStainPrimary = glamourItem.GetStainPrimary();
+            paletteWidgets[equipSlot].ActiveStainSecondary = glamourItem.GetStainSecondary();
         }
     }
 
@@ -209,28 +212,35 @@ public class EquipSlotsWidget
     {
         // Update current glamour set
         var item = args.Collectible.ExcelRow;
-        currentGlamourSet.SetItem(item, paletteWidgets[item.EquipSlot].ActiveStain.RowId);
+        currentGlamourSet.SetItem(item, paletteWidgets[item.EquipSlot].ActiveStainPrimary.RowId, paletteWidgets[item.EquipSlot].ActiveStainSecondary.RowId);
     }
 
     public void OnPublish(DyeChangeEventArgs args)
     {
         var glamourItem = currentGlamourSet.GetItem(args.EquipSlot);
-
-        // If Dye changed for empty equip slot - do nothing
+        var equipSlot = args.EquipSlot;
+        // If Dye changed for empty equip slot - use the characters equipped item
         if (glamourItem is null)
         {
+            Services.PreviewExecutor.PreviewWithTryOnRestrictions(
+                equipSlot,
+                paletteWidgets[equipSlot].ActiveStainPrimary.RowId,
+                paletteWidgets[equipSlot].ActiveStainSecondary.RowId,
+                Services.Configuration.ForceTryOn
+                );
             return;
         }
 
-        var equipSlot = args.EquipSlot;
 
         // Update currentGlamourSet
-        currentGlamourSet.GetItem(equipSlot).StainId = paletteWidgets[equipSlot].ActiveStain.RowId;
+        currentGlamourSet.GetItem(equipSlot).Stain0Id = paletteWidgets[equipSlot].ActiveStainPrimary.RowId;
+        currentGlamourSet.GetItem(equipSlot).Stain1Id = paletteWidgets[equipSlot].ActiveStainSecondary.RowId;
 
         // Refresh Preview
         Services.PreviewExecutor.PreviewWithTryOnRestrictions(
             glamourItem.GetCollectible(),
-            paletteWidgets[equipSlot].ActiveStain.RowId,
+            paletteWidgets[equipSlot].ActiveStainPrimary.RowId,
+            paletteWidgets[equipSlot].ActiveStainSecondary.RowId,
             Services.Configuration.ForceTryOn
             );
     }

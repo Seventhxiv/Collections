@@ -12,7 +12,7 @@ public unsafe class PlatesExecutor
         return plateAgent->AgentInterface.IsAgentActive();
     }
 
-    public static unsafe void SetPlateItem(ItemAdapter item, byte stainId = 0)
+    public static unsafe void SetPlateItem(ItemAdapter item, byte stain0Id = 0, byte stain1Id = 0)
     {
         try
         {
@@ -24,15 +24,15 @@ public unsafe class PlatesExecutor
             // Look up in Dresser
             if (Services.ItemFinder.IsItemInDresser(item.RowId))
             {
-                Dev.Log($"Found {item.Name} ({item.RowId}) in Dresser, Adding to plate with stain: {stainId}");
+                Dev.Log($"Found {item.Name} ({item.RowId}) in Dresser, Adding to plate with stain: {stain0Id}, {stain1Id}");
                 var index = Services.DresserObserver.DresserItemIds.IndexOf(item.RowId);
-                SetPlateItem(PlateItemSource.Dresser, index, item.RowId, stainId);
+                SetPlateItem(PlateItemSource.Dresser, index, item.RowId, stain0Id, stain1Id);
             }
 
             // Look up in Armoire
             else if (Services.ItemFinder.IsItemInArmoireCache(item.RowId))
             {
-                Dev.Log($"Found {item.Name} ({item.RowId}) in Armoire, Adding to plate with stain: {stainId}");
+                Dev.Log($"Found {item.Name} ({item.RowId}) in Armoire, Adding to plate with stain: {stain0Id}, {stain1Id}");
 
                 // Checking Armoire Loaded since it's not always loaded when in plates window
                 if (!Services.DresserObserver.IsArmoireLoaded())
@@ -40,7 +40,7 @@ public unsafe class PlatesExecutor
                     Dev.Log($"Armoire not loaded, not applying {item.Name} ({item.RowId}) to plate");
                 }
                 var cabinetId = (int)Services.ItemFinder.CabinetIdFromItemId(item.RowId);
-                SetPlateItem(PlateItemSource.Armoire, cabinetId, item.RowId, stainId);
+                SetPlateItem(PlateItemSource.Armoire, cabinetId, item.RowId, stain0Id, stain1Id);
             }
 
             else
@@ -54,9 +54,9 @@ public unsafe class PlatesExecutor
         }
     }
 
-    private static unsafe void SetPlateItem(PlateItemSource plateItemSource, int index, uint itemId, byte stainId = 0)
+    private static unsafe void SetPlateItem(PlateItemSource plateItemSource, int index, uint itemId, byte stain0Id = 0, byte stain1Id = 0)
     {
-        Services.AddressResolver.setGlamourPlateSlot((IntPtr)plateAgent, plateItemSource, index, itemId, stainId);
+        Services.AddressResolver.setGlamourPlateSlot((IntPtr)plateAgent, plateItemSource, index, itemId, stain0Id, stain1Id);
     }
 
     private static unsafe void SetPlateAgentToEquipSlot(EquipSlot equipSlot)

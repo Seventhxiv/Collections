@@ -4,7 +4,7 @@ namespace Collections;
 
 public class AddressResolver  : BaseAddressResolver
 {
-    public delegate void setGlamourPlateSlotDelegate(IntPtr agent, PlateItemSource plateItemSource, int glamId, uint itemId, byte stainId);
+    public delegate void setGlamourPlateSlotDelegate(IntPtr agent, PlateItemSource plateItemSource, int glamId, uint itemId, byte stainId, byte stain1Id);
     public readonly setGlamourPlateSlotDelegate setGlamourPlateSlot;
     protected nint setGlamourPlateSlotAddress { get; private set; }
 
