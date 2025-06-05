@@ -328,7 +328,7 @@ public class GlamourTreeWidget
         // TODO add indication on which items exist in Dresser
         foreach (var (equipSlot, glamourItem) in currentGlamourSet.Items)
         {
-            PlatesExecutor.SetPlateItem(glamourItem.GetCollectible().ExcelRow, (byte)glamourItem.Stain0Id);
+            PlatesExecutor.SetPlateItem(glamourItem.GetCollectible().ExcelRow, (byte)glamourItem.Stain0Id, (byte)glamourItem.Stain1Id);
         }
     }
 
@@ -369,6 +369,8 @@ public class GlamourTreeWidget
                 }
             }
         }
+        // Publish GlamourSetChangeEvent
+        EventService.Publish<GlamourSetChangeEvent, GlamourSetChangeEventArgs>(new GlamourSetChangeEventArgs(currentGlamourSet, true));
     }
 
     public void SaveGlamourTreeToConfiguration()

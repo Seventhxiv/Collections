@@ -33,7 +33,7 @@ public unsafe class PreviewExecutor
     {
 
         var itemSheet = ExcelCache<ItemAdapter>.GetSheet()!;
-        var invSlot = InventoryManager.Instance()->GetInventorySlot(InventoryType.EquippedItems, (int)equipSlot);
+        var invSlot = InventoryManager.Instance()->GetInventorySlot(InventoryType.EquippedItems, EquipSlotConverter.EquipSlotToInventorySlot(equipSlot));
         var item = itemSheet.GetRow(invSlot->GlamourId != 0 ? invSlot->GlamourId : invSlot->ItemId);
         // if(stain0Id < 0) stain0Id = invSlot->Stains[0];
         // if(stain1Id < 0) stain0Id = invSlot->Stains[1];

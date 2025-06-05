@@ -10,7 +10,6 @@ public enum EquipSlot : uint
     Head,
     Body,
     Gloves,
-    Waist, // Here to keep equipSlot Row ID = order
     Legs,
     Feet,
     Ears,
@@ -47,7 +46,17 @@ class EquipSlotConverter
             case EquipSlot.Wrists: return EquipmentSlot.Wrists;
             case EquipSlot.FingerR: return EquipmentSlot.RFinger;
             case EquipSlot.FingerL: return EquipmentSlot.LFinger;
-            default: throw new ArgumentException("Expected EquipSlot with possible EquipmentSlot match");
+            default: throw new ArgumentException($"EquipSlot ${equipSlot} has no match to an EquipmentSlot");
         }
+    }
+
+    public static int EquipSlotToInventorySlot(EquipSlot equipSlot)
+    {
+        if (equipSlot <= EquipSlot.Gloves)
+        {
+            return (int)equipSlot;
+        }
+        // accounts for belts being removed
+        return (int)equipSlot + 1;
     }
 }
