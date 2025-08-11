@@ -1,4 +1,4 @@
-<Project Sdk="Dalamud.NET.Sdk/12.0.2">
+<Project Sdk="Dalamud.NET.Sdk/13.0.0">
     <PropertyGroup>
         <Version>1.0.2.7</Version>
         <Description>Collections</Description>
@@ -78,7 +78,7 @@
     <ItemGroup>
         <PackageReference Include="CSVFile" Version="3.2.0" />
         <PackageReference Include="CsvHelper" Version="30.0.1" />
-        <PackageReference Include="LuminaSupplemental.Excel" Version="2.3.3" />
+        <PackageReference Include="LuminaSupplemental.Excel" Version="3.0.1" />
         <PackageReference Include="System.Net.Http" Version="4.3.4" />
         <Reference Include="FFXIVClientStructs">
             <HintPath>$(DalamudLibPath)FFXIVClientStructs.dll</HintPath>

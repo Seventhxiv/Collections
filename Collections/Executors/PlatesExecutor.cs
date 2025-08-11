@@ -56,7 +56,7 @@ public unsafe class PlatesExecutor
 
     private static unsafe void SetPlateItem(PlateItemSource plateItemSource, int index, uint itemId, byte stain0Id = 0, byte stain1Id = 0)
     {
-        Services.AddressResolver.setGlamourPlateSlot((IntPtr)plateAgent, plateItemSource, index, itemId, stain0Id, stain1Id);
+        plateAgent->SetSelectedItemData((AgentMiragePrismMiragePlateData.ItemSource)plateItemSource, (uint)index, itemId, stain0Id, stain1Id);
     }
 
     private static unsafe void SetPlateAgentToEquipSlot(EquipSlot equipSlot)
@@ -69,6 +69,6 @@ public unsafe class PlatesExecutor
 
 public enum PlateItemSource
 {
-    Dresser = 1,
-    Armoire = 2,
+    Dresser = AgentMiragePrismMiragePlateData.ItemSource.PrismBox,
+    Armoire = AgentMiragePrismMiragePlateData.ItemSource.Cabinet,
 }

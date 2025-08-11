@@ -2,7 +2,6 @@
 global using System;
 global using System.Linq;
 global using System.Collections.Generic;
-global using ImGuiNET;
 global using System.Numerics;
 global using System.Threading.Tasks;
 
@@ -18,6 +17,7 @@ global using Dalamud.Plugin.Services;
 global using Dalamud.Interface;
 global using Dalamud.Interface.Components;
 global using Dalamud.Game.Addon.Lifecycle;
+global using Dalamud.Bindings.ImGui;
 
 // Project
 global using static Collections.Extensions;

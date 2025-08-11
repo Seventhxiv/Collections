@@ -6,7 +6,7 @@ public class RecipeOpener
 {
     public static unsafe void OpenRecipeByItemId(uint itemId)
     {
-        AgentRecipeNote.Instance()->OpenRecipeByItemId(itemId);
+        AgentRecipeNote.Instance()->SearchRecipeByItemId(itemId);
     }
 
     public static unsafe void OpenRecipeByRecipeId(uint recipeId)

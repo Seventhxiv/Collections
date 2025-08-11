@@ -87,7 +87,7 @@ public class EquipSlotsWidget
                 icon = equipSlotIcons[equipSlot];
 
             // Draw equip slot buttons
-            if (ImGui.ImageButton(icon.GetWrapOrEmpty().ImGuiHandle, new Vector2(48, 50)))
+            if (ImGui.ImageButton(icon.GetWrapOrEmpty().Handle, new Vector2(48, 50)))
             {
                 SetEquipSlot(equipSlot);
             }
