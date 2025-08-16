@@ -61,15 +61,12 @@ public class InstanceTab : IDrawable
                 {
                     continue;
                 }
-                ImGui.Selectable(name);
-                CollectionWidget.Draw(collection, false, false);
+                CollectionWidget.Draw(collection, true, false, name);
             }
         }
-
         if (collections.ContainsKey(GlamourCollectible.CollectionName))
         {
-            ImGui.Selectable(GlamourCollectible.CollectionName);
-            CollectionWidget.Draw(collections[GlamourCollectible.CollectionName], false, false);
+            CollectionWidget.Draw(collections[GlamourCollectible.CollectionName], true, false, GlamourCollectible.CollectionName);
         }
     }
 

@@ -22,7 +22,7 @@ public class CollectionWidget
 
     private int dynamicScrollingCurrentSize;
     private int obtainedState = 0;
-    public unsafe void Draw(List<ICollectible> collectionList, bool expandAvailableRegion = true, bool enableFilters = true)
+    public unsafe void Draw(List<ICollectible> collectionList, bool expandAvailableRegion = true, bool enableFilters = true, string? collectionHeader = null)
     {
         // Draw filters
         if (enableFilters)
@@ -31,6 +31,7 @@ public class CollectionWidget
             // Sort by user selection
             collectionList = PageSortOption.SortCollection(collectionList).ToList();
         }
+        
         // Expand child on remaining window space
         if (expandAvailableRegion)
         {
@@ -49,6 +50,12 @@ public class CollectionWidget
 
         drawItemCount = 0;
         var iconsPerRow = GetIconsPerRow();
+
+            // Add header
+        if (collectionHeader != null)
+        {
+            ImGui.Selectable(collectionHeader);
+        }
 
         for (var i = 0; i < collectionList.Count; i++)
         {

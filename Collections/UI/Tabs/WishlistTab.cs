@@ -17,18 +17,16 @@ public class WishlistTab : IDrawable
 
     public void Draw()
     {
-        var isEmpty = true;
+        bool empty = true;
         foreach (var (name, collection) in collections)
         {
             if (collection.Any())
             {
-                ImGui.Selectable(name);
-                CollectionWidget.Draw(collection, false, false);
-                isEmpty = false;
+                CollectionWidget.Draw(collection, true, false, name);
+                empty = false; 
             }
         }
-
-        if (isEmpty)
+        if (empty)
         {
             ImGui.Text("No items in Wish List");
         }
