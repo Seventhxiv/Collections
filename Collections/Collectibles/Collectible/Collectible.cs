@@ -31,7 +31,7 @@ public abstract class Collectible<T> : ICollectible where T : struct, IExcelRow<
         new CollectibleSortOption(
             "Patch", 
             Comparer<ICollectible>.Create((c1, c2) => c2.PatchAdded.CompareTo(c1.PatchAdded)),
-            Icons: (FontAwesomeIcon.SortNumericDown, FontAwesomeIcon.SortNumericUp)
+            Icons: (FontAwesomeIcon.SortNumericDownAlt, FontAwesomeIcon.SortNumericUpAlt)
         ),
         new CollectibleSortOption(
             "Name",
