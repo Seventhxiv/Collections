@@ -19,7 +19,7 @@ public class TooltipWidget
         // Icon
         if (icon != null)
         {
-            ImGui.Image(icon.GetWrapOrEmpty().ImGuiHandle, iconSize);
+            ImGui.Image(icon.GetWrapOrEmpty().Handle, iconSize);
             ImGui.SameLine();
             // adds dye icons to the tooltips
             if (collectible.GetType() == typeof(GlamourCollectible) && ((GlamourCollectible)collectible).GetNumberOfDyeSlots() >= 1)
@@ -163,7 +163,7 @@ public class TooltipWidget
                             icon = costItem.collectibleKey.GetIconLazy();
                             if (icon != null)
                             {
-                                ImGui.Image(icon.GetWrapOrEmpty().ImGuiHandle, new Vector2(icon.GetWrapOrEmpty().Width / 3, icon.GetWrapOrEmpty().Height / 3));
+                                ImGui.Image(icon.GetWrapOrEmpty().Handle, new Vector2(icon.GetWrapOrEmpty().Width / 3, icon.GetWrapOrEmpty().Height / 3));
                                 ImGui.SameLine();
                             }
 
@@ -181,7 +181,7 @@ public class TooltipWidget
                         icon = source.GetIconLazy();
                         if (icon != null)
                         {
-                            ImGui.Image(icon.GetWrapOrEmpty().ImGuiHandle, sourceIconSize);
+                            ImGui.Image(icon.GetWrapOrEmpty().Handle, sourceIconSize);
                             ImGui.SameLine();
                         }
                         ImGui.PushTextWrapPos(UiHelper.UnitWidth() * 50);

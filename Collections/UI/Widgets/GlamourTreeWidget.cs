@@ -66,7 +66,7 @@ public class GlamourTreeWidget
 
             //ImGui.Text(FontAwesomeIcon.addre.ToIconString());
             //ImGui.SameLine();
-            //if (ImGui.ImageButton(icon.ImGuiHandle, iconSize))
+            //if (ImGui.ImageButton(icon.Handle, iconSize))
             if (ImGuiComponents.IconButton(FontAwesomeIcon.Copy))
             {
                 if (isInPlateWindow)
@@ -98,7 +98,7 @@ public class GlamourTreeWidget
             if (!isInspecting)
                 ImGui.PushStyleColor(ImGuiCol.Text, ColorsPalette.GREY2);
 
-            //ImGui.ImageButton(icon.ImGuiHandle, iconSize);
+            //ImGui.ImageButton(icon.Handle, iconSize);
             //UiHelper.InputText("examine-button", isInspecting ? CopyInspectTargetToGlamourSet : null);
             UiHelper.IconButtonWithPopUpInputText(FontAwesomeIcon.ArrowCircleDown, isInspecting ? CopyInspectTargetToGlamourSet : null);
 
@@ -134,7 +134,7 @@ public class GlamourTreeWidget
             if (ImGui.TreeNodeEx($"{directory.Name}##{n}", treeFlags))
             {
                 // Directory - context menu
-                if (ImGui.BeginPopupContextItem())
+                if (ImGui.BeginPopupContextItem($"{directory.Name}##context-menu{n}"))
                 {
                     ImGui.Button($"Rename##directory-rename{n}");
                     UiHelper.InputText($"Rename##directory-rename{n}", (name) => RenameDirectory(n, name));
@@ -175,7 +175,7 @@ public class GlamourTreeWidget
                     }
 
                     // Glamour Set - context menu
-                    if (ImGui.BeginPopupContextItem())
+                    if (ImGui.BeginPopupContextItem($"{glamourSet.Name}##context-menu{n}{k}"))
                     {
                         ImGui.Button($"Rename##{n}{k}");
                         UiHelper.InputText($"Rename##{n}{k}", (name) => RenameGlamourSet(n, k, name));
@@ -190,13 +190,13 @@ public class GlamourTreeWidget
                     // Glamour Set - drop source
                     if (ImGui.BeginDragDropSource())
                     {
-                        // Not used really
-                        unsafe
-                        {
-                            var i = 0;
-                            int* tesnum = &i;
-                            ImGui.SetDragDropPayload($"payload{i}", new IntPtr(tesnum), sizeof(int));
-                        }
+                        // // Not used really
+                        // unsafe
+                        // {
+                        //     var i = 0;
+                        //     int* tesnum = &i;
+                        //     ImGui.SetDragDropPayload($"payload{i}", new IntPtr(tesnum), sizeof(int));
+                        // }
 
                         // Capture drag source state
                         dropSource = (n, k);

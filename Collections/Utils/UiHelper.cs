@@ -198,7 +198,7 @@ public class UiHelper
         {
             tintColor = new Vector4(0.5f, 0.5f, 0.5f, 0.85f);
         }
-        return ImGui.ImageButton(icon.GetWrapOrEmpty().ImGuiHandle, size, Vector2.Zero, Vector2.One, 1, Vector4.Zero, tintColor);
+        return ImGui.ImageButton(icon.GetWrapOrEmpty().Handle, size, Vector2.Zero, Vector2.One, 1, Vector4.Zero, tintColor);
     }
 
 

@@ -34,7 +34,6 @@ public class Services
     public static LodestoneClient LodestoneClient { get; private set; }
     public static DresserObserver DresserObserver { get; private set; }
     public static ItemFinder ItemFinder { get; private set; }
-    public static AddressResolver AddressResolver { get; private set; }
     public static PreviewExecutor PreviewExecutor { get; private set; }
 
     public Services(Plugin plugin)
@@ -46,7 +45,6 @@ public class Services
         Configuration = Configuration.GetConfig();
 
         // General
-        AddressResolver = new AddressResolver();
         PreviewExecutor = new PreviewExecutor();
         UniversalisClient = new UniversalisClient();
         ItemFinder = new ItemFinder();
