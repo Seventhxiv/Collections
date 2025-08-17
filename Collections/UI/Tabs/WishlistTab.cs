@@ -9,7 +9,7 @@ public class WishlistTab : IDrawable
     public WishlistTab()
     {
         EventService = new EventService();
-        CollectionWidget = new CollectionWidget(EventService, false);
+        CollectionWidget = new CollectionWidget(EventService, false, true);
         LoadCollectibles();
 
         EventService.Subscribe<FilterChangeEvent, FilterChangeEventArgs>(OnPublish);
@@ -17,18 +17,20 @@ public class WishlistTab : IDrawable
 
     public void Draw()
     {
-        bool empty = true;
-        foreach (var (name, collection) in collections)
-        {
+        List<ICollectible> merged = [];
+        foreach (var (name, collection) in collections) {
             if (collection.Any())
             {
-                CollectionWidget.Draw(collection, true, false, name);
-                empty = false; 
+                merged.AddRange(collection);
             }
         }
-        if (empty)
+        if (merged.Count == 0)
         {
             ImGui.Text("No items in Wish List");
+        }
+        else
+        {
+            CollectionWidget.Draw(merged, enableFilters: false, enableCollectionHeaders: true);
         }
     }
 

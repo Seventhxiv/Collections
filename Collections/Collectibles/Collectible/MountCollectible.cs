@@ -5,11 +5,11 @@ namespace Collections;
 
 public class MountCollectible : Collectible<Mount>, ICreateable<MountCollectible, Mount>
 {
-    public new static string CollectionName => "Mounts";
+    public static string CollectionName => "Mounts";
 
     public MountCollectible(Mount excelRow) : base(excelRow)
     {
-        SortOptions.Add(new CollectibleSortOption("Seats", Comparer<ICollectible>.Create((c1, c2) => ((MountCollectible)c1).ExcelRow.ExtraSeats.CompareTo(((MountCollectible)c2).ExcelRow.ExtraSeats)), false, null));
+        SortOptions.Add(new CollectibleSortOption("Seats", (c) => c is MountCollectible ? ((MountCollectible)c).ExcelRow.ExtraSeats : -1));
     }
 
     public static MountCollectible Create(Mount excelRow)

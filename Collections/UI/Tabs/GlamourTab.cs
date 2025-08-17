@@ -18,7 +18,7 @@ public class GlamourTab : IDrawable
         JobSelectorWidget = new JobSelectorWidget(EventService);
         ContentFiltersWidget = new ContentFiltersWidget(EventService, 2);
         EquipSlotsWidget = new EquipSlotsWidget(EventService);
-        CollectionWidget = new CollectionWidget(EventService, true);
+        CollectionWidget = new CollectionWidget(EventService, true, false);
 
         ApplyFilters();
 
@@ -133,8 +133,6 @@ public class GlamourTab : IDrawable
     {
         Dev.Log();
 
-        CollectionWidget.ResetDynamicScrolling();
-
         Task.Run(() =>
         {
             foreach (var collectible in Services.DataProvider.GetCollection<GlamourCollectible>())
@@ -146,9 +144,6 @@ public class GlamourTab : IDrawable
 
     private void ApplyFilters()
     {
-        // Refresh dynamic scrolling
-        CollectionWidget.ResetDynamicScrolling();
-
         // Refresh all filteres (1) Equip slot (2) content type (3) job
         var contentFilters = ContentFiltersWidget.Filters.Where(d => d.Value).Select(d => d.Key);
         var jobFilters = JobSelectorWidget.Filters.Where(d => d.Value).Select(d => d.Key).ToList();

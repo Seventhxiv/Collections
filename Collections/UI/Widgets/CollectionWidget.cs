@@ -3,96 +3,93 @@ namespace Collections;
 public class CollectionWidget
 {
     private float iconSize = 65f;
-    private int dynamicScrollingInitialSize = 200;
-    private int dynamicScrollingIncrementsPerFrame = 40;
     private int pageSortWidgetWidth = "Sort By".Length * 13;
     private string searchFilter = ""; 
     private CollectibleSortOption PageSortOption { get; set; }
     private bool isGlam { get; init; } = false;
     private EventService EventService { get; init; }
     private TooltipWidget CollectibleTooltipWidget { get; init; }
-    public CollectionWidget(EventService eventService, bool isGlam)
+    public CollectionWidget(EventService eventService, bool isGlam, bool isMultiCollection)
     {
         EventService = eventService;
         this.isGlam = isGlam;
-        ResetDynamicScrolling();
         CollectibleTooltipWidget = new TooltipWidget(EventService);
-        PageSortOption = new CollectibleSortOption("Patch", Comparer<ICollectible>.Create((c1, c2) => c2.PatchAdded.CompareTo(c1.PatchAdded)), false, null);
+        PageSortOption = new CollectibleSortOption("Patch", (c) => c.PatchAdded, true, null);
     }
 
-    private int dynamicScrollingCurrentSize;
     private int obtainedState = 0;
-    public unsafe void Draw(List<ICollectible> collectionList, bool expandAvailableRegion = true, bool enableFilters = true, string? collectionHeader = null)
+
+    public unsafe void Draw(List<ICollectible> collectionList, bool enableFilters = true, bool enableCollectionHeaders = false)
     {
         // Draw filters
         if (enableFilters)
         {
             DrawFilters(collectionList);
             // Sort by user selection
-            collectionList = PageSortOption.SortCollection(collectionList).ToList();
-        }
-        
-        // Expand child on remaining window space
-        if (expandAvailableRegion)
-        {
-            var scrollingChildSize = new Vector2(UiHelper.GetLengthToRightOfWindow(), UiHelper.GetLengthToBottomOfWindow());
-            ImGui.BeginChild("scroll-area", scrollingChildSize);
-        }
-
-        // Dynamic scrolling
-        if (EnableDynamicScrolling())
-        {
-            if (UiHelper.GetScrollPosition() < 0.5)
-            {
-                dynamicScrollingCurrentSize += dynamicScrollingIncrementsPerFrame;
-            }
+            collectionList = PageSortOption.SortCollection(collectionList).Where((c)=> !IsFiltered(c)).ToList();
         }
 
         drawItemCount = 0;
         var iconsPerRow = GetIconsPerRow();
+        // sanity check
+        if (iconsPerRow < 1) return;
+        // used when adding header displays to align rows properly while using ListClipper
+        int drawRowItemCount = 0;
+        // only draws items currently within frame.
+        ImGuiListClipper clipper = new ImGuiListClipper();
 
-            // Add header
-        if (collectionHeader != null)
+        // clipper based on the number of items per row, not items themselves
+        clipper.Begin((int)Math.Ceiling(collectionList.Count / (double)iconsPerRow), itemsHeight: iconSize);
+        if (ImGui.BeginChild("scroll-area"))
         {
-            ImGui.Selectable(collectionHeader);
-        }
-
-        for (var i = 0; i < collectionList.Count; i++)
-        {
-            // Dynamic scrolling
-            if (EnableDynamicScrolling())
+            if (enableCollectionHeaders) ImGui.Selectable(collectionList.FirstOrDefault()?.GetCollectionName() ?? "");
+            while (clipper.Step())
             {
-                if (i > dynamicScrollingCurrentSize)
-                    break;
+                for (int row = clipper.DisplayStart; row < clipper.DisplayEnd; row++)
+                {
+                    for (int col = 0; col < iconsPerRow; col++)
+                    {
+                        int i = (row * iconsPerRow) + col;
+
+                        // sanity check
+                        if (i >= collectionList.Count) break;
+
+                        var collectible = collectionList[i];
+                        var icon = collectible.GetIconLazy();
+
+                        if (icon is null)
+                        {
+                            continue;
+                        }
+
+                        DrawItem(collectible);
+                        drawRowItemCount++;
+
+                        // Determine if we should skip to next row
+                        if (enableCollectionHeaders)
+                        {
+                            int nextIndex = i + 1;
+                            if (nextIndex >= collectionList.Count) nextIndex = i;
+                            var nextCollectible = collectionList[nextIndex];
+                            if (collectible.GetCollectionName() != nextCollectible.GetCollectionName())
+                            {
+                                drawRowItemCount = iconsPerRow;
+                                ImGui.Selectable(nextCollectible.GetCollectionName());
+                            }
+                        }
+
+                        // Align item rows
+                        if (drawRowItemCount < iconsPerRow)
+                            ImGui.SameLine();
+                        else
+                            drawRowItemCount = 0;
+
+                        drawItemCount++;
+                    }
+                }
             }
-
-            var collectible = collectionList[i];
-            var icon = collectible.GetIconLazy();
-
-            if (icon is null)
-            {
-                continue;
-            }
-
-            // Check filters
-            if (IsFiltered(collectible))
-                continue;
-
-            // Align item rows
-            if (iconsPerRow != 0 && !(drawItemCount % iconsPerRow == 0))
-            {
-                ImGui.SameLine();
-            }
-            drawItemCount++;
-
-            // Draw item
-            DrawItem(collectible);
         }
-
-        if (expandAvailableRegion)
-        {
-            ImGui.EndChild();
-        }
+        ImGui.EndChild();
     }
 
     private void DrawFilters(List<ICollectible> collectionList)
@@ -106,16 +103,13 @@ public class CollectionWidget
         ImGui.Text("Show:");
         ImGui.SameLine();
 
-        if (ImGui.RadioButton("All", ref obtainedState, 0))
-            ResetDynamicScrolling();
+        ImGui.RadioButton("All", ref obtainedState, 0);
         ImGui.SameLine();
 
-        if (ImGui.RadioButton("Obtained", ref obtainedState, 1))
-            ResetDynamicScrolling();
+        ImGui.RadioButton("Obtained", ref obtainedState, 1);
         ImGui.SameLine();
 
-        if (ImGui.RadioButton("Unobtained", ref obtainedState, 2))
-            ResetDynamicScrolling();
+        ImGui.RadioButton("Unobtained", ref obtainedState, 2);
 
         if (isGlam)
         {
@@ -139,7 +133,6 @@ public class CollectionWidget
             if (ImGui.Button("Reset Preview"))
             {
                 // Personally, I think it shoud also remove equipped items.
-                
                 Services.PreviewExecutor.ResetAllPreview();
             }
             ImGui.PopStyleColor();
@@ -178,7 +171,6 @@ public class CollectionWidget
                     }
                     PageSortOption = sortOpt;
                     selected = true;
-                    ResetDynamicScrolling();
                 }
                 if(selected)
                 {
@@ -260,16 +252,6 @@ public class CollectionWidget
         UiHelper.IconButtonWithOffset(drawItemCount, FontAwesomeIcon.Check, 32, -48, ref obtained, 1.1f, new Vector4(1f, .741f, .188f, 1).Darken(.7f), ColorsPalette.BLACK.WithAlpha(0));
         // color
         UiHelper.IconButtonWithOffset(drawItemCount, FontAwesomeIcon.Check, 33, -48, ref obtained, 1.0f, new Vector4(1f, .741f, .188f, 1), ColorsPalette.BLACK.WithAlpha(0));
-    }
-
-    private bool EnableDynamicScrolling()
-    {
-        return searchFilter == "" && obtainedState != 1; // Disable when searching or filtered by Obtained
-    }
-
-    public void ResetDynamicScrolling()
-    {
-        dynamicScrollingCurrentSize = dynamicScrollingInitialSize;
     }
 
     private int GetIconsPerRow()

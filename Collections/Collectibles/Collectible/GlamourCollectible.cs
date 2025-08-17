@@ -4,13 +4,13 @@ namespace Collections;
 
 public class GlamourCollectible : Collectible<ItemAdapter>, ICreateable<GlamourCollectible, ItemAdapter>
 {
-    public new static string CollectionName => "Glamour";
+    public static string CollectionName => "Glamour";
 
     public GlamourCollectible(ItemAdapter excelRow) : base(excelRow)
     {
-        SortOptions.Add(new CollectibleSortOption("Dye Channels", Comparer<ICollectible>.Create((c1, c2) => ((GlamourCollectible)c1).ExcelRow.DyeCount.CompareTo(((GlamourCollectible)c2).ExcelRow.DyeCount)), true, null));
-        SortOptions.Add(new CollectibleSortOption("Level", Comparer<ICollectible>.Create((c1, c2) => ((GlamourCollectible)c1).ExcelRow.LevelEquip.CompareTo(((GlamourCollectible)c2).ExcelRow.LevelEquip)), false, (FontAwesomeIcon.SortNumericDownAlt, FontAwesomeIcon.SortNumericUpAlt)));
-        SortOptions.Add(new CollectibleSortOption("Model", Comparer<ICollectible>.Create((c1, c2) => ((GlamourCollectible)c1).ExcelRow.ModelMain.CompareTo(((GlamourCollectible)c2).ExcelRow.ModelMain)), false, null));
+        SortOptions.Add(new CollectibleSortOption("Dye Channels", (c) => c is GlamourCollectible ? ((GlamourCollectible)c).ExcelRow.DyeCount : 0));
+        SortOptions.Add(new CollectibleSortOption("Level", (c) => c is GlamourCollectible ? ((GlamourCollectible)c).ExcelRow.LevelEquip : -1, false, (FontAwesomeIcon.SortNumericDownAlt, FontAwesomeIcon.SortNumericUpAlt)));
+        SortOptions.Add(new CollectibleSortOption("Model", (c) => c is GlamourCollectible ? ((GlamourCollectible)c).ExcelRow.ModelMain : 0, false, null));
     }
 
     public static GlamourCollectible Create(ItemAdapter excelRow)

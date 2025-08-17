@@ -21,6 +21,7 @@ public class MainWindow : Window, IDisposable
         tabs = GetCollectionTabs();
         var additionalTabs = new List<(string name, IDrawable window)>()
         {
+            ("All Items", new FullCollectionTab()),
             ("Instance",  new InstanceTab()),
             ("Wish List", new WishlistTab()),
             ("Settings", new SettingsTab()),

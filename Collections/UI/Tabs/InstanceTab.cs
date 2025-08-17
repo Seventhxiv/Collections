@@ -11,7 +11,7 @@ public class InstanceTab : IDrawable
     public InstanceTab()
     {
         EventService = new EventService();
-        CollectionWidget = new CollectionWidget(EventService, false);
+        CollectionWidget = new CollectionWidget(EventService, false, true);
         Services.DutyState.DutyStarted += OnDutyStarted;
     }
 
@@ -35,7 +35,6 @@ public class InstanceTab : IDrawable
             collectiblesLoadedInstanceId = 0;
             return;
         }
-
         // Load collectibles if not done already
         if (GetCurrentInstance() != collectiblesLoadedInstanceId)
         {
@@ -52,22 +51,19 @@ public class InstanceTab : IDrawable
 
     public void DrawCollections()
     {
+        List<ICollectible> merged = [];
         foreach (var (name, collection) in collections)
         {
-            if (collection.Any())
+            // Save glam for last row
+            if (name == GlamourCollectible.CollectionName)
             {
-                // Save glam for last row
-                if (name == GlamourCollectible.CollectionName)
-                {
-                    continue;
-                }
-                CollectionWidget.Draw(collection, true, false, name);
+                continue;
             }
+            merged.AddRange(collection);
         }
         if (collections.ContainsKey(GlamourCollectible.CollectionName))
-        {
-            CollectionWidget.Draw(collections[GlamourCollectible.CollectionName], true, false, GlamourCollectible.CollectionName);
-        }
+            merged.AddRange(collections[GlamourCollectible.CollectionName]);
+        CollectionWidget.Draw(merged, enableFilters: false, enableCollectionHeaders: true);
     }
 
     private void LoadCollectibles()

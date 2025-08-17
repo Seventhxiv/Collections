@@ -18,7 +18,7 @@ public class CollectionTab : IDrawable
         collectionSize = collection.Count();
 
         ContentFiltersWidget = new ContentFiltersWidget(EventService, 1, collection);
-        CollectionWidget = new CollectionWidget(EventService, false);
+        CollectionWidget = new CollectionWidget(EventService, false, false);
 
         filteredCollection = collection;
         EventService.Subscribe<FilterChangeEvent, FilterChangeEventArgs>(OnPublish);
