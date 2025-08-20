@@ -36,7 +36,6 @@ public class WishlistTab : IDrawable
 
     private void LoadCollectibles()
     {
-        Dev.Log("Loading wish list collectibles");
         collections = Services.DataProvider.GetCollections();
         foreach (var (name, collection) in collections)
         {

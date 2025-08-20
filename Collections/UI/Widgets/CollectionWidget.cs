@@ -5,16 +5,23 @@ public class CollectionWidget
     private float iconSize = 65f;
     private int pageSortWidgetWidth = "Sort By".Length * 13;
     private string searchFilter = ""; 
-    private CollectibleSortOption PageSortOption { get; set; }
+    public CollectibleSortOption PageSortOption { get; set; }
+    private List<CollectibleSortOption> cachedOptions = [];
     private bool isGlam { get; init; } = false;
+    private bool isMulti { get; init; } = false;
     private EventService EventService { get; init; }
     private TooltipWidget CollectibleTooltipWidget { get; init; }
-    public CollectionWidget(EventService eventService, bool isGlam, bool isMultiCollection)
+    public CollectionWidget(EventService eventService, bool isGlam, bool isMultiCollection, List<CollectibleSortOption>? collectibleSortOptions = null)
     {
         EventService = eventService;
         this.isGlam = isGlam;
         CollectibleTooltipWidget = new TooltipWidget(EventService);
-        PageSortOption = new CollectibleSortOption("Patch", (c) => c.PatchAdded, true, null);
+        PageSortOption = new CollectibleSortOption("Patch", (c) => c.PatchAdded, true);
+        if (collectibleSortOptions != null && collectibleSortOptions.Count > 1)
+        {
+            PageSortOption = collectibleSortOptions.First();
+            cachedOptions = collectibleSortOptions;
+        }
     }
 
     private int obtainedState = 0;
@@ -24,9 +31,7 @@ public class CollectionWidget
         // Draw filters
         if (enableFilters)
         {
-            DrawFilters(collectionList);
-            // Sort by user selection
-            collectionList = PageSortOption.SortCollection(collectionList).Where((c)=> !IsFiltered(c)).ToList();
+            DrawFilters();
         }
 
         drawItemCount = 0;
@@ -35,11 +40,12 @@ public class CollectionWidget
         if (iconsPerRow < 1) return;
         // used when adding header displays to align rows properly while using ListClipper
         int drawRowItemCount = 0;
+
         // only draws items currently within frame.
         ImGuiListClipper clipper = new ImGuiListClipper();
 
         // clipper based on the number of items per row, not items themselves
-        clipper.Begin((int)Math.Ceiling(collectionList.Count / (double)iconsPerRow), itemsHeight: iconSize);
+        clipper.Begin((int)Math.Ceiling(collectionList.Count / (double)iconsPerRow));
         if (ImGui.BeginChild("scroll-area"))
         {
             if (enableCollectionHeaders) ImGui.Selectable(collectionList.FirstOrDefault()?.GetCollectionName() ?? "");
@@ -64,8 +70,8 @@ public class CollectionWidget
 
                         DrawItem(collectible);
                         drawRowItemCount++;
+                        drawItemCount++;
 
-                        // Determine if we should skip to next row
                         if (enableCollectionHeaders)
                         {
                             int nextIndex = i + 1;
@@ -83,33 +89,49 @@ public class CollectionWidget
                             ImGui.SameLine();
                         else
                             drawRowItemCount = 0;
-
-                        drawItemCount++;
                     }
                 }
             }
         }
+        clipper.End();
         ImGui.EndChild();
     }
 
-    private void DrawFilters(List<ICollectible> collectionList)
+    private void DrawFilters()
     {
         ImGui.SetNextItemWidth(ImGui.GetColumnWidth() - pageSortWidgetWidth);
-        ImGui.InputTextWithHint($"##changedItemsFilter{collectionList.Count}", "Filter...", ref searchFilter, 40);
+        string prev = searchFilter;
+        if (ImGui.InputTextWithHint($"##Filter", "Filter...", ref searchFilter, 40))
+        {
+            EventService.Publish<FilterChangeEvent, FilterChangeEventArgs>(new FilterChangeEventArgs(searchFilter: searchFilter));
+        };
+
         // default behavior cuts the dropdown a little bit off.
         ImGui.SameLine(ImGui.GetColumnWidth() - pageSortWidgetWidth + 4, 0);
-        DrawSortOptions(collectionList);
+        DrawSortOptions();
 
         ImGui.Text("Show:");
         ImGui.SameLine();
 
-        ImGui.RadioButton("All", ref obtainedState, 0);
+        if(ImGui.RadioButton("All", ref obtainedState, 0)) {
+            EventService.Publish<FilterChangeEvent, FilterChangeEventArgs>(new FilterChangeEventArgs(itemStatusFilter: CollectibleStatusFilter.All));
+        };
         ImGui.SameLine();
 
-        ImGui.RadioButton("Obtained", ref obtainedState, 1);
+        if(ImGui.RadioButton("Obtained", ref obtainedState, 1)) {
+            EventService.Publish<FilterChangeEvent, FilterChangeEventArgs>(new FilterChangeEventArgs(itemStatusFilter: CollectibleStatusFilter.Obtained));
+        };
         ImGui.SameLine();
 
-        ImGui.RadioButton("Unobtained", ref obtainedState, 2);
+        if (ImGui.RadioButton("Unobtained", ref obtainedState, 2))
+        {
+            EventService.Publish<FilterChangeEvent, FilterChangeEventArgs>(new FilterChangeEventArgs(itemStatusFilter: CollectibleStatusFilter.Unobtained));
+        }
+        ImGui.SameLine();
+        if (ImGui.RadioButton("Favorites", ref obtainedState, 3))
+        {
+            EventService.Publish<FilterChangeEvent, FilterChangeEventArgs>(new FilterChangeEventArgs(itemStatusFilter: CollectibleStatusFilter.Favorite));
+        }
 
         if (isGlam)
         {
@@ -148,20 +170,22 @@ public class CollectionWidget
         }
     }
 
-    private unsafe void DrawSortOptions(List<ICollectible> collection)
+    private unsafe void DrawSortOptions()
     {
         List<CollectibleSortOption> sortOptions = [];
-        if(collection.Count > 0) sortOptions = collection.First().GetSortOptions();
+        // if(collection.Count > 0) sortOptions = collection.First().GetSortOptions();
+        if (cachedOptions.Count > 0) sortOptions = cachedOptions;
         ImGui.SetNextItemWidth(pageSortWidgetWidth);
-        if (ImGui.BeginCombo($"##sortCollectionDropdown{collection.Count}", "Sort By", ImGuiComboFlags.HeightRegular))
+        
+        if (ImGui.BeginCombo($"##sortCollectionDropdown", "Sort By", ImGuiComboFlags.HeightRegular))
         {
-            foreach(var sortOpt in sortOptions)
+            foreach (var sortOpt in sortOptions)
             {
                 bool selected = PageSortOption.Equals(sortOpt);
-                if(ImGui.RadioButton(sortOpt.Name, selected))
+                if (ImGui.RadioButton(sortOpt.Name, selected))
                 {
                     // if user already has clicked on button, swap sort order
-                    if(selected)
+                    if (selected)
                     {
                         sortOpt.Reverse = !sortOpt.Reverse;
                     }
@@ -170,9 +194,10 @@ public class CollectionWidget
                         sortOpt.Reverse = false;
                     }
                     PageSortOption = sortOpt;
+                    EventService.Publish<FilterChangeEvent, FilterChangeEventArgs>(new FilterChangeEventArgs(sortOptionSelected: PageSortOption));
                     selected = true;
                 }
-                if(selected)
+                if (selected)
                 {
                     ImGui.SameLine();
                     UiHelper.DisabledIconButton(sortOpt.GetSortIcon(), "");
@@ -259,7 +284,7 @@ public class CollectionWidget
         return (int)Math.Floor((UiHelper.GetLengthToRightOfWindow() + UiHelper.UnitWidth() * 3) / (iconSize + (UiHelper.UnitWidth() * 2)));
     }
 
-    private bool IsFiltered(ICollectible collectible)
+    public bool IsFiltered(ICollectible collectible)
     {
         // Search filter
         if (searchFilter != "")
@@ -269,6 +294,8 @@ public class CollectionWidget
         // Obtain state filter
         var obtained = collectible.GetIsObtained();
         if ((obtained && obtainedState == 2) || (!obtained && obtainedState == 1))
+            return true;
+        if (obtainedState == 3 && !collectible.IsFavorite())
             return true;
 
         // Default

@@ -2,7 +2,7 @@ namespace Collections;
 
 public class InstanceTab : IDrawable
 {
-    private Dictionary<string, List<ICollectible>> collections = new();
+    private List<ICollectible> collections = new();
     private uint collectiblesLoadedInstanceId = 0;
     private bool hideObtainedCollectibles = false;
 
@@ -51,19 +51,7 @@ public class InstanceTab : IDrawable
 
     public void DrawCollections()
     {
-        List<ICollectible> merged = [];
-        foreach (var (name, collection) in collections)
-        {
-            // Save glam for last row
-            if (name == GlamourCollectible.CollectionName)
-            {
-                continue;
-            }
-            merged.AddRange(collection);
-        }
-        if (collections.ContainsKey(GlamourCollectible.CollectionName))
-            merged.AddRange(collections[GlamourCollectible.CollectionName]);
-        CollectionWidget.Draw(merged, enableFilters: false, enableCollectionHeaders: true);
+        CollectionWidget.Draw(collections, enableFilters: false, enableCollectionHeaders: true);
     }
 
     private void LoadCollectibles()
@@ -71,26 +59,24 @@ public class InstanceTab : IDrawable
         collectiblesLoadedInstanceId = GetCurrentInstance();
         var currentDutyItemIds = CurrentDutyItemIds(collectiblesLoadedInstanceId);
 
-        collections = Services.DataProvider.GetCollections();
-        foreach (var (name, collection) in collections)
-        {
-            collections[name] = collection
-                .Where((c) =>
+        collections =
+        Services.DataProvider.GetCollections().Values.Aggregate(
+            (full, col) => [..full, ..col.Where((c) => 
+                {
+                    // TODO: blue mage spells don't come from items.
+                    if(c.GetCollectionName() == BlueMageCollectible.CollectionName) return false;
+                    if ((c.CollectibleKey is not null) && ((c.CollectibleKey.Id == 0) || (!currentDutyItemIds.Contains(c.CollectibleKey.Id))))
                     {
-                        // TODO: blue mage spells don't come from items.
-                        if(name == BlueMageCollectible.CollectionName) return false;
-                        if ((c.CollectibleKey is not null) && ((c.CollectibleKey.Id == 0) ||
-                        (!currentDutyItemIds.Contains(c.CollectibleKey.Id))))
-                        {
-                            return false;
-                        }
-                        // Only update items that are part of this instance
-                        c.UpdateObtainedState();
-                        return !hideObtainedCollectibles || !c.GetIsObtained();
+                        return false;
                     }
-                )
-                .ToList();
-        }
+                    // Only update items that are part of this instance
+                    c.UpdateObtainedState();
+                    return !hideObtainedCollectibles || !c.GetIsObtained();
+                }
+            )])
+        // put glamour as last 
+        .OrderBy(c => c.GetCollectionName() != GlamourCollectible.CollectionName)
+        .ToList();
     }
 
     private static uint GetCurrentInstance()

@@ -18,7 +18,7 @@ public class CollectionTab : IDrawable
         collectionSize = collection.Count();
 
         ContentFiltersWidget = new ContentFiltersWidget(EventService, 1, collection);
-        CollectionWidget = new CollectionWidget(EventService, false, false);
+        CollectionWidget = new CollectionWidget(EventService, false, false, collection.First().GetSortOptions());
 
         filteredCollection = collection;
         EventService.Subscribe<FilterChangeEvent, FilterChangeEventArgs>(OnPublish);
@@ -66,6 +66,7 @@ public class CollectionTab : IDrawable
                 contentFilters.Intersect(c.CollectibleKey.SourceCategories).Any() && 
                 // Don't include collectibles that don't have a source populated
                 c.CollectibleKey.SourceCategories.Count != 0))
+            .Where(c => !CollectionWidget.IsFiltered(c))   
             .ToList();
     }
 
