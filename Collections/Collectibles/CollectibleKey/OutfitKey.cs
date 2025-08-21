@@ -21,7 +21,7 @@ public class OutfitKey : ItemKey, ICreateable<OutfitKey, (ItemAdapter, int)>
         var dataGenerator = Services.DataGenerator.SourcesDataGenerator;
         
         // get other item IDs
-        var relatedItems = OutfitsCollectible.GetAssociatedItemIds(excelRow.RowId);
+        var relatedItems = Services.ItemFinder.ItemIdsInOutfit(excelRow.RowId);
         bool initializedSources = false;
         foreach(var item in relatedItems)
         {

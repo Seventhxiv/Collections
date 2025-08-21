@@ -95,7 +95,6 @@ public class DataProvider
             .ToList()
             );
     }
-
     
     private void InitializeMinionCollection()
     {

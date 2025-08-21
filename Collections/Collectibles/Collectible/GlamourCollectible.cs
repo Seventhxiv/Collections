@@ -47,7 +47,7 @@ public class GlamourCollectible : Collectible<ItemAdapter>, ICreateable<GlamourC
     {
         isObtained = Services.ItemFinder.IsItemInInventory(ExcelRow.RowId)
                     || Services.ItemFinder.IsItemInArmoireCache(ExcelRow.RowId)
-                    || Services.ItemFinder.IsItemInDresser(ExcelRow.RowId);
+                    || Services.ItemFinder.IsItemInDresser(ExcelRow.RowId, true);
     }
 
     protected override int GetIconId()
