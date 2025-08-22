@@ -30,7 +30,7 @@ public abstract class Collectible<T> : ICollectible where T : struct, IExcelRow<
             "Patch",
             (c) => c.PatchAdded,
             Reverse: true,
-            Icons: (FontAwesomeIcon.SortNumericUpAlt, FontAwesomeIcon.SortNumericDownAlt)
+            Icons: (FontAwesomeIcon.SortNumericDownAlt, FontAwesomeIcon.SortNumericUpAlt)
         ),
         new CollectibleSortOption(
             "Name",

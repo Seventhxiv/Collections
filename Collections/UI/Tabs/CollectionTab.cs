@@ -60,13 +60,13 @@ public class CollectionTab : IDrawable
     private void ApplyFilters()
     {
         var contentFilters = ContentFiltersWidget.Filters.Where(d => d.Value).Select(d => d.Key);
-        filteredCollection = collection.AsParallel()
+        filteredCollection = CollectionWidget.PageSortOption.SortCollection(collection)
             .Where(c => c.CollectibleKey is not null)
             .Where(c => !contentFilters.Any() || (
-                contentFilters.Intersect(c.CollectibleKey.SourceCategories).Any() && 
+                contentFilters.Intersect(c.CollectibleKey.SourceCategories).Any() &&
                 // Don't include collectibles that don't have a source populated
                 c.CollectibleKey.SourceCategories.Count != 0))
-            .Where(c => !CollectionWidget.IsFiltered(c))   
+            .Where(c => !CollectionWidget.IsFiltered(c))
             .ToList();
     }
 

@@ -4,7 +4,6 @@ namespace Collections;
 public class GlamourTab : IDrawable
 {
     private List<ICollectible> filteredCollection { get; set; }
-
     private GlamourTreeWidget GlamourTreeWidget { get; init; }
     private JobSelectorWidget JobSelectorWidget { get; init; }
     private ContentFiltersWidget ContentFiltersWidget { get; init; }
@@ -18,7 +17,8 @@ public class GlamourTab : IDrawable
         JobSelectorWidget = new JobSelectorWidget(EventService);
         ContentFiltersWidget = new ContentFiltersWidget(EventService, 2);
         EquipSlotsWidget = new EquipSlotsWidget(EventService);
-        CollectionWidget = new CollectionWidget(EventService, true, false);
+        filteredCollection = GetInitialCollection();
+        CollectionWidget = new CollectionWidget(EventService, true, false, GetInitialCollection().First().GetSortOptions());
 
         ApplyFilters();
 
@@ -142,20 +142,20 @@ public class GlamourTab : IDrawable
         });
     }
 
+    List<ICollectible> GetInitialCollection() => Services.DataProvider.GetCollection<GlamourCollectible>();
+
     private void ApplyFilters()
     {
-        // Refresh all filteres (1) Equip slot (2) content type (3) job
+        // Refresh all filters (1) Equip slot (2) content type (3) job
         var contentFilters = ContentFiltersWidget.Filters.Where(d => d.Value).Select(d => d.Key);
         var jobFilters = JobSelectorWidget.Filters.Where(d => d.Value).Select(d => d.Key).ToList();
 
         // (1) Equip Slot filter
-        filteredCollection = Services.DataProvider.GetCollection<GlamourCollectible>()
-            .Where(c => ((GlamourCollectible)c).ExcelRow.EquipSlot == EquipSlotsWidget.activeEquipSlot).AsParallel()
-
+        filteredCollection = CollectionWidget.PageSortOption.SortCollection(GetInitialCollection())
+            .Where(c => ((GlamourCollectible)c).ExcelRow.EquipSlot == EquipSlotsWidget.activeEquipSlot)
         // (2) Content type filters
         .Where(c => c.CollectibleKey is not null)
         .Where(c => !contentFilters.Any() || contentFilters.Intersect(c.CollectibleKey.SourceCategories).Any())
-
         // (3) job filters
         .Where(c =>
             {
@@ -175,11 +175,8 @@ public class GlamourTab : IDrawable
                 }
                 return false;
             })
-
         // Order
-        .OrderByDescending(c => c.IsFavorite())
-        .ThenByDescending(c => ((GlamourCollectible)c).ExcelRow.LevelEquip)
-        .ThenByDescending(c => c.Name)
+        .Where(c => !CollectionWidget.IsFiltered(c))
         .ToList();
     }
 
