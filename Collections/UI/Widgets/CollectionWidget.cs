@@ -10,10 +10,9 @@ public class CollectionWidget
     public CollectibleSortOption PageSortOption { get; set; }
     private List<CollectibleSortOption> cachedOptions = [];
     private bool isGlam { get; init; } = false;
-    private bool isMulti { get; init; } = false;
     private EventService EventService { get; init; }
     private TooltipWidget CollectibleTooltipWidget { get; init; }
-    public CollectionWidget(EventService eventService, bool isGlam, bool isMultiCollection, List<CollectibleSortOption>? collectibleSortOptions = null)
+    public CollectionWidget(EventService eventService, bool isGlam, List<CollectibleSortOption>? collectibleSortOptions = null)
     {
         EventService = eventService;
         this.isGlam = isGlam;

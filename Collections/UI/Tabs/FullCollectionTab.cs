@@ -17,7 +17,7 @@ public class FullCollectionTab : IDrawable
         EventService = new EventService();
         filteredCollection = LoadInitialCollection();
         // 
-        CollectionWidget = new CollectionWidget(EventService, false, true, Services.DataProvider.GetCollection<MinionCollectible>().First().GetSortOptions());
+        CollectionWidget = new CollectionWidget(EventService, false, Services.DataProvider.GetCollection<MinionCollectible>().First().GetSortOptions());
         ContentFiltersWidget = new ContentFiltersWidget(EventService, 1, filteredCollection);
         EventService.Subscribe<FilterChangeEvent, FilterChangeEventArgs>(OnPublish);
         ApplyFilters();
