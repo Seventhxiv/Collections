@@ -11,7 +11,7 @@ public class InstanceTab : IDrawable
     public InstanceTab()
     {
         EventService = new EventService();
-        CollectionWidget = new CollectionWidget(EventService, false, true);
+        CollectionWidget = new CollectionWidget(EventService, false);
         Services.DutyState.DutyStarted += OnDutyStarted;
     }
 

@@ -9,7 +9,7 @@ public class WishlistTab : IDrawable
     public WishlistTab()
     {
         EventService = new EventService();
-        CollectionWidget = new CollectionWidget(EventService, false, true);
+        CollectionWidget = new CollectionWidget(EventService, false);
         LoadCollectibles();
 
         EventService.Subscribe<FilterChangeEvent, FilterChangeEventArgs>(OnPublish);

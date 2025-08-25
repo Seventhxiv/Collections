@@ -18,7 +18,7 @@ public class GlamourTab : IDrawable
         ContentFiltersWidget = new ContentFiltersWidget(EventService, 2);
         EquipSlotsWidget = new EquipSlotsWidget(EventService);
         filteredCollection = GetInitialCollection();
-        CollectionWidget = new CollectionWidget(EventService, true, false, GetInitialCollection().First().GetSortOptions());
+        CollectionWidget = new CollectionWidget(EventService, true, GetInitialCollection().First().GetSortOptions());
 
         ApplyFilters();
 
