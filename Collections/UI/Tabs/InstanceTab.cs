@@ -66,7 +66,6 @@ public class InstanceTab : IDrawable
                 {
                     // TODO: blue mage spells don't come from items.
                     if(c.GetCollectionName() == BlueMageCollectible.CollectionName) {
-                        Dev.Log($"{c.GetCollectionName() == BlueMageCollectible.CollectionName}");
                         return false;
                     }
                     if ((c.CollectibleKey is not null) && ((c.CollectibleKey.Id == 0) || (!currentDutyItemIds.Contains(c.CollectibleKey.Id))))
