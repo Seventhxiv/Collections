@@ -39,7 +39,8 @@ public abstract class Collectible<T> : ICollectible where T : struct, IExcelRow<
         ),
         new CollectibleSortOption(
             "Obtained",
-            (c) => c.GetIsObtained()
+            (c) => c.GetIsObtained(),
+            Reverse: true
         )
     ];
     protected List<CollectibleFilterOption> FilterOptions = [

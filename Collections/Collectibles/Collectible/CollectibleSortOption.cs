@@ -8,6 +8,7 @@ public class CollectibleSortOption
     public CollectibleSortOption(string Name, Func<ICollectible, dynamic> keySelector, bool Reverse = false, (FontAwesomeIcon AscendingIcon, FontAwesomeIcon DescendingIcon)? Icons = null)
     {
         this.Name = Name;
+        this.ReverseDefault = Reverse;
         this.Reverse = Reverse;
         this.GetSortValue = keySelector;
         this.Comparer = Comparer<ICollectible>.Create((c1, c2) => keySelector(c1).CompareTo(keySelector(c2)));
@@ -20,6 +21,8 @@ public class CollectibleSortOption
 
     // name of the sort option
     public string Name { get; set; }
+    // Default setting this sort option was created with for reverse
+    public bool ReverseDefault { get; init; }
     // whether the sorted items should be returned in reverse order
     public bool Reverse { get; set; }
     // how items should be sorted against one another.

@@ -1,3 +1,5 @@
+using System.Text.RegularExpressions;
+
 namespace Collections;
 
 public class CollectionWidget
@@ -26,6 +28,8 @@ public class CollectionWidget
 
     private int obtainedState = 0;
 
+    // Draws the collection. Utilizes ImGuiListClipper to optimize on large collections. If enableCollectionHeaders is set to true,
+    // this will instead fall back to rendering based on 
     public unsafe void Draw(List<ICollectible> collectionList, bool enableFilters = true, bool enableCollectionHeaders = false)
     {
         // Draw filters
@@ -40,7 +44,6 @@ public class CollectionWidget
         if (iconsPerRow < 1) return;
         // used when adding header displays to align rows properly while using ListClipper
         int drawRowItemCount = 0;
-
         // only draws items currently within frame.
         ImGuiListClipper clipper = new ImGuiListClipper();
 
@@ -48,47 +51,74 @@ public class CollectionWidget
         clipper.Begin((int)Math.Ceiling(collectionList.Count / (double)iconsPerRow));
         if (ImGui.BeginChild("scroll-area"))
         {
-            if (enableCollectionHeaders) ImGui.Selectable(collectionList.FirstOrDefault()?.GetCollectionName() ?? "");
-            while (clipper.Step())
+            // using full collection instead of clipped one, due to variable heights from the headers, and variable rows from ending early. We could in theory change
+            // this to calculate everything based on pixel height and provide a way to seek to the next item manually instead of using ListClipper's automatic seeking,
+            // but it seems like a pain to implement. I'll take a look at it though because headers are quite nice for organizing.
+            if (enableCollectionHeaders)
             {
-                for (int row = clipper.DisplayStart; row < clipper.DisplayEnd; row++)
+                ImGui.Selectable(collectionList.FirstOrDefault()?.GetCollectionName() ?? "");
+                for (int i = 0; i < collectionList.Count; i++)
                 {
-                    for (int col = 0; col < iconsPerRow; col++)
+                    var collectible = collectionList[i];
+                    var icon = collectible.GetIconLazy();
+
+                    if (icon is null)
                     {
-                        int i = (row * iconsPerRow) + col;
+                        continue;
+                    }
 
-                        // sanity check
-                        if (i >= collectionList.Count) break;
+                    DrawItem(collectible);
+                    drawRowItemCount++;
+                    drawItemCount++;
 
-                        var collectible = collectionList[i];
-                        var icon = collectible.GetIconLazy();
+                    int nextIndex = i + 1;
+                    if (nextIndex >= collectionList.Count) nextIndex = i;
+                    var nextCollectible = collectionList[nextIndex];
+                    if (collectible.GetCollectionName() != nextCollectible.GetCollectionName())
+                    {
+                        drawRowItemCount = iconsPerRow;
+                        ImGui.Selectable(nextCollectible.GetCollectionName());
+                    }
 
-                        if (icon is null)
+                    // Align item rows
+                    if (drawRowItemCount < iconsPerRow)
+                        ImGui.SameLine();
+                    else
+                        drawRowItemCount = 0;
+                }
+            }
+            else
+            {
+                while (clipper.Step())
+                {
+                    for (int row = clipper.DisplayStart; row < clipper.DisplayEnd; row++)
+                    {
+                        for (int col = 0; col < iconsPerRow; col++)
                         {
-                            continue;
-                        }
+                            int i = (row * iconsPerRow) + col;
 
-                        DrawItem(collectible);
-                        drawRowItemCount++;
-                        drawItemCount++;
+                            // sanity check
+                            if (i >= collectionList.Count) break;
 
-                        if (enableCollectionHeaders)
-                        {
-                            int nextIndex = i + 1;
-                            if (nextIndex >= collectionList.Count) nextIndex = i;
-                            var nextCollectible = collectionList[nextIndex];
-                            if (collectible.GetCollectionName() != nextCollectible.GetCollectionName())
+                            var collectible = collectionList[i];
+                            var icon = collectible.GetIconLazy();
+
+                            if (icon is null)
                             {
-                                drawRowItemCount = iconsPerRow;
-                                ImGui.Selectable(nextCollectible.GetCollectionName());
+                                continue;
                             }
-                        }
 
-                        // Align item rows
-                        if (drawRowItemCount < iconsPerRow)
-                            ImGui.SameLine();
-                        else
-                            drawRowItemCount = 0;
+                            DrawItem(collectible);
+                            drawRowItemCount++;
+                            drawItemCount++;
+
+
+                            // Align item rows
+                            if (drawRowItemCount < iconsPerRow)
+                                ImGui.SameLine();
+                            else
+                                drawRowItemCount = 0;
+                        }
                     }
                 }
             }
@@ -172,14 +202,12 @@ public class CollectionWidget
 
     private unsafe void DrawSortOptions()
     {
-        List<CollectibleSortOption> sortOptions = [];
-        // if(collection.Count > 0) sortOptions = collection.First().GetSortOptions();
-        if (cachedOptions.Count > 0) sortOptions = cachedOptions;
+        if (cachedOptions.Count == 0) return;
         ImGui.SetNextItemWidth(pageSortWidgetWidth);
         
         if (ImGui.BeginCombo($"##sortCollectionDropdown", "Sort By", ImGuiComboFlags.HeightRegular))
         {
-            foreach (var sortOpt in sortOptions)
+            foreach (var sortOpt in cachedOptions)
             {
                 bool selected = PageSortOption.Equals(sortOpt);
                 if (ImGui.RadioButton(sortOpt.Name, selected))
@@ -191,7 +219,7 @@ public class CollectionWidget
                     }
                     else
                     {
-                        sortOpt.Reverse = false;
+                        sortOpt.Reverse = sortOpt.ReverseDefault;
                     }
                     PageSortOption = sortOpt;
                     EventService.Publish<FilterChangeEvent, FilterChangeEventArgs>(new FilterChangeEventArgs(sortOptionSelected: PageSortOption));
@@ -288,8 +316,10 @@ public class CollectionWidget
     {
         // Search filter
         if (searchFilter != "")
+        {
             if (!collectible.Name.Contains(searchFilter, StringComparison.CurrentCultureIgnoreCase))
                 return true;
+        }
 
         // Obtain state filter
         var obtained = collectible.GetIsObtained();

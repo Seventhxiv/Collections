@@ -24,6 +24,7 @@ public class InstanceTab : IDrawable
         {
             Services.WindowsInitializer.MainWindow.OpenTab("Instance");
         }
+
     }
 
     public void Draw()
@@ -61,10 +62,13 @@ public class InstanceTab : IDrawable
 
         collections =
         Services.DataProvider.GetCollections().Values.Aggregate(
-            (full, col) => [..full, ..col.Where((c) => 
+            (full, col) => [..full, ..col]).Where((c) => 
                 {
                     // TODO: blue mage spells don't come from items.
-                    if(c.GetCollectionName() == BlueMageCollectible.CollectionName) return false;
+                    if(c.GetCollectionName() == BlueMageCollectible.CollectionName) {
+                        Dev.Log($"{c.GetCollectionName() == BlueMageCollectible.CollectionName}");
+                        return false;
+                    }
                     if ((c.CollectibleKey is not null) && ((c.CollectibleKey.Id == 0) || (!currentDutyItemIds.Contains(c.CollectibleKey.Id))))
                     {
                         return false;
@@ -73,9 +77,9 @@ public class InstanceTab : IDrawable
                     c.UpdateObtainedState();
                     return !hideObtainedCollectibles || !c.GetIsObtained();
                 }
-            )])
+            )
         // put glamour as last 
-        .OrderBy(c => c.GetCollectionName() != GlamourCollectible.CollectionName)
+        .OrderBy(c => c.GetCollectionName() == GlamourCollectible.CollectionName)
         .ToList();
     }
 
