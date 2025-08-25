@@ -20,6 +20,7 @@ public class FullCollectionTab : IDrawable
         CollectionWidget = new CollectionWidget(EventService, false, true, Services.DataProvider.GetCollection<MinionCollectible>().First().GetSortOptions());
         ContentFiltersWidget = new ContentFiltersWidget(EventService, 1, filteredCollection);
         EventService.Subscribe<FilterChangeEvent, FilterChangeEventArgs>(OnPublish);
+        ApplyFilters();
     }
 
     public void Draw()
