@@ -8,7 +8,7 @@ public class MainWindow : Window, IDisposable
 
     private List<(string name, IDrawable window)> tabs { get; init; }
 
-    public MainWindow() : base("Collections", ImGuiWindowFlags.NoScrollbar)
+    public MainWindow() : base("Collections", ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoCollapse)
     {
         StoreOriginalColors();
 
