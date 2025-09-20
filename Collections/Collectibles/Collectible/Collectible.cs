@@ -8,7 +8,7 @@ public abstract class Collectible<T> : ICollectible where T : struct, IExcelRow<
 {
     public string Name { get; init; }
     public uint Id { get; init; }
-    public string CollectionName;
+    protected virtual string GetCollectionName() => "";
     public abstract void UpdateObtainedState();
     public abstract void Interact();
     public HintModule PrimaryHint { get; init; }
@@ -21,27 +21,26 @@ public abstract class Collectible<T> : ICollectible where T : struct, IExcelRow<
     protected abstract uint GetId();
     protected abstract string GetName();
     protected abstract string GetDescription();
-    protected abstract string GetCollectionName();
 
     public ICollectibleKey CollectibleKey { get; init; }
     public T ExcelRow { get; set; }
     protected IconHandler IconHandler { get; init; }
     protected List<CollectibleSortOption> SortOptions = [
-        // comparing c2 to c1 to modify default sort behavior
         new CollectibleSortOption(
-            "Patch", 
-            Comparer<ICollectible>.Create((c1, c2) => c2.PatchAdded.CompareTo(c1.PatchAdded)),
-            Icons: (FontAwesomeIcon.SortNumericDown, FontAwesomeIcon.SortNumericUp)
+            "Patch",
+            (c) => c.PatchAdded,
+            Reverse: true,
+            Icons: (FontAwesomeIcon.SortNumericDownAlt, FontAwesomeIcon.SortNumericUpAlt)
         ),
         new CollectibleSortOption(
             "Name",
-            Comparer<ICollectible>.Create((c1, c2) => c1.Name.CompareTo(c2.Name)),
+            (c) => c.Name,
             Icons: (FontAwesomeIcon.SortAlphaUp, FontAwesomeIcon.SortAlphaDown)
         ),
-        // comparing c2 to c1 to modify default sort behavior
         new CollectibleSortOption(
             "Obtained",
-            Comparer<ICollectible>.Create((c1, c2) => c2.GetIsObtained().CompareTo(c1.GetIsObtained()))
+            (c) => c.GetIsObtained(),
+            Reverse: true
         )
     ];
     protected List<CollectibleFilterOption> FilterOptions = [
@@ -224,5 +223,10 @@ public abstract class Collectible<T> : ICollectible where T : struct, IExcelRow<
     public virtual string GetDisplayPatch()
     {
         return PatchAdded >= 999 ? "Unknown" : PatchAdded.ToString();
+    }
+
+    string ICollectible.GetCollectionName()
+    {
+        return GetCollectionName();
     }
 }

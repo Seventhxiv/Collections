@@ -8,7 +8,7 @@ public class MainWindow : Window, IDisposable
 
     private List<(string name, IDrawable window)> tabs { get; init; }
 
-    public MainWindow() : base("Collections", ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoCollapse)
+    public MainWindow() : base("Collections", ImGuiWindowFlags.NoScrollbar)
     {
         StoreOriginalColors();
 
@@ -21,6 +21,7 @@ public class MainWindow : Window, IDisposable
         tabs = GetCollectionTabs();
         var additionalTabs = new List<(string name, IDrawable window)>()
         {
+            ("All Items", new FullCollectionTab()),
             ("Instance",  new InstanceTab()),
             ("Wish List", new WishlistTab()),
             ("Settings", new SettingsTab()),
@@ -75,12 +76,6 @@ public class MainWindow : Window, IDisposable
     {
         if (T == typeof(GlamourCollectible))
             return new GlamourTab();
-        // else if(T == typeof(FashionAccessoriesCollectible) || T == typeof(GlassesCollectible))
-        // {
-        //     var combinedAccessories = Services.DataProvider.GetCollection(typeof(FashionAccessoriesCollectible));
-        //     combinedAccessories.AddRange(Services.DataProvider.GetCollection(typeof(GlassesCollectible)));
-        //     return new CollectionTab(combinedAccessories);
-        // }
         else
             return new CollectionTab(Services.DataProvider.GetCollection(T));
 

@@ -2,7 +2,7 @@ namespace Collections;
 
 public class InstanceTab : IDrawable
 {
-    private Dictionary<string, List<ICollectible>> collections = new();
+    private List<ICollectible> collections = new();
     private uint collectiblesLoadedInstanceId = 0;
     private bool hideObtainedCollectibles = false;
 
@@ -24,6 +24,7 @@ public class InstanceTab : IDrawable
         {
             Services.WindowsInitializer.MainWindow.OpenTab("Instance");
         }
+
     }
 
     public void Draw()
@@ -35,7 +36,6 @@ public class InstanceTab : IDrawable
             collectiblesLoadedInstanceId = 0;
             return;
         }
-
         // Load collectibles if not done already
         if (GetCurrentInstance() != collectiblesLoadedInstanceId)
         {
@@ -52,25 +52,7 @@ public class InstanceTab : IDrawable
 
     public void DrawCollections()
     {
-        foreach (var (name, collection) in collections)
-        {
-            if (collection.Any())
-            {
-                // Save glam for last row
-                if (name == GlamourCollectible.CollectionName)
-                {
-                    continue;
-                }
-                ImGui.Selectable(name);
-                CollectionWidget.Draw(collection, false, false);
-            }
-        }
-
-        if (collections.ContainsKey(GlamourCollectible.CollectionName))
-        {
-            ImGui.Selectable(GlamourCollectible.CollectionName);
-            CollectionWidget.Draw(collections[GlamourCollectible.CollectionName], false, false);
-        }
+        CollectionWidget.Draw(collections, enableFilters: false, enableCollectionHeaders: true);
     }
 
     private void LoadCollectibles()
@@ -78,26 +60,26 @@ public class InstanceTab : IDrawable
         collectiblesLoadedInstanceId = GetCurrentInstance();
         var currentDutyItemIds = CurrentDutyItemIds(collectiblesLoadedInstanceId);
 
-        collections = Services.DataProvider.GetCollections();
-        foreach (var (name, collection) in collections)
-        {
-            collections[name] = collection
-                .Where((c) =>
-                    {
-                        // TODO: blue mage spells don't come from items.
-                        if(name == BlueMageCollectible.CollectionName) return false;
-                        if ((c.CollectibleKey is not null) && ((c.CollectibleKey.Id == 0) ||
-                        (!currentDutyItemIds.Contains(c.CollectibleKey.Id))))
-                        {
-                            return false;
-                        }
-                        // Only update items that are part of this instance
-                        c.UpdateObtainedState();
-                        return !hideObtainedCollectibles || !c.GetIsObtained();
+        collections =
+        Services.DataProvider.GetCollections().Values.Aggregate(
+            (full, col) => [..full, ..col]).Where((c) => 
+                {
+                    // TODO: blue mage spells don't come from items.
+                    if(c.GetCollectionName() == BlueMageCollectible.CollectionName) {
+                        return false;
                     }
-                )
-                .ToList();
-        }
+                    if ((c.CollectibleKey is not null) && ((c.CollectibleKey.Id == 0) || (!currentDutyItemIds.Contains(c.CollectibleKey.Id))))
+                    {
+                        return false;
+                    }
+                    // Only update items that are part of this instance
+                    c.UpdateObtainedState();
+                    return !hideObtainedCollectibles || !c.GetIsObtained();
+                }
+            )
+        // put glamour as last 
+        .OrderBy(c => c.GetCollectionName() == GlamourCollectible.CollectionName)
+        .ToList();
     }
 
     private static uint GetCurrentInstance()

@@ -25,10 +25,58 @@ public unsafe class ItemFinder
         return cabinetItem is not null ? cabinetItem.Value.Item.RowId : null;
     }
 
-    public bool IsItemInDresser(uint itemId)
+    public bool IsItemInDresser(uint itemId, bool checkOutfits = false)
     {
         var pureItemId = GetPureItemId(itemId);
-        return Services.DresserObserver.DresserItemIds.Contains(pureItemId);
+        return Services.DresserObserver.DresserItemIds.Contains(pureItemId) || (checkOutfits && OutfitsContainingItem(pureItemId).Any(Services.DresserObserver.DresserItemIds.Contains));
+    }
+
+    public List<uint> OutfitsContainingItem(uint itemId)
+    {
+        return ExcelCache<MirageStoreSetItem>.GetSheet().Where(outfit =>
+            ((List<uint>)[
+                outfit.MainHand.RowId,
+                outfit.OffHand.RowId,
+                outfit.Head.RowId,
+                outfit.Body.RowId,
+                outfit.Hands.RowId,
+                outfit.Legs.RowId,
+                outfit.Feet.RowId,
+                outfit.Earrings.RowId,
+                outfit.Necklace.RowId,
+                outfit.Bracelets.RowId,
+                outfit.Ring.RowId,
+            ]).Contains(itemId)).Select((outfit) => outfit.RowId).ToList();
+    }
+
+    // Internally, outfits and their associated items are stored as 'MirageStoreSetItem'
+    // We can use this to get the items required to create the outfit in the first place.
+    // reason the collection isn't a MirageStoreSetItem is because that class is only a LookupTable,
+    // and it's more convenient to store it internally like a GlamourCollectible.
+    public List<uint> ItemIdsInOutfit(uint itemId)
+    {
+        List<uint> associatedItems = [];
+        var outfitSet = ExcelCache<MirageStoreSetItem>.GetSheet().GetRow(itemId);
+        if (outfitSet is not null)
+        {
+            var related = outfitSet.Value;
+            associatedItems = [
+                related.MainHand.RowId,
+                related.OffHand.RowId,
+                related.Head.RowId,
+                related.Body.RowId,
+                related.Hands.RowId,
+                related.Legs.RowId,
+                related.Feet.RowId,
+                related.Earrings.RowId,
+                related.Necklace.RowId,
+                related.Bracelets.RowId,
+                related.Ring.RowId,
+            ];
+            associatedItems = associatedItems.Where(id => id != 0).ToList();
+        }
+
+        return associatedItems;
     }
 
     public uint GetPureItemId(uint itemId)
