@@ -73,7 +73,7 @@ public class DataProvider
             ExcelCache<ItemAdapter>.GetSheet().AsParallel()
             .Where(entry => entry.LevelEquip >= 1)
             .Where(entry => SupportedEquipSlots.Contains(entry.EquipSlot))
-            .Where(entry => !entry.Name.ToString().StartsWith("Dated ")) // TODO filter only works in English
+            .Where(entry => entry.RowId > 1599) // Filter Dated and Weathered items (from 1.0)
             .Select(entry => (ICollectible)CollectibleCache<GlamourCollectible, ItemAdapter>.Instance.GetObject(entry))
             .ToList()
             );
@@ -182,7 +182,7 @@ public class DataProvider
             9,
             ExcelCache<ItemAdapter>.GetSheet().AsParallel()
             .Where(entry => entry.LevelEquip >= 1)
-            .Where(entry => entry.ItemUICategory.Value.Name == "Outfits")
+            .Where(entry => entry.ItemUICategory.Value.RowId == 112)
             .Select(entry => (ICollectible)CollectibleCache<OutfitsCollectible, ItemAdapter>.Instance.GetObject(entry))
             .ToList()
             );
