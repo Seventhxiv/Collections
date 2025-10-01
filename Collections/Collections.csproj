@@ -1,6 +1,6 @@
 <Project Sdk="Dalamud.NET.Sdk/13.0.0">
     <PropertyGroup>
-        <Version>1.0.2.9</Version>
+        <Version>1.0.2.10</Version>
         <Description>Collections</Description>
         <TargetFramework>net9.0-windows</TargetFramework>
         <Platforms>x64</Platforms>
